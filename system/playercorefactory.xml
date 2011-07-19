@@ -7,6 +7,9 @@
     <player name="DVDPlayer" /> placeholder for MPlayer
     <player name="PAPlayer" audio="true" />
     -->
+    <player name="SquarePlayer">
+        <color>white</color>
+    </player>
   </players>
 
   <rules name="system rules">
@@ -33,5 +36,7 @@
 
     <!-- Pass these to dvdplayer as we do not know if they are audio or video -->
     <rule name="nsv" filetypes="nsv" player="DVDPlayer" />
+
+    <rule name="square" filetypes="square" player="SquarePlayer" />
   </rules>
 </playercorefactory>
