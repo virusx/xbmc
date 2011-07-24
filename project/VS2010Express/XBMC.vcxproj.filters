@@ -235,6 +235,9 @@
     <Filter Include="threads\platform\win">
       <UniqueIdentifier>{1f49caed-1c84-46a1-83fc-b1fa6cfd749e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\SquarePlayer">
+      <UniqueIdentifier>{c39658d5-3d43-4e1c-8f3f-5da8271c8f1c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2478,6 +2481,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp">
       <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\SquarePlayer\SquarePlayer.cpp">
+      <Filter>cores\SquarePlayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4989,6 +4995,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\SystemClock.h">
       <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\SquarePlayer\SquarePlayer.h">
+      <Filter>cores\SquarePlayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
