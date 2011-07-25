@@ -31,7 +31,7 @@
 //#include "guilib/GUIWindowManager.h"
 //#include "Application.h"
 //#include "filesystem/FileMusicDatabase.h"
-//#include "FileItem.h"
+#include "FileItem.h"
 //#include "utils/RegExp.h"
 //#include "utils/StringUtils.h"
 //#include "URL.h"
@@ -62,30 +62,19 @@
 
 //using namespace XFILE;
 
-#if defined(_WIN32)
-extern HWND g_hWnd;
-#endif
-
 CSquarePlayer::CSquarePlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread("CSquarePlayer")
 {
-  m_bAbortRequest = false;
+  m_bAbortRequest = false; // Also found in CDVDPlayer
   m_bIsPlaying = false;
-  m_paused = false;
+  m_bPaused = false;
   m_playbackStartTime = 0;
   m_speed = 1;
   m_totalTime = 1;
   m_time = 0;
 
-  m_warpcursor = WARP_NONE;
   m_playCountMinTime = DEFAULT_PLAYCOUNT_MIN_TIME;
-
-  m_dialog = NULL;
-
-#if defined(_WIN32)
-  memset(&m_processInfo, 0, sizeof(m_processInfo));
-#endif
 }
 
 CSquarePlayer::~CSquarePlayer()
@@ -97,10 +86,22 @@ bool CSquarePlayer::OpenFile(const CFileItem& file, const CPlayerOptions &option
 {
   try
   {
+    /*
+    // if playing a file close it first
+    // this has to be changed so we won't have to close it.
+    if (ThreadHandle())
+      CloseFile();
+    m_bAbortRequest = false;
+    */
+    
     m_bIsPlaying = true;
     m_filename = file.m_strPath;
     CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, m_filename.c_str());
-    Create();
+    
+    if (ThreadHandle() == NULL)
+      Create();
+
+    m_startEvent.Set();
 
     return true;
   }
@@ -114,260 +115,50 @@ bool CSquarePlayer::OpenFile(const CFileItem& file, const CPlayerOptions &option
 
 bool CSquarePlayer::CloseFile()
 {
+  // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
-
-  if (m_dialog && m_dialog->IsActive()) m_dialog->Close();
-
-#if defined(_WIN32)
-  if (m_bIsPlaying && m_processInfo.hProcess)
-  {
-    TerminateProcess(m_processInfo.hProcess, 1);
-  }
-#endif
-
   return true;
 }
 
 bool CSquarePlayer::IsPlaying() const
 {
-  return m_bIsPlaying;
+  return m_bIsPlaying; // In CDVDPlayer, this is !m_bStop
 }
 
 void CSquarePlayer::Process()
 {
-  CStdString mainFile = m_filename;
-  CStdString archiveContent = "";
-
-  if (m_args.find("{0}") == std::string::npos)
-  {
-    // Unwind archive names
-    CURL url(m_filename);
-    CStdString protocol = url.GetProtocol();
-    if (protocol == "zip" || protocol == "rar"/* || protocol == "iso9660" ??*/)
-    {
-      mainFile = url.GetHostName();
-      archiveContent = url.GetFileName();
-    }
-    if (protocol == "musicdb")
-      mainFile = CFileMusicDatabase::TranslateUrl(url);
-  }
-
-  if (m_filenameReplacers.size() > 0) 
-  {
-    for (unsigned int i = 0; i < m_filenameReplacers.size(); i++)
-    {
-      std::vector<CStdString> vecSplit;
-      StringUtils::SplitString(m_filenameReplacers[i], " , ", vecSplit);
-
-      // something is wrong, go to next substitution
-      if (vecSplit.size() != 4)
-        continue;
-
-      CStdString strMatch = vecSplit[0];
-      strMatch.Replace(",,",",");
-      bool bCaseless = vecSplit[3].Find('i') > -1;
-      CRegExp regExp(bCaseless);
-
-      if (!regExp.RegComp(strMatch.c_str()))
-      { // invalid regexp - complain in logs
-        CLog::Log(LOGERROR, "%s: Invalid RegExp:'%s'", __FUNCTION__, strMatch.c_str());
-        continue;
-      }
-
-      if (regExp.RegFind(mainFile) > -1) 
-      {
-        CStdString strPat = vecSplit[1];
-        strPat.Replace(",,",",");
-
-        if (!regExp.RegComp(strPat.c_str()))
-        { // invalid regexp - complain in logs
-          CLog::Log(LOGERROR, "%s: Invalid RegExp:'%s'", __FUNCTION__, strPat.c_str());
-          continue;
-        }
-
-        CStdString strRep = vecSplit[2];
-        strRep.Replace(",,",",");
-        bool bGlobal = vecSplit[3].Find('g') > -1;
-        bool bStop = vecSplit[3].Find('s') > -1;
-        int iStart = 0;
-        while ((iStart = regExp.RegFind(mainFile, iStart)) > -1)
-        {
-          int iLength = regExp.GetFindLen();
-          mainFile = mainFile.Left(iStart) + regExp.GetReplaceString(strRep.c_str()) + mainFile.Mid(iStart+iLength);
-          if (!bGlobal)
-            break;
-        }
-        CLog::Log(LOGINFO, "%s: File matched:'%s' (RE='%s',Rep='%s') new filename:'%s'.", __FUNCTION__, strMatch.c_str(), strPat.c_str(), strRep.c_str(), mainFile.c_str());
-        if (bStop) break;
-      }
-    }
-  }
-
-  CLog::Log(LOGNOTICE, "%s: Player : %s", __FUNCTION__, m_filename.c_str());
-  CLog::Log(LOGNOTICE, "%s: File   : %s", __FUNCTION__, mainFile.c_str());
-  CLog::Log(LOGNOTICE, "%s: Content: %s", __FUNCTION__, archiveContent.c_str());
-  CLog::Log(LOGNOTICE, "%s: Args   : %s", __FUNCTION__, m_args.c_str());
+  // CExternalPlayer processes m_args and m_filenameReplacers here
+  
+  CLog::Log(LOGNOTICE, "%s: File: %s", __FUNCTION__, m_filename.c_str());
   CLog::Log(LOGNOTICE, "%s: Start", __FUNCTION__);
 
-  // make sure we surround the arguments with quotes where necessary
-  CStdString strFName;
-  CStdString strFArgs;
-#if defined(_WIN32)
-  // W32 batch-file handline
-  if (m_filename.Right(4) == ".bat" || m_filename.Right(4) == ".cmd")
-  {
-    // MSDN says you just need to do this, but cmd's handing of spaces and
-    // quotes is soo broken it seems to work much better if you just omit
-    // lpApplicationName and enclose the module in lpCommandLine in quotes
-    //strFName = "cmd.exe";
-    //strFArgs = "/c ";
-  }
-  else
-#endif
-    strFName = m_filename;
-
-  strFArgs.append("\"");
-  strFArgs.append(m_filename);
-  strFArgs.append("\" ");
-  strFArgs.append(m_args);
-
-  int nReplaced = strFArgs.Replace("{0}", mainFile);
-
-  if (!nReplaced)
-    nReplaced = strFArgs.Replace("{1}", mainFile) + strFArgs.Replace("{2}", archiveContent);
-
-  if (!nReplaced)
-  {
-    strFArgs.append(" \"");
-    strFArgs.append(mainFile);
-    strFArgs.append("\"");
-  }
-
-  int iActiveDevice = g_audioContext.GetActiveDevice();
-  if (iActiveDevice != CAudioContext::NONE)
-  {
-    CLog::Log(LOGNOTICE, "%s: Releasing audio device %d", __FUNCTION__, iActiveDevice);
-    g_audioContext.SetActiveDevice(CAudioContext::NONE);
-  }
-
-#if defined(_WIN32)
-  if (m_warpcursor)
-  {
-    GetCursorPos(&m_ptCursorpos);
-    int x = 0;
-    int y = 0;
-    switch (m_warpcursor)
-    {
-      case WARP_BOTTOM_RIGHT:
-        x = GetSystemMetrics(SM_CXSCREEN);
-      case WARP_BOTTOM_LEFT:
-        y = GetSystemMetrics(SM_CYSCREEN);
-        break;
-      case WARP_TOP_RIGHT:
-        x = GetSystemMetrics(SM_CXSCREEN);
-        break;
-      case WARP_CENTER:
-        x = GetSystemMetrics(SM_CXSCREEN) / 2;
-        y = GetSystemMetrics(SM_CYSCREEN) / 2;
-        break;
-    }
-    CLog::Log(LOGNOTICE, "%s: Warping cursor to (%d,%d)", __FUNCTION__, x, y);
-    SetCursorPos(x,y);
-  }
-
-  LONG currentStyle = GetWindowLong(g_hWnd, GWL_EXSTYLE);
-#endif
-
-  if (m_hidexbmc && !m_islauncher)
-  {
-    CLog::Log(LOGNOTICE, "%s: Hiding XBMC window", __FUNCTION__);
-    g_Windowing.Hide();
-  }
-#if defined(_WIN32)
-  else if (currentStyle & WS_EX_TOPMOST)
-  {
-    CLog::Log(LOGNOTICE, "%s: Lowering XBMC window", __FUNCTION__);
-    SetWindowPos(g_hWnd,HWND_BOTTOM,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
-  }
-
-  CLog::Log(LOGDEBUG, "%s: Unlocking foreground window", __FUNCTION__);
-  LockSetForegroundWindow(LSFW_UNLOCK);
-#endif
-
   m_playbackStartTime = XbmcThreads::SystemClockMillis();
-  BOOL ret = TRUE;
-#if defined(_WIN32)
-  ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
-#elif defined(_LINUX)
-  ret = ExecuteAppLinux(strFArgs.c_str());
-#endif
-  int64_t elapsedMillis = XbmcThreads::SystemClockMillis() - m_playbackStartTime;
 
-  if (ret && (m_islauncher || elapsedMillis < LAUNCHER_PROCESS_TIME))
+  if (m_startEvent.WaitMSec(100))
   {
-    if (m_hidexbmc)
+    m_startEvent.Reset();
+    do
     {
-      CLog::Log(LOGNOTICE, "%s: XBMC cannot stay hidden for a launcher process", __FUNCTION__);
-      g_Windowing.Show(false);
+      if (!m_bPaused)
+      {
+        /*
+        if (!ProcessPAP())
+          break;
+        */
+      }
+      else
+      {
+        Sleep(100);
+      }
     }
-
-    {
-      CSingleLock lock(g_graphicsContext);
-      m_dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-      m_dialog->SetHeading(23100);
-      m_dialog->SetLine(1, 23104);
-      m_dialog->SetLine(2, 23105);
-      m_dialog->SetLine(3, 23106);
-    }
-
-    if (!m_bAbortRequest) m_dialog->DoModal();
+    while (!m_bAbortRequest);
   }
-
+  
   m_bIsPlaying = false;
   CLog::Log(LOGNOTICE, "%s: Stop", __FUNCTION__);
 
-#if defined(_WIN32)
-  g_Windowing.Restore();
-
-  if (currentStyle & WS_EX_TOPMOST)
-  {
-    CLog::Log(LOGNOTICE, "%s: Showing XBMC window TOPMOST", __FUNCTION__);
-    SetWindowPos(g_hWnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
-    SetForegroundWindow(g_hWnd);
-  }
-  else
-#endif
-  {
-    CLog::Log(LOGNOTICE, "%s: Showing XBMC window", __FUNCTION__);
-    g_Windowing.Show();
-  }
-
-#if defined(_WIN32)
-  if (m_warpcursor)
-  {
-    m_xPos = 0;
-    m_yPos = 0;
-    if (&m_ptCursorpos != 0)
-    {
-      m_xPos = (m_ptCursorpos.x);
-      m_yPos = (m_ptCursorpos.y);
-    }
-    CLog::Log(LOGNOTICE, "%s: Restoring cursor to (%d,%d)", __FUNCTION__, m_xPos, m_yPos);
-    SetCursorPos(m_xPos,m_yPos);
-  }
-#endif
-
-  // We don't want to come back to an active screensaver
-  g_application.ResetScreenSaver();
-  g_application.WakeUpScreenSaverAndDPMS();
-
-  if (iActiveDevice != CAudioContext::NONE)
-  {
-    CLog::Log(LOGNOTICE, "%s: Reclaiming audio device %d", __FUNCTION__, iActiveDevice);
-    g_audioContext.SetActiveDevice(iActiveDevice);
-  }
-
-  if (!ret || (m_playOneStackItem && g_application.CurrentFileItem().IsStack()))
+  //if (!m_bStopPlaying && !m_bStop) // from CPAPlayer
+  if (m_bAbortRequest)
     m_callback.OnPlayBackStopped();
   else
     m_callback.OnPlayBackEnded();
@@ -375,11 +166,12 @@ void CSquarePlayer::Process()
 
 void CSquarePlayer::Pause()
 {
+  m_bPaused = !m_bPaused;
 }
 
 bool CSquarePlayer::IsPaused() const
 {
-  return false;
+  return m_bPaused;
 }
 
 bool CSquarePlayer::HasVideo() const
@@ -519,109 +311,11 @@ bool CSquarePlayer::Initialize(TiXmlElement* pConfig)
 
   XMLUtils::GetString(pConfig, "color", m_color);
 
-  bool bHideCursor;
-  if (XMLUtils::GetBoolean(pConfig, "hidecursor", bHideCursor) && bHideCursor)
-    m_warpcursor = WARP_BOTTOM_RIGHT;
-
-  CStdString warpCursor;
-  if (XMLUtils::GetString(pConfig, "warpcursor", warpCursor))
-  {
-    if (warpCursor == "bottomright") m_warpcursor = WARP_BOTTOM_RIGHT;
-    else if (warpCursor == "bottomleft") m_warpcursor = WARP_BOTTOM_LEFT;
-    else if (warpCursor == "topleft") m_warpcursor = WARP_TOP_LEFT;
-    else if (warpCursor == "topright") m_warpcursor = WARP_TOP_RIGHT;
-    else if (warpCursor == "center") m_warpcursor = WARP_CENTER;
-    else
-    {
-      warpCursor = "none";
-      CLog::Log(LOGWARNING, "SquarePlayer: invalid value for warpcursor: %s", warpCursor.c_str());
-    }
-  }
-
   XMLUtils::GetInt(pConfig, "playcountminimumtime", m_playCountMinTime, 1, INT_MAX);
 
-  CLog::Log(LOGNOTICE, "SquarePlayer Tweaks: color (%s)", m_color.c_str());
-
-#ifdef _WIN32
-  m_filenameReplacers.push_back("^smb:// , / , \\\\ , g");
-  m_filenameReplacers.push_back("^smb:\\\\\\\\ , smb:(\\\\\\\\[^\\\\]*\\\\) , \\1 , ");
-#endif
-
-  TiXmlElement* pReplacers = pConfig->FirstChildElement("replacers");
-  while (pReplacers)
-  {
-    GetCustomRegexpReplacers(pReplacers, m_filenameReplacers);
-    pReplacers = pReplacers->NextSiblingElement("replacers");
-  }
+  CLog::Log(LOGNOTICE, "SquarePlayer Tweaks: color (%s), playcountminimumtime (%d)",
+          m_color.c_str(),
+          m_playCountMinTime);
 
   return true;
-}
-
-void CSquarePlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
-                                               CStdStringArray& settings)
-{
-  int iAction = 0; // overwrite
-  // for backward compatibility
-  const char* szAppend = pRootElement->Attribute("append");
-  if ((szAppend && stricmp(szAppend, "yes") == 0))
-    iAction = 1;
-  // action takes precedence if both attributes exist
-  const char* szAction = pRootElement->Attribute("action");
-  if (szAction)
-  {
-    iAction = 0; // overwrite
-    if (stricmp(szAction, "append") == 0)
-      iAction = 1; // append
-    else if (stricmp(szAction, "prepend") == 0)
-      iAction = 2; // prepend
-  }
-  if (iAction == 0)
-    settings.clear();
-
-  TiXmlElement* pReplacer = pRootElement->FirstChildElement("replacer");
-  int i = 0;
-  while (pReplacer)
-  {
-    if (pReplacer->FirstChild())
-    {
-      const char* szGlobal = pReplacer->Attribute("global");
-      const char* szStop = pReplacer->Attribute("stop");
-      bool bGlobal = szGlobal && stricmp(szGlobal, "true") == 0;
-      bool bStop = szStop && stricmp(szStop, "true") == 0;
-
-      CStdString strMatch;
-      CStdString strPat;
-      CStdString strRep;
-      XMLUtils::GetString(pReplacer,"match",strMatch);
-      XMLUtils::GetString(pReplacer,"pat",strPat);
-      XMLUtils::GetString(pReplacer,"rep",strRep);
-
-      if (!strPat.IsEmpty() && !strRep.IsEmpty())
-      {
-        CLog::Log(LOGDEBUG,"  Registering replacer:");
-        CLog::Log(LOGDEBUG,"    Match:[%s] Pattern:[%s] Replacement:[%s]", strMatch.c_str(), strPat.c_str(), strRep.c_str());
-        CLog::Log(LOGDEBUG,"    Global:[%s] Stop:[%s]", bGlobal?"true":"false", bStop?"true":"false");
-        // keep literal commas since we use comma as a seperator
-        strMatch.Replace(",",",,");
-        strPat.Replace(",",",,");
-        strRep.Replace(",",",,");
-
-        CStdString strReplacer = strMatch + " , " + strPat + " , " + strRep + " , " + (bGlobal ? "g" : "") + (bStop ? "s" : "");
-        if (iAction == 2)
-          settings.insert(settings.begin() + i++, 1, strReplacer);
-        else
-          settings.push_back(strReplacer);
-      }
-      else
-      {
-        // error message about missing tag
-        if (strPat.IsEmpty())
-          CLog::Log(LOGERROR,"  Missing <Pat> tag");
-        else
-          CLog::Log(LOGERROR,"  Missing <Rep> tag");
-      }
-    }
-
-    pReplacer = pReplacer->NextSiblingElement("replacer");
-  }
 }

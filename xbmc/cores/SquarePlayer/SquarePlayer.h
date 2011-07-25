@@ -24,13 +24,13 @@
 #include "cores/IPlayer.h"
 #include "threads/Thread.h"
 
-class CExternalPlayer : public IPlayer, public CThread
+class CSquarePlayer : public IPlayer, public CThread
 {
 public:
   enum WARP_CURSOR { WARP_NONE = 0, WARP_TOP_LEFT, WARP_TOP_RIGHT, WARP_BOTTOM_RIGHT, WARP_BOTTOM_LEFT, WARP_CENTER };
 
-  CExternalPlayer(IPlayerCallback& callback);
-  virtual ~CExternalPlayer();
+  CSquarePlayer(IPlayerCallback& callback);
+  virtual ~CSquarePlayer();
   virtual bool Initialize(TiXmlElement* pConfig);
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) {}
   virtual void UnRegisterAudioCallback()                        {}
@@ -78,12 +78,8 @@ public:
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
   
-#if defined(_WIN32)
-  virtual BOOL ExecuteAppW32(const char* strPath, const char* strSwitches);
-  //static void CALLBACK AppFinished(void* closure, BOOLEAN TimerOrWaitFired);
-#elif defined(_LINUX)
-  virtual BOOL ExecuteAppLinux(const char* strSwitches);
-#endif
+protected:
+  CEvent m_startEvent;
 
 private:
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
@@ -91,22 +87,12 @@ private:
 
   bool m_bAbortRequest;
   bool m_bIsPlaying;
-  bool m_paused;
+  bool m_bPaused;
   int64_t m_playbackStartTime;
   int m_speed;
   int m_totalTime;
   int m_time;
   CStdString m_filename;
-  HWND m_hwndXbmc;
-#if defined(_WIN32)
-  POINT m_ptCursorpos;
-  PROCESS_INFORMATION m_processInfo;
-#endif
-  int m_xPos;
-  int m_yPos;
-  CStdString m_filename;
   CStdString  m_color;
-  WARP_CURSOR m_warpcursor;
   int m_playCountMinTime;
-  CStdStringArray m_filenameReplacers;
 };
