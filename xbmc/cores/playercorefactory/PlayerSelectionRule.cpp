@@ -72,7 +72,7 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   }
 
   m_playerName = pRule->Attribute("player");
-  m_playerCoreId = 0;
+  m_playerCoreId = CPlayerCoreFactory::GetPlayerCore(m_playerName);
 
   TiXmlElement* pSubRule = pRule->FirstChildElement("rule");
   while (pSubRule)
@@ -153,20 +153,40 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
   for (unsigned int i = 0; i < vecSubRules.size(); i++)
     vecSubRules[i]->GetPlayers(item, vecCores);
 
-  PLAYERCOREID playerCoreId = GetPlayerCore();
-  if (playerCoreId != EPC_NONE)
+  if (m_playerCoreId != EPC_NONE)
   {
-    CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: adding player: %s (%d) for rule: %s", m_playerName.c_str(), playerCoreId, m_name.c_str());
-    vecCores.push_back(GetPlayerCore());
+    CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: adding player: %s (%d) for rule: %s", m_playerName.c_str(), m_playerCoreId, m_name.c_str());
+    vecCores.push_back(m_playerCoreId);
   }
 }
 
-PLAYERCOREID CPlayerSelectionRule::GetPlayerCore()
+/*!
+ \brief  Recursively gets all supported file types of the current rule and subrules
+ \param  filter If this is set to EPC_NONE (default), then all cores will be included
+ \return List of extensions separated by | (note: extensions do not include a period)
+ */
+CStdString CPlayerSelectionRule::GetFileTypes(PLAYERCOREID filter /* = EPC_NONE */) const
 {
-  if (!m_playerCoreId)
+  CStdString subFileTypes;
+  CStdString result;
+  // Skip the current file types if the rule doesn't match the filter
+  if (filter == EPC_NONE || filter == m_playerCoreId)
   {
-    m_playerCoreId = CPlayerCoreFactory::GetPlayerCore(m_playerName);
+    if (m_protocols.IsEmpty())
+      result = m_fileTypes;
   }
-  return m_playerCoreId;
+  // Sub rules might still have file types matching the filter
+  for (std::vector<CPlayerSelectionRule*>::const_iterator it = vecSubRules.begin();
+      it != vecSubRules.end(); ++it)
+  {
+    subFileTypes = (*it)->GetFileTypes(filter);
+    if (!subFileTypes.IsEmpty() && (*it)->m_protocols.IsEmpty())
+    {
+      if (result.IsEmpty())
+        result = subFileTypes;
+      else
+        result += "|" + subFileTypes;
+    }
+  }
+  return result;
 }
-
