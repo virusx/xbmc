@@ -37,6 +37,7 @@
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
+#include "Application.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 
@@ -241,7 +242,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 
   if (pItem->m_bIsFolder) return false;
 
-  return false;
+  return g_application.PlayFile(*pItem);
 }
 
 int CGUIWindowPrograms::GetRegion(int iItem, bool bReload)
