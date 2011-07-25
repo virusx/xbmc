@@ -187,7 +187,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   // Set video default player. Check whether it's video first (overrule audio check)
   // Also push these players in case it is NOT audio either
-  if (item.IsVideo() || !item.IsAudio())
+  if (item.IsVideo())
   {
     PLAYERCOREID eVideoDefault = GetPlayerCore("videodefaultplayer");
     if (eVideoDefault != EPC_NONE)
@@ -198,11 +198,10 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     GetPlayers(vecCores, false, true);  // Video-only players
     GetPlayers(vecCores, true, true);   // Audio & video players
   }
-
-  // Set audio default player
-  // Pushback all audio players in case we don't know the type
-  if (item.IsAudio())
+  else if (item.IsAudio())
   {
+    // Set audio default player
+    // Pushback all audio players in case we don't know the type
     PLAYERCOREID eAudioDefault = GetPlayerCore("audiodefaultplayer");
     if (eAudioDefault != EPC_NONE)
     {
@@ -305,6 +304,7 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
       EPLAYERCORES eCore = EPC_NONE;
       if (type == "dvdplayer" || type == "mplayer") eCore = EPC_DVDPLAYER;
       if (type == "paplayer" ) eCore = EPC_PAPLAYER;
+      if (type == "squareplayer" ) eCore = EPC_SQUAREPLAYER;
       if (type == "externalplayer" ) eCore = EPC_EXTPLAYER;
 
       if (eCore != EPC_NONE)
@@ -348,4 +348,22 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
   CLog::Log(LOGNOTICE, "Loaded playercorefactory configuration");
 
   return true;
+}
+
+/*!
+ \brief  Finds all supported file types for the specified player core
+ \param  filter If this is set to EPC_NONE (default), then all cores will be included
+ \return List of extensions separated by | (note: extensions do not include a period)
+ */
+CStdString CPlayerCoreFactory::GetSupportedFileTypes(PLAYERCOREID filter /* = EPC_NONE */)
+{
+  CStdString allFileTypes, fileTypes;
+  for (std::vector<CPlayerSelectionRule*>::iterator it = s_vecCoreSelectionRules.begin();
+      it != s_vecCoreSelectionRules.end(); ++it)
+  {
+    fileTypes = (*it)->GetFileTypes(filter);
+    if (!fileTypes.IsEmpty())
+      allFileTypes = (allFileTypes.IsEmpty()) ? fileTypes : allFileTypes + "|" + fileTypes;
+  }
+  return allFileTypes;
 }

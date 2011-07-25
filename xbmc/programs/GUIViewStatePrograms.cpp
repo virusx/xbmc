@@ -28,6 +28,7 @@
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/Key.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -58,7 +59,13 @@ CStdString CGUIViewStateWindowPrograms::GetLockType()
 
 CStdString CGUIViewStateWindowPrograms::GetExtensions()
 {
-  return ".xbe|.cut";
+  CStdString fileTypes = CPlayerCoreFactory::GetSupportedFileTypes(EPC_SQUAREPLAYER);
+  if (!fileTypes.IsEmpty())
+  {
+    fileTypes.Replace("|", "|.");
+    fileTypes = "." + fileTypes;
+  }
+  return fileTypes;
 }
 
 VECSOURCES& CGUIViewStateWindowPrograms::GetSources()

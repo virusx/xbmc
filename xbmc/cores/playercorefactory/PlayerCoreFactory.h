@@ -37,8 +37,8 @@ enum EPLAYERCORES
   EPC_DVDPLAYER,
   EPC_MPLAYER,
   EPC_PAPLAYER,
+  EPC_SQUAREPLAYER,
   EPC_EXTPLAYER
-//  EPC_SQUAREPLAYER
 };
 
 typedef unsigned int PLAYERCOREID;
@@ -47,7 +47,7 @@ const PLAYERCOREID PCID_NONE = 0;
 const PLAYERCOREID PCID_DVDPLAYER = 1;
 const PLAYERCOREID PCID_MPLAYER = 2;
 const PLAYERCOREID PCID_PAPLAYER = 3;
-//const PLAYERCOREID PCID_SQUAREPLAYER = 4;
+const PLAYERCOREID PCID_SQUAREPLAYER = 4;
 
 class CPlayerCoreFactory
 {
@@ -72,6 +72,7 @@ public:
   static PLAYERCOREID SelectPlayerDialog(float posX, float posY);
 
   static bool LoadConfiguration(TiXmlElement* pConfig, bool clear);
+  static CStdString GetSupportedFileTypes(PLAYERCOREID filter = EPC_NONE);
 
 private:
   static std::vector<CPlayerCoreConfig *> s_vecCoreConfigs;

@@ -25,6 +25,7 @@
 #include "PlayerCoreFactory.h"
 #include "cores/dvdplayer/DVDPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
+#include "cores/SquarePlayer/SquarePlayer.h"
 #include "cores/ExternalPlayer/ExternalPlayer.h"
 #include "utils/log.h"
 
@@ -73,6 +74,7 @@ public:
       case EPC_MPLAYER:
       case EPC_DVDPLAYER: pPlayer = new CDVDPlayer(callback); break;
       case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
+      case EPC_SQUAREPLAYER: pPlayer = new CSquarePlayer(callback); break;
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
       default: return NULL;
     }
