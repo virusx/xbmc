@@ -296,19 +296,6 @@ bool CSquarePlayer::SetPlayerState(CStdString state)
 
 bool CSquarePlayer::Initialize(TiXmlElement* pConfig)
 {
-  XMLUtils::GetString(pConfig, "filename", m_filename); 
-  if (m_filename.length() > 0)
-  {
-    CLog::Log(LOGNOTICE, "SquarePlayer Filename: %s", m_filename.c_str());
-  }
-  else
-  {
-    CStdString xml;
-    xml<<*pConfig;
-    CLog::Log(LOGERROR, "SquarePlayer Error: filename element missing from: %s", xml.c_str());
-    return false;
-  }
-
   XMLUtils::GetString(pConfig, "color", m_color);
 
   XMLUtils::GetInt(pConfig, "playcountminimumtime", m_playCountMinTime, 1, INT_MAX);
