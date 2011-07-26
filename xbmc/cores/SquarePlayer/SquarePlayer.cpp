@@ -19,38 +19,31 @@
  *
  */
 
-//#include "threads/SystemClock.h"
-//#include "system.h"
+#include "threads/SystemClock.h"
+#include "system.h"
+#include "SquarePlayer.h"
+#include "guilib/GUIFontManager.h"
+#include "guilib/GUITextLayout.h"
+#include "guilib/GUIFont.h" // for XBFONT_* defines
+#include "Application.h"
+#include "settings/AdvancedSettings.h"
+#include "windowing/WindowingFactory.h"
+#include "utils/log.h"
+#include "utils/TimeUtils.h"
+#include "utils/XMLUtils.h"
+#include "FileItem.h"
 //#include "signal.h"
 //#include "limits.h"
 //#include "threads/SingleLock.h"
 //#include "guilib/AudioContext.h"
-#include "SquarePlayer.h"
 //#include "windowing/WindowingFactory.h"
 //#include "dialogs/GUIDialogOK.h"
 //#include "guilib/GUIWindowManager.h"
-//#include "Application.h"
 //#include "filesystem/FileMusicDatabase.h"
-#include "FileItem.h"
 //#include "utils/RegExp.h"
 //#include "utils/StringUtils.h"
 //#include "URL.h"
-#include "utils/XMLUtils.h"
-//#include "utils/TimeUtils.h"
-#include "utils/log.h"
-#if defined(_WIN32)
-  #include "Windows.h"
-/*
-  #ifdef HAS_IRSERVERSUITE
-    #include "input/windows/IRServerSuite.h"
-  #endif
-*/
-#endif
-/*
-#if defined(HAS_LIRC)
-  #include "input/linux/LIRC.h"
-#endif
-*/
+
 
 // If the process ends in less than this time (ms), we assume it's a launcher
 // and wait for manual intervention before continuing
@@ -59,8 +52,6 @@
 #define PROCESS_GRACE_TIME 3000
 // Default time after which the item's playcount is incremented
 #define DEFAULT_PLAYCOUNT_MIN_TIME 10
-
-//using namespace XFILE;
 
 CSquarePlayer::CSquarePlayer(IPlayerCallback& callback)
     : IPlayer(callback),
