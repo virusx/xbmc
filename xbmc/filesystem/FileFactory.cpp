@@ -33,6 +33,7 @@
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
 #include "WINFileSmb.h"
+#include "FileDeviceWASAPI.h"
 #else
 #include "FileSmb.h"
 #endif
@@ -169,6 +170,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "afp") return new CFileAFP();
 #endif
     else if (strProtocol == "pipe") return new CFilePipe();    
+#ifdef _WIN32
+    else if (strProtocol == "device") return new CFileDeviceWASAPI();
+#endif
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );

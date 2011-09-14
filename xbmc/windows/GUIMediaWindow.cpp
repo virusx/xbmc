@@ -984,7 +984,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     }
 
     if (autoplay && !g_partyModeManager.IsEnabled() && 
-        !pItem->IsPlayList() && !do_not_add_karaoke)
+        !pItem->IsPlayList() && !do_not_add_karaoke && !pItem->IsDevice())
     {
       return OnPlayAndQueueMedia(pItem);
     }

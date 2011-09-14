@@ -65,7 +65,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
   {
     const CMediaSource& share = sources[i];
     CFileItemPtr pItem(new CFileItem(share));
-    if (pItem->IsLastFM() || (pItem->GetPath().Left(14).Equals("musicsearch://")))
+    if (pItem->IsLastFM() || pItem->GetPath().Left(14).Equals("musicsearch://") || pItem->IsDevice())
       pItem->SetCanQueue(false);
     
     CStdString strIcon;
@@ -98,6 +98,8 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       strIcon = "DefaultCDDA.png";
     else if (pItem->IsRemovable() && g_TextureManager.HasTexture("DefaultRemovableDisk.png"))
       strIcon = "DefaultRemovableDisk.png";
+    else if (pItem->IsDevice())
+      strIcon = "DefaultAudio.png";
     else
       strIcon = "DefaultHardDisk.png";
     

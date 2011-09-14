@@ -131,6 +131,7 @@ public:
   bool IsMultiPath() const;
   bool IsMusicDb() const;
   bool IsVideoDb() const;
+  bool IsDevice() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;

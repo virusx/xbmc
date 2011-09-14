@@ -23,6 +23,7 @@
 #include "WAVcodec.h"
 #include "utils/EndianSwap.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 
 #if defined(WIN32)
 #include <mmreg.h>
@@ -63,7 +64,7 @@ WAVCodec::~WAVCodec()
 bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   m_file.Close();
-  if (!m_file.Open(strFile, READ_CACHED))
+  if (!m_file.Open(strFile, URIUtils::IsDevice(strFile) ? READ_NO_CACHE : READ_CACHED))
     return false;
 
   int64_t         length;

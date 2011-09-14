@@ -289,6 +289,7 @@ void CURL::Parse(const CStdString& strURL1)
     || m_strProtocol.CompareNoCase("videodb") == 0
     || m_strProtocol.CompareNoCase("sources") == 0
     || m_strProtocol.CompareNoCase("lastfm") == 0
+    || m_strProtocol.CompareNoCase("device") == 0
     || m_strProtocol.Left(3).CompareNoCase("mem") == 0)
   {
     if (m_strHostName != "" && m_strFileName != "")

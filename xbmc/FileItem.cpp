@@ -859,6 +859,12 @@ bool CFileItem::IsVideoDb() const
   return url.GetProtocol().Equals("videodb");
 }
 
+bool CFileItem::IsDevice() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("device");
+}
+
 bool CFileItem::IsVirtualDirectoryRoot() const
 {
   return (m_bIsFolder && m_strPath.IsEmpty());
@@ -1084,6 +1090,8 @@ const CStdString& CFileItem::GetMimeType(bool lookup /*= true*/) const
 
     if( m_bIsFolder )
       m_ref = "x-directory/normal";
+    else if (IsDevice())
+      m_ref = "audio/wav"; // Audio devices use pcm streams
     else if( m_strPath.Left(8).Equals("shout://")
           || m_strPath.Left(7).Equals("http://")
           || m_strPath.Left(8).Equals("https://"))
@@ -1992,7 +2000,7 @@ void CFileItemList::Stack(bool stackFiles /* = true */)
   CSingleLock lock(m_lock);
 
   // not allowed here
-  if (IsVirtualDirectoryRoot() || IsLiveTV() || IsSourcesPath())
+  if (IsVirtualDirectoryRoot() || IsLiveTV() || IsSourcesPath() || IsDevice())
     return;
 
   SetProperty("isstacked", "1");
@@ -2875,6 +2883,7 @@ CStdString CFileItem::GetLocalFanart() const
    || IsPlugin()
    || IsAddonsPath()
    || IsDVD()
+   || IsDevice()
    || (URIUtils::IsFTP(strFile) && !g_advancedSettings.m_bFTPThumbs)
    || m_strPath.IsEmpty())
     return "";

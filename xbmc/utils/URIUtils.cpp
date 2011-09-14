@@ -356,7 +356,7 @@ CStdString URIUtils::SubstitutePath(const CStdString& strPath)
 
 bool URIUtils::IsRemote(const CStdString& strFile)
 {
-  if (IsCDDA(strFile) || IsISO9660(strFile))
+  if (IsCDDA(strFile) || IsISO9660(strFile) || IsDevice(strFile))
     return false;
 
   if (IsSpecial(strFile))
@@ -758,6 +758,11 @@ bool URIUtils::IsVideoDb(const CStdString& strFile)
 bool URIUtils::IsLastFM(const CStdString& strFile)
 {
   return strFile.Left(7).Equals("lastfm:");
+}
+
+bool URIUtils::IsDevice(const CStdString& strFile)
+{
+  return strFile.Left(7).Equals("device:");
 }
 
 bool URIUtils::IsDOSPath(const CStdString &path)
