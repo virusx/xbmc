@@ -2499,6 +2499,9 @@
     <ClCompile Include="..\..\xbmc\filesystem\NFSDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\FileDeviceWASAPI.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\FilePipe.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
@@ -5070,6 +5073,9 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\NFSDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\FileDeviceWASAPI.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\FilePipe.h">

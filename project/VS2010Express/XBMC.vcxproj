@@ -342,6 +342,7 @@
     <ClCompile Include="..\..\xbmc\Favourites.cpp" />
     <ClCompile Include="..\..\xbmc\FileItem.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\FileDeviceWASAPI.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FileNFS.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FilePipe.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\iso9660.cpp" />
@@ -1260,6 +1261,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\DirectoryHistory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FactoryDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\File.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\FileDeviceWASAPI.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FileFactory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FileHD.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FileNFS.h" />
