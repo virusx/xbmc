@@ -487,7 +487,7 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
 bool CFileItem::IsVideo() const
 {
   /* check preset mime type */
-  if( m_mimetype.Left(6).Equals("video/") )
+  if( GetMimeType().Left(6).Equals("video/") )
     return true;
 
   if (HasVideoInfoTag()) return true;
@@ -498,9 +498,9 @@ bool CFileItem::IsVideo() const
     return true;
 
   CStdString extension;
-  if( m_mimetype.Left(12).Equals("application/") )
+  if( GetMimeType().Left(12).Equals("application/") )
   { /* check for some standard types */
-    extension = m_mimetype.Mid(12);
+    extension = GetMimeType().Mid(12);
     if( extension.Equals("ogg")
      || extension.Equals("mp4")
      || extension.Equals("mxf") )
@@ -534,7 +534,7 @@ bool CFileItem::IsDiscStub() const
 bool CFileItem::IsAudio() const
 {
   /* check preset mime type */
-  if( m_mimetype.Left(6).Equals("audio/") )
+  if( GetMimeType().Left(6).Equals("audio/") )
     return true;
 
   if (HasMusicInfoTag()) return true;
@@ -544,9 +544,9 @@ bool CFileItem::IsAudio() const
   if (!m_bIsFolder && IsLastFM()) return true;
 
   CStdString extension;
-  if( m_mimetype.Left(12).Equals("application/") )
+  if( GetMimeType().Left(12).Equals("application/") )
   { /* check for some standard types */
-    extension = m_mimetype.Mid(12);
+    extension = GetMimeType().Mid(12);
     if( extension.Equals("ogg")
      || extension.Equals("mp4")
      || extension.Equals("mxf") )
@@ -573,7 +573,7 @@ bool CFileItem::IsKaraoke() const
 
 bool CFileItem::IsPicture() const
 {
-  if( m_mimetype.Left(6).Equals("image/") )
+  if( GetMimeType().Left(6).Equals("image/") )
     return true;
 
   if (HasPictureInfoTag()) return true;
