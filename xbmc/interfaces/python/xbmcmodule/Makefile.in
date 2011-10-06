@@ -8,6 +8,7 @@ SRCS=action.cpp \
      controlimage.cpp \
      controllabel.cpp \
      controllist.cpp \
+     controlpanel.cpp \
      controlprogress.cpp \
      controlradiobutton.cpp \
      controlslider.cpp \

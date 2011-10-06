@@ -1990,6 +1990,9 @@
     <ClCompile Include="..\..\xbmc\guilib\JpegIO.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlpanel.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\BXAcodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>

@@ -44,6 +44,9 @@ class CGUIControl;
 #define ControlList_Check(op) PyObject_TypeCheck(op, &ControlList_Type)
 #define ControlList_CheckExact(op) ((op)->ob_type == &ControlList_Type)
 
+#define ControlPanel_Check(op) PyObject_TypeCheck(op, &ControlPanel_Type)
+#define ControlPanel_CheckExact(op) ((op)->ob_type == &ControlPanel_Type)
+
 #define ControlSpin_Check(op) PyObject_TypeCheck(op, &ControlSpin_Type)
 #define ControlSpin_CheckExact(op) ((op)->ob_type == &ControlSpin_Type)
 
@@ -194,7 +197,7 @@ namespace PYXBMC
     int checkHeight;
     uint32_t align;
   } ControlCheckMark;
-
+  
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
     std::vector<PYXBMC::ListItem*> vecItems;
@@ -215,6 +218,27 @@ namespace PYXBMC
     int itemTextOffsetY;
     uint32_t alignmentY;
   } ControlList;
+
+  typedef struct {
+    PyObject_HEAD_XBMC_CONTROL
+    std::vector<PYXBMC::ListItem*> vecItems;
+    std::string strFont;
+    ControlSpin* pControlSpin;
+
+    color_t textColor;
+    color_t selectedColor;
+    std::string strTextureButton;
+    std::string strTextureButtonFocus;
+
+    int imageHeight;
+    int imageWidth;
+    int itemHeight;
+    int space;
+
+    int itemTextOffsetX;
+    int itemTextOffsetY;
+    uint32_t alignmentY;
+  } ControlPanel;
 
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
@@ -259,6 +283,7 @@ namespace PYXBMC
   extern PyTypeObject ControlButton_Type;
   extern PyTypeObject ControlCheckMark_Type;
   extern PyTypeObject ControlList_Type;
+  extern PyTypeObject ControlPanel_Type;
   extern PyTypeObject ControlProgress_Type;
   extern PyTypeObject ControlRadioButton_Type;
   extern PyTypeObject ControlSlider_Type;
@@ -272,6 +297,7 @@ namespace PYXBMC
   CGUIControl* ControlImage_Create(ControlImage* pControl);
   CGUIControl* ControlGroup_Create(ControlGroup* pControl);
   CGUIControl* ControlList_Create(ControlList* pControl);
+  CGUIControl* ControlPanel_Create(ControlList* pControl);
   CGUIControl* ControlProgress_Create(ControlProgress* pControl);
   CGUIControl* ControlRadioButton_Create(ControlRadioButton* pControl);
   CGUIControl* ControlSlider_Create(ControlSlider* pControl);
@@ -285,6 +311,7 @@ namespace PYXBMC
   void initControlButton_Type();
   void initControlCheckMark_Type();
   void initControlList_Type();
+  void initControlPanel_Type();
   void initControlImage_Type();
   void initControlGroup_Type();
   void initControlProgress_Type();
