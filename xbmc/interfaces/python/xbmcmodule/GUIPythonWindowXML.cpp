@@ -27,6 +27,7 @@
 #include "action.h"
 #include "utils/URIUtils.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/GUIFontManager.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "guilib/TextureManager.h"
@@ -317,12 +318,19 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
     return false;
   }
 
-  // only load strings if using addon's xml (as opposed to xml in skin's folder)
+  // only load fonts and strings if using addon's xml (as opposed to xml in skin's folder)
   RESOLUTION_INFO res;
   CStdString strSkinPath = g_SkinInfo->GetSkinPath(URIUtils::GetFileName(strPath), &res);
   bool bLoadResources = !strPath.Equals(strSkinPath);
 
-  // load strings and includes IN THIS ORDER
+  // load fonts, strings and includes IN THIS ORDER
+  if (bLoadResources)
+  {
+    CStdString strDir, strFontFile;
+    URIUtils::GetDirectory(strPath, strDir);
+    URIUtils::AddFileToFolder(strDir, "Font.xml", strFontFile);
+    g_fontManager.LoadFonts(g_guiSettings.GetString("lookandfeel.font"), strFontFile);
+  }
   unsigned int offset = LoadScriptStrings();
   if (bLoadResources)
   {
