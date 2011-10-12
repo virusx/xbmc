@@ -175,9 +175,22 @@ double CSkinInfo::GetMinVersion()
 void CSkinInfo::LoadIncludes()
 {
   CStdString includesPath = CSpecialProtocol::TranslatePathConvertCase(GetSkinPath("includes.xml"));
-  CLog::Log(LOGINFO, "Loading skin includes from %s", includesPath.c_str());
+
   m_includes.ClearIncludes();
-  m_includes.LoadIncludes(includesPath);
+  LoadIncludes(includesPath);
+}
+
+void CSkinInfo::LoadIncludes(const CStdString &strSource)
+{
+  if (XFILE::CFile::Exists(strSource))
+  {
+    CLog::Log(LOGINFO, "Loading skin includes from %s", strSource.c_str());
+    m_includes.LoadIncludes(strSource);
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "Could not locate skin includes: %s", strSource.c_str());
+  }
 }
 
 void CSkinInfo::ResolveIncludes(TiXmlElement *node)

@@ -21,6 +21,7 @@
 
 #include "pyutil.h"
 #include "GUIPythonWindowXML.h"
+#include "addons/Skin.h"
 #include "window.h"
 #include "control.h"
 #include "action.h"
@@ -315,9 +316,23 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
     CLog::Log(LOGERROR, "%s: Unable to load skin file %s", __FUNCTION__, strPath.c_str());
     return false;
   }
-  // load the strings in
-  unsigned int offset = LoadScriptStrings();
 
+  // only load strings if using addon's xml (as opposed to xml in skin's folder)
+  RESOLUTION_INFO res;
+  CStdString strSkinPath = g_SkinInfo->GetSkinPath(URIUtils::GetFileName(strPath), &res);
+  bool bLoadResources = !strPath.Equals(strSkinPath);
+
+  // load strings and includes IN THIS ORDER
+  unsigned int offset = LoadScriptStrings();
+  if (bLoadResources)
+  {
+    CStdString strDir, strIncludesFile;
+    URIUtils::GetDirectory(strPath, strDir);
+    URIUtils::AddFileToFolder(strDir, "includes.xml", strIncludesFile);
+    g_SkinInfo->LoadIncludes(strIncludesFile);
+  }
+
+  // Load the xml file. Replace the occurences of SCRIPT### with offset+###
   CStdString xml;
   char *buffer = new char[(unsigned int)file.GetLength()+1];
   if(buffer == NULL)
@@ -329,7 +344,6 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
     xml = buffer;
     if (offset)
     {
-      // replace the occurences of SCRIPT### with offset+###
       // not particularly efficient, but it works
       int pos = xml.Find("SCRIPT");
       while (pos != (int)CStdString::npos)
