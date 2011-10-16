@@ -55,12 +55,15 @@ private:
   void ResolveIncludesForNode(TiXmlElement *node);
   CStdString ResolveConstant(const CStdString &constant) const;
   bool HasIncludeFile(const CStdString &includeFile) const;
-  std::map<CStdString, TiXmlElement> m_includes;
-  std::map<CStdString, TiXmlElement> m_defaults;
-  std::map<CStdString, TiXmlElement> m_skinvariables;
-  std::map<CStdString, CStdString> m_constants;
-  std::vector<CStdString> m_files;
-  typedef std::vector<CStdString>::const_iterator iFiles;
+
+  typedef struct
+  {
+    std::map<CStdString, TiXmlElement> includes;
+    std::map<CStdString, TiXmlElement> defaults;
+    std::map<CStdString, CStdString> constants;
+  } RootInclude;
+  std::map<CStdString, RootInclude> m_files;
+  typedef std::map<CStdString, RootInclude>::const_iterator iFiles;
 
   std::set<std::string> m_constantAttributes;
   std::set<std::string> m_constantNodes;

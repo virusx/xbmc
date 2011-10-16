@@ -82,9 +82,6 @@ CGUIIncludes::~CGUIIncludes()
 
 void CGUIIncludes::ClearIncludes()
 {
-  m_includes.clear();
-  m_defaults.clear();
-  m_constants.clear();
   m_skinvariables.clear();
   m_files.clear();
 }
@@ -101,10 +98,12 @@ bool CGUIIncludes::LoadIncludes(const CStdString &includeFile)
     CLog::Log(LOGINFO, "Error loading includes.xml file (%s): %s (row=%i, col=%i)", includeFile.c_str(), doc.ErrorDesc(), doc.ErrorRow(), doc.ErrorCol());
     return false;
   }
+
   // success, load the tags
+  RootInclude 
   if (LoadIncludesFromXML(doc.RootElement()))
   {
-    m_files.push_back(includeFile);
+    m_files.insert(includeFile);
     return true;
   }
   return false;
@@ -171,7 +170,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
 bool CGUIIncludes::HasIncludeFile(const CStdString &file) const
 {
   for (iFiles it = m_files.begin(); it != m_files.end(); ++it)
-    if (*it == file) return true;
+    if ((*it).first == file) return true;
   return false;
 }
 
