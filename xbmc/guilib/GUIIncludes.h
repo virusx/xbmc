@@ -41,7 +41,6 @@ public:
 
   void ClearIncludes();
   bool LoadIncludes(const CStdString &includeFile);
-  bool LoadIncludesFromXML(const TiXmlElement *root);
 
   /*! \brief Resolve <include>name</include> tags recursively for the given XML element
    Replaces any instances of <include file="foo">bar</include> with the value of the include
@@ -52,6 +51,7 @@ public:
   const INFO::CSkinVariableString* CreateSkinVariable(const CStdString& name, int context);
 
 private:
+  bool LoadIncludesFromXML(const TiXmlElement *root);
   void ResolveIncludesForNode(TiXmlElement *node);
   CStdString ResolveConstant(const CStdString &constant) const;
   bool HasIncludeFile(const CStdString &includeFile) const;
