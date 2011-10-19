@@ -82,10 +82,6 @@ CGUIIncludes::~CGUIIncludes()
 
 void CGUIIncludes::ClearIncludes()
 {
-  m_includes.clear();
-  m_defaults.clear();
-  m_constants.clear();
-  m_skinvariables.clear();
   m_files.clear();
 }
 
@@ -102,16 +98,12 @@ bool CGUIIncludes::LoadIncludes(const CStdString &includeFile)
     return false;
   }
   // success, load the tags
-  if (LoadIncludesFromXML(doc.RootElement()))
-  {
-    m_files.push_back(includeFile);
-    return true;
-  }
-  return false;
+  return LoadIncludesFromXML(includeFile, doc.RootElement());
 }
 
-bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
+bool CGUIIncludes::LoadIncludesFromXML(const CStdString &includeFile, const TiXmlElement *root)
 {
+  IncludeFile iFile;
   if (!root || strcmpi(root->Value(), "includes"))
   {
     CLog::Log(LOGERROR, "Skin includes must start with the <includes> tag");
@@ -123,7 +115,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     if (node->Attribute("name") && node->FirstChild())
     {
       CStdString tagName = node->Attribute("name");
-      m_includes.insert(pair<CStdString, TiXmlElement>(tagName, *node));
+      iFile.m_includes.insert(pair<CStdString, TiXmlElement>(tagName, *node));
     }
     else if (node->Attribute("file"))
     { // load this file in as well
@@ -138,7 +130,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     if (node->Attribute("type") && node->FirstChild())
     {
       CStdString tagName = node->Attribute("type");
-      m_defaults.insert(pair<CStdString, TiXmlElement>(tagName, *node));
+      iFile.m_defaults.insert(pair<CStdString, TiXmlElement>(tagName, *node));
     }
     node = node->NextSiblingElement("default");
   }
@@ -149,7 +141,7 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     if (node->Attribute("name") && node->FirstChild())
     {
       CStdString tagName = node->Attribute("name");
-      m_constants.insert(make_pair(tagName, node->FirstChild()->ValueStr()));
+      iFile.m_constants.insert(make_pair(tagName, node->FirstChild()->ValueStr()));
     }
     node = node->NextSiblingElement("constant");
   }
@@ -160,18 +152,23 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     if (node->Attribute("name") && node->FirstChild())
     {
       CStdString tagName = node->Attribute("name");
-      m_skinvariables.insert(make_pair(tagName, *node));
+      iFile.m_skinvariables.insert(make_pair(tagName, *node));
     }
     node = node->NextSiblingElement("variable");
   }
 
-  return true;
+  if (!iFile.IsEmpty())
+  {
+    m_files.insert(make_pair(includeFile, iFile));
+    return true;
+  }
+  return false;
 }
 
 bool CGUIIncludes::HasIncludeFile(const CStdString &file) const
 {
   for (iFiles it = m_files.begin(); it != m_files.end(); ++it)
-    if (*it == file) return true;
+    if ((*it).first == file) return true;
   return false;
 }
 
@@ -200,16 +197,22 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node)
   if (node->ValueStr() == "control")
   {
     type = node->Attribute("type");
-    map<CStdString, TiXmlElement>::const_iterator it = m_defaults.find(type);
-    if (it != m_defaults.end())
+    for (iFiles fileIt = m_files.begin(); fileIt != m_files.end(); ++fileIt)
     {
-      const TiXmlElement &element = (*it).second;
-      const TiXmlElement *tag = element.FirstChildElement();
-      while (tag)
+      map<CStdString, TiXmlElement> &defaults = (map<CStdString, TiXmlElement>&)(*fileIt).second.m_defaults;
+      if (!defaults.size())
+        continue;
+      map<CStdString, TiXmlElement>::const_iterator it = defaults.find(type);
+      if (it != defaults.end())
       {
-        // we insert at the end of block
-        node->InsertEndChild(*tag);
-        tag = tag->NextSiblingElement();
+        const TiXmlElement &element = (*it).second;
+        const TiXmlElement *tag = element.FirstChildElement();
+        while (tag)
+        {
+          // we insert at the end of block
+          node->InsertEndChild(*tag);
+          tag = tag->NextSiblingElement();
+        }
       }
     }
   }

@@ -51,18 +51,24 @@ public:
   const INFO::CSkinVariableString* CreateSkinVariable(const CStdString& name, int context);
 
 private:
-  bool LoadIncludesFromXML(const TiXmlElement *root);
+
+  typedef struct
+  {
+    std::map<CStdString, TiXmlElement> m_includes;
+    std::map<CStdString, TiXmlElement> m_defaults;
+    std::map<CStdString, TiXmlElement> m_skinvariables;
+    std::map<CStdString, CStdString> m_constants;
+    bool IsEmpty() const {return !m_includes.size() && !m_defaults.size() && !m_skinvariables.size() && !m_constants.size();};
+  } IncludeFile;
+
+  bool LoadIncludesFromXML(const CStdString &includeFile, const TiXmlElement *root);
   void ResolveIncludesForNode(TiXmlElement *node);
   CStdString ResolveConstant(const CStdString &constant) const;
   bool HasIncludeFile(const CStdString &includeFile) const;
-  std::map<CStdString, TiXmlElement> m_includes;
-  std::map<CStdString, TiXmlElement> m_defaults;
-  std::map<CStdString, TiXmlElement> m_skinvariables;
-  std::map<CStdString, CStdString> m_constants;
-  std::vector<CStdString> m_files;
-  typedef std::vector<CStdString>::const_iterator iFiles;
+
+  std::map<CStdString, IncludeFile> m_files;
+  typedef std::map<CStdString, IncludeFile>::const_iterator iFiles;
 
   std::set<std::string> m_constantAttributes;
   std::set<std::string> m_constantNodes;
 };
-
