@@ -817,8 +817,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (cat.name == "library")
     {
-      if (prop.name == "isscanning") return LIBRARY_IS_SCANNING;
-      else if (prop.name == "isscanningvideo") return LIBRARY_IS_SCANNING_VIDEO; // TODO: change to IsScanning(Video)
+      if (prop.name == "isscanning")
+      {
+        if (!prop.num_params())
+          return LIBRARY_IS_SCANNING;
+        else
+        {
+          CStdString cat = prop.param(0); cat.ToLower();
+          if (cat == "music") return LIBRARY_IS_SCANNING_MUSIC;
+          else if (cat == "video") return LIBRARY_IS_SCANNING_VIDEO;
+        }
+      }
+      else if (prop.name == "isscanningvideo") return LIBRARY_IS_SCANNING_VIDEO; // Backwards compatibility
       else if (prop.name == "isscanningmusic") return LIBRARY_IS_SCANNING_MUSIC;
       else if (prop.name == "hascontent" && prop.num_params())
       {
