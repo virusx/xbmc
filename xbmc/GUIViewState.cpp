@@ -131,7 +131,10 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   
   if (windowId==WINDOW_ADDON_BROWSER)
     return new CGUIViewStateAddonBrowser(items);
-
+  /*
+  if (windowId==WINDOW_LIBRARY_ADDON)
+    return new CGUIViewStateLibraryAddon(items);
+  */
   //  Use as fallback/default
   return new CGUIViewStateGeneral(items);
 }

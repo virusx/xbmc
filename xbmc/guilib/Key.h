@@ -339,6 +339,7 @@
 #define WINDOW_SETTINGS_PROFILES          10034
 
 #define WINDOW_ADDON_BROWSER              10040
+#define WINDOW_LIBRARY_ADDON              10041
 
 #define WINDOW_DIALOG_POINTER             10099
 #define WINDOW_DIALOG_YES_NO              10100

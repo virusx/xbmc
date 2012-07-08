@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "XBIRRemote.h"
+#include "addons/AddonManager.h"
 
 #if defined(TARGET_WINDOWS)
 #include "input/windows/WINJoystick.h"
@@ -43,6 +44,7 @@
 
 using namespace std;
 using namespace XFILE;
+using namespace ADDON;
 
 typedef struct
 {
@@ -1027,6 +1029,14 @@ int CButtonTranslator::TranslateWindow(const CStdString &window)
   // eliminate .xml
   if (strWindow.Mid(strWindow.GetLength() - 4) == ".xml" )
     strWindow = strWindow.Mid(0, strWindow.GetLength() - 4);
+
+  // if the window still has a period, check to see if it is a library addon
+  if (strWindow.Find('.') != -1)
+  {
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(strWindow, addon, ADDON_LIBRARY, true))
+      return WINDOW_LIBRARY_ADDON;
+  }
 
   // window12345, for custom window to be keymapped
   if (strWindow.length() > 6 && strWindow.Left(6).Equals("window"))
