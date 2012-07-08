@@ -137,8 +137,8 @@ void CGUIDialogAddonInfo::UpdateControls()
   if (isInstalled)
     GrabRollbackVersions();
 
-  // TODO: System addons should be able to be disabled
-  bool canDisable = isInstalled && !isSystem && !m_localAddon->IsInUse();
+  // TODO: System addons (in addition to ADDON_LIBRARY) should be able to be disabled
+  bool canDisable = isInstalled && (!isSystem || m_localAddon->IsType(ADDON_LIBRARY)) && !m_localAddon->IsInUse();
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
 

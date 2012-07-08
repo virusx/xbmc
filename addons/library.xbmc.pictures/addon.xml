@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="library.xbmc.pictures"
+       name="Pictures"
+       version="1.0"
+       provider-name="Team XBMC">
+    <requires>
+        <import addon="xbmc.addon" version="11.0"/>
+        <import addon="xbmc.python" version="2.0"/>
+    </requires>
+    <extension point="xbmc.library" name="Picture Library" library="default.py">
+        <library label="pictures"/>
+        <database name="MyPictures" version="2"/>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">View your photos</summary>
+        <description lang="en"></description>
+        <platform>all</platform>
+    </extension>
+</addon>

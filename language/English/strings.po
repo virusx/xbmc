@@ -5076,7 +5076,9 @@ msgctxt "#14036"
 msgid "Services"
 msgstr ""
 
-#empty string with id 14037
+msgctxt "#14037"
+msgid "Library add-ons"
+msgstr ""
 
 msgctxt "#14038"
 msgid "Network settings changed"

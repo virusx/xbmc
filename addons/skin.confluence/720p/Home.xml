@@ -606,6 +606,14 @@
 						<thumb>-</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoWeatherButton) + !IsEmpty(Weather.Plugin)</visible>
 					</item>
+					<item id="12">
+					<label>Add-on: $INFO[system.addontitle(library.xbmc.pictures)]</label>
+						<onclick>ActivateWindow(library.xbmc.pictures)</onclick>
+						<icon>special://skin/backgrounds/pictures.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
+						<!--<visible>Library.HasContent(Pictures)</visible>-->
+						<visible>true</visible>
+					</item>
 					<item id="4">
 						<label>1</label>
 						<onclick>ActivateWindow(Pictures)</onclick>

@@ -320,15 +320,16 @@ int CBuiltins::Execute(const CStdString& execString)
     // get the parameters
     CStdString strWindow;
     if (params.size())
-    {
       strWindow = params[0];
-      params.erase(params.begin());
-    }
 
     // confirm the window destination is valid prior to switching
     int iWindow = CButtonTranslator::TranslateWindow(strWindow);
     if (iWindow != WINDOW_INVALID)
     {
+      // allow library addon windows to remember their addon
+      if (iWindow != WINDOW_LIBRARY_ADDON)
+        params.erase(params.begin());
+
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
 #if defined(TARGET_DARWIN_IOS)

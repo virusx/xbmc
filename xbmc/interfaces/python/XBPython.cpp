@@ -65,6 +65,8 @@ extern "C" {
   void InitVFSModule(void);
   void InitVFSTypes(void);
   void DeinitVFSModule(void);
+  void InitLibraryModule(void);
+  void DeinitLibraryModule(void);
 }
 
 XBPython::XBPython()
@@ -471,6 +473,7 @@ void XBPython::InitializeInterpreter(ADDON::AddonPtr addon)
   InitGUIModule(); // init xbmcgui modules
   InitAddonModule(); // init xbmcaddon modules
   InitVFSModule(); // init xbmcvfs modules
+  InitLibraryModule(); // init xbmclibrary modules
 
   CStdString addonVer = ADDON::GetXbmcApiVersionDependency(addon);
   bool bwcompatMode = (addon.get() == NULL || (ADDON::AddonVersion(addonVer) <= ADDON::AddonVersion("1.0")));
@@ -490,6 +493,7 @@ void XBPython::DeInitializeInterpreter()
   DeinitGUIModule();
   DeinitAddonModule();
   DeinitVFSModule();
+  DeinitLibraryModule();
 }
 
 /**

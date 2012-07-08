@@ -34,6 +34,8 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "addons/AddonManager.h"
 #include "addons/Repository.h"
+#include "addons/Library.h"
+#include "addons/LibraryAddonDatabase.h"
 #include "guilib/GUIWindowManager.h"      // for callback
 #include "GUIUserMessages.h"              // for callback
 #include "utils/StringUtils.h"
@@ -588,6 +590,14 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
     VECADDONS addons;
     addons.push_back(m_addon);
     CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(addons), &CAddonInstaller::Get());
+  }
+
+  if (m_addon->Type() == ADDON_LIBRARY)
+  {
+    // Give the library a chance to update itself. This is done automatically
+    // when the database is opened with a newer version.
+    LibraryPtr library = boost::dynamic_pointer_cast<CLibrary>(m_addon);
+    { CLibraryAddonDatabase db(library); db.Open(); }
   }
 }
 

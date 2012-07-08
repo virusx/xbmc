@@ -84,7 +84,8 @@ static const TypeMapping types[] =
    {"xbmc.addon.audio",                  ADDON_AUDIO,                1038, "DefaultAddonMusic.png" },
    {"xbmc.addon.image",                  ADDON_IMAGE,                1039, "DefaultAddonPicture.png" },
    {"xbmc.addon.executable",             ADDON_EXECUTABLE,           1043, "DefaultAddonProgram.png" },
-   {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" }};
+   {"xbmc.service",                      ADDON_SERVICE,             24018, "DefaultAddonService.png" },
+   {"xbmc.library",                      ADDON_LIBRARY,             24019, "DefaultAddonLibrary.png" }};
 
 const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
@@ -296,6 +297,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     case ADDON_SCRIPT_SUBTITLES:
     case ADDON_PLUGIN:
     case ADDON_SERVICE:
+    case ADDON_LIBRARY:
       ext = ADDON_PYTHON_EXT;
       break;
     default:
@@ -326,6 +328,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SCRAPER_LIBRARY:
       case ADDON_PLUGIN:
       case ADDON_SERVICE:
+      case ADDON_LIBRARY:
         {
           CStdString temp = CAddonMgr::Get().GetExtValue(extension->configuration, "@library");
           m_strLibName = temp;

@@ -964,6 +964,18 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
   }
 
+  pDatabase = pRootElement->FirstChildElement("libraryaddondatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseLibraryAddons.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseLibraryAddons.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseLibraryAddons.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseLibraryAddons.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseLibraryAddons.pass);
+    // Addons define their own db name, so let the user choose a prefix
+    XMLUtils::GetString(pDatabase, "prefix", m_databaseLibraryAddons.name);
+  }
+
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");
   if (pElement)
   {

@@ -45,6 +45,7 @@
 #include "Repository.h"
 #include "Skin.h"
 #include "Service.h"
+#include "Library.h"
 
 using namespace std;
 
@@ -144,6 +145,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CAddonLibrary(props));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(props));
+    case ADDON_LIBRARY:
+      return AddonPtr(new CLibrary(props));
     default:
       break;
   }
@@ -495,6 +498,7 @@ void CAddonMgr::FindAddons()
 
 void CAddonMgr::RemoveAddon(const CStdString& ID)
 {
+  // LIBRARY_TODO - handle library downgranding/uninstalling here
   if (m_cpluff && m_cp_context)
     m_cpluff->uninstall_plugin(m_cp_context,ID.c_str());
 }
@@ -555,6 +559,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CAddonLibrary(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
+    case ADDON_LIBRARY:
+      return AddonPtr(new CLibrary(addonProps));
     default:
       break;
   }

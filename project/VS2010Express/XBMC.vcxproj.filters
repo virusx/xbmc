@@ -2586,6 +2586,18 @@
     <ClCompile Include="..\..\xbmc\utils\DatabaseUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\Library.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\LibraryAddonDatabase.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\xbmclibrarymodule.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonLibrary.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5215,6 +5227,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\ISortable.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\LibraryAddonDatabase.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\Library.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\PythonLibrary.h">
+      <Filter>interfaces\python\xbmcmodule</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
