@@ -3654,7 +3654,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
       movieList[selectedFile - 1]->m_lStartOffset = startoffset > 0 ? STARTOFFSET_RESUME : 0;
       movieList[selectedFile - 1]->SetProperty("stackFileItemToUpdate", true);
       *m_stackFileItemToUpdate = item;
-      return PlayFile(*(movieList[selectedFile - 1]));
+      return PlayFile(*(movieList[selectedFile - 1]), false);
     }
   }
   // case 2: all other stacks
@@ -4940,7 +4940,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
 #endif
         if (item.IsAudio() || item.IsVideo())
         { // an audio or video file
-          PlayFile(item);
+          PlayFile(item, false);
         }
         else
           return false;

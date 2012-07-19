@@ -437,7 +437,7 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem)
       CFileItemPtr pItem=m_vecItems->Get(iItem);
       g_playlistPlayer.Reset();
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_NONE);
-      g_application.PlayFile(*pItem);
+      g_application.PlayFile(*pItem, false);
     }
   }
 

@@ -620,7 +620,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
   }
   if (pItem->IsAudio() || pItem->IsVideo())
   {
-    g_application.PlayFile(*pItem);
+    g_application.PlayFile(*pItem, false);
     return ;
   }
 #ifdef HAS_PYTHON
