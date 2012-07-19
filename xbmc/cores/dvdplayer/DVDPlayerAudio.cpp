@@ -689,7 +689,7 @@ void CDVDPlayerAudio::SetSyncType(bool passthrough)
     m_prevsynctype = m_synctype;
   }
 
-  CDVDClock::SetMasterClock(false);
+  CDVDClock::UnsetMasterClock();
 }
 
 void CDVDPlayerAudio::HandleSyncError(double duration)
