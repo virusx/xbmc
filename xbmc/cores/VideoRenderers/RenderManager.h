@@ -32,6 +32,7 @@
 #include "OverlayRenderer.h"
 
 class CRenderCapture;
+class CDVDClock;
 
 namespace DXVA { class CProcessor; }
 namespace VAAPI { class CSurfaceHolder; }
@@ -72,7 +73,8 @@ public:
   int AddVideoPicture(DVDVideoPicture& picture);
 
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
-  unsigned int PreInit();
+  // Store a reference to DVDPlayer's master clock for WaitPresentTime() calculations
+  unsigned int PreInit(CDVDClock* pClock);
   void UnInit();
   bool Flush();
 
@@ -190,6 +192,8 @@ protected:
   //set to true when adding something to m_captures, set to false when m_captures is made empty
   //std::list::empty() isn't thread safe, using an extra bool will save a lock per render when no captures are requested
   bool                       m_hasCaptures; 
+
+  CDVDClock* m_playerClock;
 };
 
 extern CXBMCRenderManager g_renderManager;

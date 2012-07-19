@@ -65,8 +65,8 @@ public:
   //when m_ismasterclock is true, CDVDPlayerAudio synchronizes the clock to the audio stream
   //when it's false, CDVDPlayerAudio synchronizes the audio stream to the clock
   //the rendermanager needs to know about that because it can synchronize the videoreferenceclock to the video timestamps
-  static void UnsetMasterClock() { m_ismasterclock = false; }
-  static bool IsMasterClock()    { return m_ismasterclock;  }
+  void UnsetMasterClock()    { m_ismasterclock = false; }
+  bool IsMasterClock() const { return m_ismasterclock;  }
 
 protected:
   static void   CheckSystemClock();
@@ -87,5 +87,5 @@ protected:
   double           m_maxspeedadjust;
   bool             m_speedadjust;
   CCriticalSection m_speedsection;
-  static bool      m_ismasterclock;
+  bool             m_ismasterclock;
 };

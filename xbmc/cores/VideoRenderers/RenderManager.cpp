@@ -29,6 +29,7 @@
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "DVDClock.h"
 
 #include "Application.h"
 #include "settings/Settings.h"
@@ -157,7 +158,7 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
     return;
   }
 
-  bool ismaster = CDVDClock::IsMasterClock();
+  bool ismaster = m_playerClock->IsMasterClock();
 
   //the videoreferenceclock updates its clock on every vertical blank
   //we want every frame's presenttime to end up in the middle of two vblanks
@@ -312,10 +313,11 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   m_presentevent.Set();
 }
 
-unsigned int CXBMCRenderManager::PreInit()
+unsigned int CXBMCRenderManager::PreInit(CDVDClock* pClock)
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
+  m_playerClock = pClock;
   m_presentcorr = 0.0;
   m_presenterr  = 0.0;
   m_errorindex  = 0;

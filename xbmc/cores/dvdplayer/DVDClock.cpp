@@ -30,8 +30,6 @@ int64_t CDVDClock::m_systemOffset;
 int64_t CDVDClock::m_systemFrequency;
 CCriticalSection CDVDClock::m_systemsection;
 
-bool CDVDClock::m_ismasterclock;
-
 CDVDClock::CDVDClock()
 {
   CSingleLock lock(m_systemsection);
