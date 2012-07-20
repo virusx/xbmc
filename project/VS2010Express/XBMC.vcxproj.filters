@@ -2587,6 +2587,9 @@
     <ClCompile Include="..\..\xbmc\utils\EndianSwap.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAuxiliaryVideo.cpp">
+      <Filter>cores\dvdplayer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5214,6 +5217,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\VideoDatabaseDirectory\DirectoryNodeTags.h">
       <Filter>filesystem\VideoDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDPlayerAuxiliaryVideo.h">
+      <Filter>cores\dvdplayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

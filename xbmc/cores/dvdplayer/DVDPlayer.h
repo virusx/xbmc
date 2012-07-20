@@ -30,6 +30,7 @@
 #include "DVDClock.h"
 #include "DVDPlayerAudio.h"
 #include "DVDPlayerVideo.h"
+#include "DVDPlayerAuxiliaryVideo.h"
 #include "DVDPlayerSubtitle.h"
 #include "DVDPlayerTeletext.h"
 
@@ -267,14 +268,17 @@ protected:
 
   bool OpenAudioStream(int iStream, int source);
   bool OpenVideoStream(int iStream, int source);
+  bool OpenAuxiliaryVideoStream(int i /* index */, int iStream, int source);
   bool OpenSubtitleStream(int iStream, int source);
   bool OpenTeletextStream(int iStream, int source);
   bool CloseAudioStream(bool bWaitForBuffers);
   bool CloseVideoStream(bool bWaitForBuffers);
+  bool CloseAuxiliaryVideoStream(int i /* index */, bool bWaitForBuffers);
   bool CloseSubtitleStream(bool bKeepOverlays);
   bool CloseTeletextStream(bool bWaitForBuffers);
 
   void ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket);
+  void ProcessAuxiliaryPacket(int i /* index */, CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
@@ -313,11 +317,16 @@ protected:
   void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
+  bool ReadAuxiliaryPacket(int i /* index */, DemuxPacket*& packet, CDemuxStream*& stream);
   bool IsValidStream(CCurrentStream& stream);
   bool IsBetterStream(CCurrentStream& current, CDemuxStream* stream);
 
   bool OpenInputStream();
+  bool OpenAuxiliaryInputStreams();
+  bool OpenAuxiliaryInputStream(int i /* index */);
   bool OpenDemuxStream();
+  bool OpenAuxiliaryDemuxStreams();
+  bool OpenAuxiliaryDemuxStream(int i /* index */);
   void OpenDefaultStreams();
 
   void UpdateApplication(double timeout);
@@ -334,10 +343,12 @@ protected:
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;
+  std::vector<CCurrentStream> m_CurrentAuxVideo;
   CCurrentStream m_CurrentSubtitle;
   CCurrentStream m_CurrentTeletext;
 
   CSelectionStreams m_SelectionStreams;
+  std::vector<CSelectionStreams> m_AuxSelectionStreams;
 
   int m_playSpeed;
   struct SSpeedState
@@ -352,6 +363,7 @@ protected:
   CDVDMessageQueue m_messenger;     // thread messenger
 
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
+  std::vector<CDVDPlayerAuxiliaryVideo> m_dvdPlayerVideoAux; // auxiliary video parts
   CDVDPlayerAudio m_dvdPlayerAudio; // audio part
   CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
   CDVDTeletextData m_dvdPlayerTeletext; // teletext part
@@ -359,9 +371,11 @@ protected:
   CDVDClock m_clock;                // master clock
   CDVDOverlayContainer m_overlayContainer;
 
-  CDVDInputStream* m_pInputStream;  // input stream for current playing file
-  CDVDDemux* m_pDemuxer;            // demuxer for current playing file
-  CDVDDemux* m_pSubtitleDemuxer;
+  CDVDInputStream*              m_pInputStream;     // input stream for current playing file
+  std::vector<CDVDInputStream*> m_pAuxInputStreams; // auxiliary input streams (from player options)
+  CDVDDemux*                    m_pDemuxer;         // demuxer for current playing file
+  std::vector<CDVDDemux*>       m_pAuxDemuxers;
+  CDVDDemux*                    m_pSubtitleDemuxer;
 
   CStdString m_lastSub;
   
@@ -458,4 +472,5 @@ protected:
   } m_EdlAutoSkipMarkers;
 
   CPlayerOptions m_PlayerOptions;
+  int m_iAuxStreamCount;
 };
