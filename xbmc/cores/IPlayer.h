@@ -24,6 +24,8 @@
 #include "system.h" // until we get sane int types used here
 #include "IAudioCallback.h"
 #include "utils/StdString.h"
+#include "FileItem.h"
+#include <vector>
 
 struct TextCacheStruct_t;
 class TiXmlElement;
@@ -62,6 +64,7 @@ public:
   CStdString state;  /* potential playerstate to restore to */
   bool    fullscreen; /* player is allowed to switch to fullscreen */
   bool    video_only; /* player is not allowed to play audio streams, video streams only */
+  std::vector<CFileItem> auxiliaryVideoStreams;
 };
 
 class CFileItem;

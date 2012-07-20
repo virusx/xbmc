@@ -3746,7 +3746,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   return false;
 }
 
-bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
+bool CApplication::PlayFile(const CFileItem& item, bool bRestart, std::vector<CFileItem> *auxiliaryVideoStreams /* = NULL */)
 {
   if (!bRestart)
   {
@@ -3833,7 +3833,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   CPlayerOptions options;
-  
+  if (auxiliaryVideoStreams)
+  {
+    options.auxiliaryVideoStreams = *auxiliaryVideoStreams;
+    CLog::Log(LOGDEBUG, "Passing %d auxiliary video streams to OpenFile()", options.auxiliaryVideoStreams.size());
+  }
+
   if( item.HasProperty("StartPercent") )
   {
     double fallback = 0.0f;
