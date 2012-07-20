@@ -206,6 +206,7 @@ const BUILT_IN commands[] = {
   { "LCD.Resume",                 false,  "Resumes LCDproc" },
 #endif
   { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
+  { "Doubletake",                 true,   "Start playing two videos simultaneously" },
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -1552,6 +1553,58 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     CGUIMessage msg(GUI_MSG_SEARCH, 0, 0, 0);
     g_windowManager.SendMessage(msg, WINDOW_VIDEO_NAV);
+  }
+  else if (execute.Equals("doubletake") && params.size() >= 2)
+  {
+    CLog::Log(LOGDEBUG, "XBMC.DoubleTake called with at least 2 parameters");
+
+    std::vector<CFileItem> extraItems;
+
+    for (int i = 0; i < params.size(); ++i)
+    {
+      CFileItem item(params[i], false);
+
+      if (item.IsPlugin())
+        CLog::Log(LOGERROR, "XBMC.DoubleTake not supported for plugins");
+      else if (item.IsLastFM())
+        CLog::Log(LOGERROR, "XBMC.DoubleTake not supported for last.fm");
+      else if (item.IsSmartPlayList())
+        CLog::Log(LOGERROR, "XBMC.DoubleTake not supported for smart playlists");
+      else if (item.IsPlayList())
+        CLog::Log(LOGERROR, "XBMC.DoubleTake not supported for playlists");
+      else if (item.IsInternetStream())
+        CLog::Log(LOGERROR, "XBMC.DoubleTake not supported for internet streams");
+      else if (item.IsAudio())
+        CLog::Log(LOGERROR, "XBMC.DoubleTake not supported for audio");
+      else
+      {
+        // Skip the first item (gets passed to PlayFile() as the main parameter)
+        if (i >= 1)
+          extraItems.push_back(item);
+        continue;
+      }
+      return -3; // This might mean "empty parameters"
+    }
+
+    // restore to previous window if needed
+    if( g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
+        g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+        g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION )
+        g_windowManager.PreviousWindow();
+
+    // reset screensaver
+    g_application.ResetScreenSaver();
+    g_application.WakeUpScreenSaverAndDPMS();
+
+    g_playlistPlayer.ClearPlaylist(PLAYLIST_VIDEO);
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
+
+    // play media
+    if (!g_application.PlayFile(CFileItem(params[0], false), false, &extraItems))
+    {
+      CLog::Log(LOGERROR, "XBMC.DoubleTake could not play media: [%s, %s, ...]", params[0].c_str(), params[1].c_str());
+      return -1;
+    }
   }
   else
     return -1;
