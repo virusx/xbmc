@@ -55,6 +55,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "music/MusicDatabase.h"
+#include "pictures/PictureDatabase.h"
 
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -216,6 +217,7 @@ const BUILT_IN commands[] = {
   { "ToggleDebug",                false,  "Enables/disables debug mode" },
   { "StartPVRManager",            false,  "(Re)Starts the PVR manager" },
   { "StopPVRManager",             false,  "Stops the PVR manager" },
+  { "DynDB",                      false,  "Test the dynamic database" },
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -1627,6 +1629,58 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("stoppvrmanager"))
   {
     g_application.StopPVRManager();
+  }
+  else if (execute.Equals("DynDB"))
+  {
+    CLog::Log(LOGDEBUG, "DynDB: Testing");
+    CPictureDatabase db;
+    db.Open();
+    
+    unsigned int start, duration;
+    unsigned int average, COUNT = 5;
+    
+    
+    average = 0;
+    for (unsigned int i = 0; i < COUNT; i++)
+    {
+      start = XbmcThreads::SystemClockMillis();
+      CFileItemList items;
+      db.GetObjectsNav(items, map<string, long>(), 3);
+      duration = XbmcThreads::SystemClockMillis() - start;
+      CLog::Log(LOGDEBUG, "DYNDB: Ignoring tags took %d ms", duration);
+      average += duration;
+    }
+    average /= COUNT;
+    CLog::Log(LOGDEBUG, "DYNDB: Ignoring tags average: %d ms", average);
+    
+    average = 0;
+    for (unsigned int i = 0; i < COUNT; i++)
+    {
+      start = XbmcThreads::SystemClockMillis();
+      CFileItemList items;
+      db.GetObjectsNav(items, map<string, long>(), 1);
+      duration = XbmcThreads::SystemClockMillis() - start;
+      CLog::Log(LOGDEBUG, "DYNDB: JSON parsing took %d ms", duration);
+      average += duration;
+    }
+    average /= COUNT;
+    CLog::Log(LOGDEBUG, "DYNDB: JSON parsing average: %d ms", average);
+    
+    average = 0;
+    for (unsigned int i = 0; i < COUNT; i++)
+    {
+      start = XbmcThreads::SystemClockMillis();
+      CFileItemList items;
+      db.GetObjectsNav(items, map<string, long>(), 2);
+      duration = XbmcThreads::SystemClockMillis() - start;
+      CLog::Log(LOGDEBUG, "DYNDB: BSON parsing took %d ms", duration);
+      average += duration;
+    }
+    average /= COUNT;
+    CLog::Log(LOGDEBUG, "DYNDB: BSON parsing average: %d ms", average);
+    
+
+    CLog::Log(LOGDEBUG, "DynDB: Done testing");
   }
   else
     return -1;
