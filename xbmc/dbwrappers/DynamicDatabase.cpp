@@ -1137,12 +1137,13 @@ bool CDynamicDatabase::GetObjectsNav(CFileItemList &items, map<string, long> pre
       }
       m_pDS->close();
     }
+    return true;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s - Unable to enumerate objects. SQL: %s", __FUNCTION__, strSQL.c_str());
   }
-  return true;
+  return false;
 }
 
 // Includes parents (one-to-many) and many-to-many tables
