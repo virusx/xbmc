@@ -1070,7 +1070,7 @@ bool CDynamicDatabase::GetObjectByIndex(const string &column, const CVariant &va
   return false;
 }
 
-bool CDynamicDatabase::GetObjectsNav(CFileItemList &items, map<string, long> predicates)
+bool CDynamicDatabase::GetObjectsNav(CFileItemList &items, map<string, long> predicates, int createFn)
 {
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
@@ -1121,7 +1121,33 @@ bool CDynamicDatabase::GetObjectsNav(CFileItemList &items, map<string, long> pre
     }
 
     // Build the query
-    strSQL = PrepareSQL("SELECT %s.id%s, strContent FROM %s ", m_table, m_table, m_table);
+    if (createFn == 1)
+      strSQL = PrepareSQL("SELECT %s.id%s, strContent FROM %s ", m_table, m_table, m_table);
+    else if (createFn == 2)
+      strSQL = "SELECT picture.idpicture, file, path FROM picture LEFT JOIN path ON picture.idpath=path.idpath ";
+    else if (createFn == 3)
+      strSQL = "SELECT picture.idpicture FROM picture ";
+    else if (createFn == 4 || createFn == 5)
+    {
+      strSQL = "SELECT picture.idpicture";
+      CStdString strJoins = "";
+
+      for (vector<Item>::const_iterator it = m_indices.begin(); it != m_indices.end(); it++)
+        strSQL += ", " + it->name;
+      
+      for (vector<Item>::const_iterator it = m_singleLinks.begin(); it != m_singleLinks.end(); it++)
+      {
+        strSQL += ", " + it->name;
+        strJoins += PrepareSQL("LEFT JOIN %s ON picture.id%s=%s.id%s ",
+          it->name.c_str(), it->name.c_str(), it->name.c_str(), it->name.c_str());
+      }
+      
+      if (createFn == 5)
+        for (vector<Item>::const_iterator it = m_multiLinks.begin(); it != m_multiLinks.end(); it++)
+          strSQL += ", id" + it->name;
+
+      strSQL += " FROM picture " + strJoins;
+    }
     for (vector<CStdString>::const_iterator it = joins.begin(); it != joins.end(); it++)
       strSQL += *it;
     for (vector<CStdString>::const_iterator it = wheres.begin(); it != wheres.end(); it++)
@@ -1131,8 +1157,17 @@ bool CDynamicDatabase::GetObjectsNav(CFileItemList &items, map<string, long> pre
     {
       while (!m_pDS->eof())
       {
+        CFileItemPtr pItem;
+        if (createFn == 1)
+          pItem = CFileItemPtr(CreateFileItem(m_pDS->fv(1).get_asString(), m_pDS->fv(0).get_asInt()));
+        else if (createFn == 2)
+          pItem = CFileItemPtr(CreateFileItem2(m_pDS->fv(1).get_asString(), m_pDS->fv(2).get_asString(), m_pDS->fv(0).get_asInt()));
+        else if (createFn == 3)
+          pItem = CFileItemPtr(CreateFileItem3("file", "path", m_pDS->fv(0).get_asInt()));
+        else if (createFn == 4)
+          pItem = CFileItemPtr(CreateFileItem4(m_pDS));
         // Use the CreateFileItem() callback provided by the subclass to instantiate the object
-        items.Add(CFileItemPtr(CreateFileItem(m_pDS->fv(1).get_asString(), m_pDS->fv(0).get_asInt())));
+        items.Add(pItem);
         m_pDS->next();
       }
       m_pDS->close();

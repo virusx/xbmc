@@ -40,12 +40,72 @@ using namespace std;
 CPictureDatabase::CPictureDatabase() : CDynamicDatabase("picture")
 {
   BeginDeclarations();
-  DeclareIndex("file", "VARCHAR(128)");
+  DeclareIndex("file", "VARCHAR(256)");
   DeclareOneToMany("path", "VARCHAR(512)");
   DeclareOneToMany("folder", "VARCHAR(64)");
   DeclareOneToMany("year", "INTEGER");
   DeclareOneToMany("camera", "VARCHAR(72)"); // EXIF model is 32 bytes, make is 40
+
+  // Version 2
   DeclareManyToMany("tag", "VARCHAR(64)");
+
+  // Version 3
+  DeclareIndex("aperturefnumber", "FLOAT");
+  DeclareIndex("author", "VARCHAR(256)"); // MAX_IPTC_STRING
+  DeclareIndex("byline", "VARCHAR(256)");
+  DeclareIndex("bylinetitle", "VARCHAR(256)");
+  DeclareIndex("cameramake", "VARCHAR(256)");
+  DeclareIndex("cameramodel", "VARCHAR(256)");
+  DeclareIndex("caption", "VARCHAR(256)");
+  DeclareIndex("category", "VARCHAR(256)");
+  DeclareIndex("ccdwidth", "FLOAT");
+  DeclareOneToMany("city", "VARCHAR(256)");
+  DeclareIndex("comments", "VARCHAR(256)");
+  DeclareIndex("copyright", "VARCHAR(256)");
+  DeclareIndex("copyrightnotice", "VARCHAR(256)");
+  DeclareOneToMany("country", "VARCHAR(256)");
+  DeclareIndex("countrycode", "VARCHAR(256)");
+  DeclareIndex("credit", "VARCHAR(256)");
+  DeclareIndex("date", "VARCHAR(256)");
+  DeclareIndex("datetime", "VARCHAR(19)");
+  DeclareIndex("datetimeoffsets", "VARCHAR(256)");
+  DeclareIndex("description", "VARCHAR(256)");
+  DeclareIndex("digitalzoomratio", "FLOAT");
+  DeclareIndex("distance", "FLOAT");
+  DeclareIndex("exposurebias", "FLOAT");
+  DeclareIndex("exposuremode", "INTEGER");
+  DeclareIndex("exposureprogram", "INTEGER");
+  DeclareIndex("exposuretime", "FLOAT");
+  DeclareIndex("flashused", "INTEGER");
+  DeclareIndex("focallength", "FLOAT");
+  DeclareIndex("focallength35mmequiv", "INTEGER");
+  // Ignore GPS info tags for now
+  DeclareIndex("gpsinfopresent", "INTEGER");
+  DeclareIndex("headline", "VARCHAR(256)");
+  DeclareIndex("height", "INTEGER");
+  DeclareIndex("iscolor", "INTEGER");
+  DeclareIndex("isoequivalent", "INTEGER");
+  DeclareIndex("keywords", "VARCHAR(256)");
+  DeclareIndex("largestexifoffset", "INTEGER");
+  DeclareIndex("lightsource", "INTEGER");
+  DeclareIndex("meteringmode", "INTEGER");
+  DeclareIndex("numdatetimetags", "INTEGER");
+  DeclareIndex("objectname", "VARCHAR(256)");
+  DeclareIndex("orientation", "INTEGER");
+  DeclareIndex("process", "INTEGER");
+  DeclareIndex("referenceservice", "VARCHAR(256)");
+  DeclareIndex("size", "INTEGER");
+  DeclareIndex("source", "VARCHAR(256)");
+  DeclareIndex("specialinstructions", "VARCHAR(256)");
+  DeclareIndex("state", "VARCHAR(256)");
+  DeclareIndex("supplementalcategories", "VARCHAR(256)");
+  DeclareIndex("thumbnailatend", "INTEGER");
+  DeclareIndex("thumbnailoffset", "INTEGER");
+  DeclareIndex("thumbnailsize", "INTEGER");
+  DeclareIndex("thumbnailsizeoffset", "INTEGER");
+  DeclareIndex("transmissionreference", "VARCHAR(256)");
+  DeclareIndex("whitebalance", "INTEGER");
+  DeclareIndex("width", "INTEGER");
 }
 
 bool CPictureDatabase::Open()
@@ -102,6 +162,79 @@ bool CPictureDatabase::UpdateOldVersion(int version)
 
     AddManyToMany("tag", "VARCHAR(64)");
   }
+  if (version < 3)
+  {
+    BeginDeclarations();
+    DeclareIndex("file", "VARCHAR(128)");
+    DeclareOneToMany("path", "VARCHAR(512)");
+    DeclareOneToMany("folder", "VARCHAR(64)");
+    DeclareOneToMany("year", "INTEGER");
+    DeclareOneToMany("camera", "VARCHAR(72)"); // EXIF model is 32 bytes, make is 40
+    DeclareManyToMany("tag", "VARCHAR(64)");
+
+    CLog::Log(LOGDEBUG, "DynDB: Expanding tables...");
+    unsigned int start = XbmcThreads::SystemClockMillis();
+
+    AddIndex("aperturefnumber", "FLOAT");
+    AddIndex("author", "VARCHAR(256)"); // MAX_IPTC_STRING
+    AddIndex("byline", "VARCHAR(256)");
+    AddIndex("bylinetitle", "VARCHAR(256)");
+    AddIndex("cameramake", "VARCHAR(256)");
+    AddIndex("cameramodel", "VARCHAR(256)");
+    AddIndex("caption", "VARCHAR(256)");
+    AddIndex("category", "VARCHAR(256)");
+    AddIndex("ccdwidth", "FLOAT");
+    AddOneToMany("city", "VARCHAR(256)");
+    AddIndex("comments", "VARCHAR(256)");
+    AddIndex("copyright", "VARCHAR(256)");
+    AddIndex("copyrightnotice", "VARCHAR(256)");
+    AddOneToMany("country", "VARCHAR(256)");
+    AddIndex("countrycode", "VARCHAR(256)");
+    AddIndex("credit", "VARCHAR(256)");
+    AddIndex("date", "VARCHAR(256)");
+    AddIndex("datetime", "VARCHAR(19)");
+    AddIndex("datetimeoffsets", "VARCHAR(256)");
+    AddIndex("description", "VARCHAR(256)");
+    AddIndex("digitalzoomratio", "FLOAT");
+    AddIndex("distance", "FLOAT");
+    AddIndex("exposurebias", "FLOAT");
+    AddIndex("exposuremode", "INTEGER");
+    AddIndex("exposureprogram", "INTEGER");
+    AddIndex("exposuretime", "FLOAT");
+    AddIndex("flashused", "INTEGER");
+    AddIndex("focallength", "FLOAT");
+    AddIndex("focallength35mmequiv", "INTEGER");
+    // Ignore GPS info tags for now
+    AddIndex("gpsinfopresent", "INTEGER");
+    AddIndex("headline", "VARCHAR(256)");
+    AddIndex("height", "INTEGER");
+    AddIndex("iscolor", "INTEGER");
+    AddIndex("isoequivalent", "INTEGER");
+    AddIndex("keywords", "VARCHAR(256)");
+    AddIndex("largestexifoffset", "INTEGER");
+    AddIndex("lightsource", "INTEGER");
+    AddIndex("meteringmode", "INTEGER");
+    AddIndex("numdatetimetags", "INTEGER");
+    AddIndex("objectname", "VARCHAR(256)");
+    AddIndex("orientation", "INTEGER");
+    AddIndex("process", "INTEGER");
+    AddIndex("referenceservice", "VARCHAR(256)");
+    AddIndex("size", "INTEGER");
+    AddIndex("source", "VARCHAR(256)");
+    AddIndex("specialinstructions", "VARCHAR(256)");
+    AddIndex("state", "VARCHAR(256)");
+    AddIndex("supplementalcategories", "VARCHAR(256)");
+    AddIndex("thumbnailatend", "INTEGER");
+    AddIndex("thumbnailoffset", "INTEGER");
+    AddIndex("thumbnailsize", "INTEGER");
+    AddIndex("thumbnailsizeoffset", "INTEGER");
+    AddIndex("transmissionreference", "VARCHAR(256)");
+    AddIndex("whitebalance", "INTEGER");
+    AddIndex("width", "INTEGER");
+
+    unsigned int duration = XbmcThreads::SystemClockMillis() - start;
+    CLog::Log(LOGDEBUG, "DynDB: Expanding tables took %d ms", duration);
+  }
 
   return true;
 }
@@ -150,6 +283,57 @@ CFileItem* CPictureDatabase::CreateFileItem(const string &json, int id) const
   CDateTime datetime;
   if (p.GetDateTime(datetime))
     item->m_dateTime = datetime;
+  item->m_bIsFolder = false;
+  return item;
+}
+
+CFileItem* CPictureDatabase::CreateFileItem2(const string &file, const string &path, int id) const
+{
+  CPictureInfoTag p;
+  p.Load(URIUtils::AddFileToFolder(path, file));
+  
+  if (!p.Loaded())
+  {
+    CLog::Log(LOGDEBUG, "DynDB: Failed to load pic info tag: %s", URIUtils::AddFileToFolder(path, file).c_str());
+    throw "";
+  }
+
+  CStdString title = p.GetFilename();
+  URIUtils::RemoveExtension(title);
+
+  CFileItem *item = new CFileItem(title);
+  item->SetPath(URIUtils::AddFileToFolder(path, file));
+  *item->GetPictureInfoTag() = p;
+  item->m_dwSize = p.GetFileSize();
+  CDateTime datetime;
+  if (p.GetDateTime(datetime))
+    item->m_dateTime = datetime;
+  item->m_bIsFolder = false;
+  return item;
+}
+
+CFileItem* CPictureDatabase::CreateFileItem3(const string &file, const string &path, int id) const
+{
+  CStdString title = file;
+  URIUtils::RemoveExtension(title);
+
+  CFileItem *item = new CFileItem(title);
+  item->SetPath(URIUtils::AddFileToFolder(path, file));
+  item->m_bIsFolder = false;
+  return item;
+}
+
+CFileItem* CPictureDatabase::CreateFileItem4(auto_ptr<dbiplus::Dataset> &pDS) const
+{
+  // Partially simulate accessing 66 of the info tag properties
+  for (int i = 0; i < 66; i++)
+    (void)pDS->fv("file").get_asString();
+
+  CStdString title = pDS->fv("file").get_asString();
+  URIUtils::RemoveExtension(title);
+
+  CFileItem *item = new CFileItem(title);
+  item->SetPath(URIUtils::AddFileToFolder(pDS->fv("path").get_asString(), pDS->fv("file").get_asString()));
   item->m_bIsFolder = false;
   return item;
 }

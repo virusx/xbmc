@@ -34,7 +34,7 @@ public:
   CPictureDatabase();
   virtual ~CPictureDatabase() { }
 
-  virtual int GetMinVersion() const { return 2; }
+  virtual int GetMinVersion() const { return 3; }
   virtual const char *GetBaseDBName() const { return "MyPhotos"; }
 
   virtual bool Open();
@@ -47,6 +47,10 @@ public:
   virtual bool IsValid(const CVariant &object) const;
 
   virtual CFileItem *CreateFileItem(const std::string &json, int id) const;
+  virtual CFileItem *CreateFileItem2(const std::string &file, const std::string &path, int id) const;
+  virtual CFileItem *CreateFileItem3(const std::string &file, const std::string &path, int id) const;
+  virtual CFileItem *CreateFileItem4(std::auto_ptr<dbiplus::Dataset> &pDS) const;
+
   bool HasPictures() { return Count() != 0; }
 
   bool GetPaths(std::set<std::string> &paths);

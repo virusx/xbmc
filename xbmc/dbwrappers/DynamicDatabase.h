@@ -91,8 +91,12 @@ public:
    * @param predicates A 1:N or N:N item -> ID map, e.g. "year" -> 5 becomes WHERE idyear=5
    * Only intersection (AND) is supported, no union (OR) or complement (NOT) yet
    */
-  bool GetObjectsNav(CFileItemList &items, std::map<std::string, long> predicates = std::map<std::string, long>());
+  bool GetObjectsNav(CFileItemList &items, std::map<std::string, long> predicates = std::map<std::string, long>(),
+    int createFn = 1);
   virtual CFileItem *CreateFileItem(const std::string &json, int id) const = 0; // Callback to instantiate data
+  virtual CFileItem *CreateFileItem2(const std::string &file, const std::string &path, int id) const { return NULL; }
+  virtual CFileItem *CreateFileItem3(const std::string &file, const std::string &path, int id) const { return NULL; }
+  virtual CFileItem *CreateFileItem4(std::auto_ptr<dbiplus::Dataset> &pDS) const { return NULL; }
 
   bool GetItemByID(const std::string &itemTable, int idItem, CVariant &value);
   bool GetItemID(const std::string &itemTable, const CVariant &value, int &idItem);

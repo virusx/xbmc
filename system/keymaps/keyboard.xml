@@ -37,6 +37,7 @@
 <keymap>
   <global>
     <keyboard>
+      <d>DynDB</d>
       <p>Play</p>
       <q>Queue</q>
       <f>FastForward</f>
