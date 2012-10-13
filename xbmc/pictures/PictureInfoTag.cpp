@@ -97,29 +97,30 @@ bool CPictureInfoTag::Load(const CStdString &path)
   m_databaseID = -1; // reset this
 
   if (exifDll.process_jpeg(path.c_str(), &m_exifInfo, &m_iptcInfo))
+  {
     m_isLoaded = true;
 
-  // Extract the year
-  CStdString datetime (m_exifInfo.DateTime);
-  if (datetime.length() >= 4)
-    m_year = atoi(datetime.substr(0, 4).c_str());
+    // Extract the year
+    CStdString datetime (m_exifInfo.DateTime);
+    if (datetime.length() >= 4)
+      m_year = atoi(datetime.substr(0, 4).c_str());
 
-  // Get the file size
-  CFile file;
-  file.Open(path);
-  m_size = file.GetLength();
-  file.Close();
+    // Get the file size
+    CFile file;
+    file.Open(path);
+    m_size = file.GetLength();
+    file.Close();
 
-  CStdString pathCopy(m_path);
-  URIUtils::RemoveSlashAtEnd(pathCopy);
-  m_folder = URIUtils::GetFileName(pathCopy);
+    CStdString pathCopy(m_path);
+    URIUtils::RemoveSlashAtEnd(pathCopy);
+    m_folder = URIUtils::GetFileName(pathCopy);
 
-  // Camera name
-  SetCamera(m_exifInfo.CameraMake, m_exifInfo.CameraModel);
+    // Camera name
+    SetCamera(m_exifInfo.CameraMake, m_exifInfo.CameraModel);
 
-  // Parse tags
-  SetTags(m_iptcInfo.Keywords);
-
+    // Parse tags
+    SetTags(m_iptcInfo.Keywords);
+  }
   return m_isLoaded;
 }
 
