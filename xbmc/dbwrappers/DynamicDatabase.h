@@ -39,7 +39,7 @@ class CFileItemList;
  * CDynamicDatabase: denormalized database with dynamic normalization
  *
  * Data is denormalized by providing a flat table to store an object ID and the
- * Bas64-encoded BSON serialization of an IDBInfoTag. This flat table can be
+ * Base64-encoded BSON serialization of an IDBInfoTag. This flat table can be
  * augmented by specifying relationships between the object's fields. These
  * relationships are specified in the subclass's constructor:
  *

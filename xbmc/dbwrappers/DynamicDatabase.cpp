@@ -966,7 +966,7 @@ int CDynamicDatabase::AddObject(const IDBInfoTag *obj, bool bUpdate /* = true */
         idObject = (int)m_pDS->lastinsertid();
 
       // Now that we have our object ID, we can update the link tables. Like
-      // above, this may lead orphaned sibblings, requiring a prune function.
+      // above, this may lead orphaned siblings, requiring a prune function.
       for (vector<Item>::const_iterator it = m_multiLinks.begin(); it != m_multiLinks.end(); it++)
       {
         bson_iterator objectIt, subIt;
@@ -1359,7 +1359,7 @@ bool CDynamicDatabase::GetItemNav(const char *column, CFileItemList &items, cons
       //                   WHERE idobject IN (SELECT idobject
       //                                      FROM objectlinkgenre
       //                                      WHERE idgenre=1)
-      //                   AND idObject IN   (SELECT idobject
+      //                   AND idobject IN   (SELECT idobject
       //                                      FROM object
       //                                      WHERE idyear=3 AND idset=4))
 
@@ -1499,16 +1499,13 @@ int CDynamicDatabase::Count(string column /* = "" */)
   {
     CStdString strSQL = PrepareSQL("SELECT COUNT(*) FROM %s", table.c_str());
 
-    if (m_pDS->query(strSQL.c_str()))
+    if (m_pDS->query(strSQL.c_str()) && m_pDS->num_rows() != 0)
     {
-      if (m_pDS->num_rows() != 0)
-      {
-        int count = m_pDS->fv(0).get_asInt();
-        m_pDS->close();
-        return count;
-      }
+      int count = m_pDS->fv(0).get_asInt();
       m_pDS->close();
+      return count;
     }
+    m_pDS->close();
   }
   catch (...)
   {
@@ -1533,7 +1530,7 @@ bool CDynamicDatabase::DeleteObject(int idObject, bool killOrphansMwahahaha /* =
       {
         string item = it->name;
         // Obtaining orphans: we want the complement of the valid items. The
-        // valid items are the items beloning to every other object.
+        // valid items are the items belonging to every other object.
         strSQL = PrepareSQL(
           "SELECT id%s "         // SELECT idItem
           "FROM %s "             // FROM objectLinkItem
