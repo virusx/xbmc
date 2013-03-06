@@ -1,3 +1,7 @@
+<!-- v2.0.20 -->
+<!-- This keymap is for both Windows and Linux optimized specifically for Frodo   -->
+<!-- Gathered from user input at http://forum.xbmc.org/showthread.php?tid=135871  -->
+
 <!-- This file contains the mappings for a Microsoft Xbox 360 Controller to actions within XBMC    -->
 <!-- The drivers for Linux and Windows do not always match. Mappings for Win32 will be presented   -->
 <!-- first, with Linux alts second.                                                                -->
@@ -112,11 +116,11 @@
       <axis id="2" limit="+1">AnalogSeekBack</axis>
       <axis id="3" limit="+1">ScrollUp</axis>
       <axis id="3" limit="-1">ScrollDown</axis>
-      <!-- Push up on the right stick for volueme up. Push down for volume down. -->
-      <axis id="5" limit="-1">VolumeUp</axis>
-      <axis id="5" limit="+1">VolumeDown</axis>
+      <!-- Push up on the right stick for volume up. Push down for volume down. -->
       <axis id="4" limit="-1">VolumeDown</axis>
       <axis id="4" limit="+1">VolumeUp</axis>
+      <axis id="5" limit="-1">VolumeUp</axis>
+      <axis id="5" limit="+1">VolumeDown</axis>
       <hat id="1" position="up">Up</hat>
       <hat id="1" position="down">Down</hat>
       <hat id="1" position="left">Left</hat>
@@ -287,19 +291,22 @@
       <button id="3">OSD</button>
       <!--
             Left shoulder changes aspect ratio.
-            Right shoulder changes subtitles.
-            Right stick changes Audio Language.
+            Right shoulder displays playlist.
+            Left stick changes Audio Language.
+            Right stick changes Subtitles.
             Start button displays info.
             -->
       <button id="5">AspectRatio</button>
-      <button id="6">ShowSubtitles</button>
+      <button id="6">Playlist</button>
       <button id="7">SmallStepBack</button>
       <button id="8">Info</button>
-      <button id="10">AudioNextLanguage</button>
+      <button id="9">AudioNextLanguage</button>
+      <button id="10">ShowSubtitles</button>
       <button id="11">BigStepForward</button>
       <button id="12">BigStepBack</button>
       <button id="13">StepBack</button>
       <button id="14">StepForward</button>
+      <button id="15">SmallStepBack</button>
       <!-- D-pad does what you'd expect. Triggers fast forward and rewind. Left stick scans forward and back. -->
       <axis id="3" limit="+1">AnalogRewind</axis>
       <axis id="3" limit="-1">AnalogFastForward</axis>
@@ -321,12 +328,12 @@
       <button id="2">Stop</button>
       <button id="3">OSD</button>
       <button id="5">AspectRatio</button>
-      <button id="6">ShowSubtitles</button>
+      <button id="6">Playlist</button>
       <button id="7">SmallStepBack</button>
       <button id="8">Info</button>
       <button id="9">XBMC.ActivateWindow(Home)</button>  <!-- guide -->
-      <button id="10">XBMC.ActivateWindow(ShutdownMenu)</button>  <!-- left stick -->
-      <button id="11">AudioNextLanguage</button>  <!-- right stick -->
+      <button id="10">AudioNextLanguage</button>  <!-- left stick -->
+      <button id="11">ShowSubtitles</button>  <!-- right stick -->
       <button id="12">StepBack</button>
       <button id="13">StepForward</button>
       <button id="14">BigStepForward</button>
@@ -479,16 +486,19 @@
       <button id="2">Stop</button>
       <button id="3">XBMC.ActivateWindow(MusicOSD)</button>
       <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
-      <button id="6">Info</button>
-      <button id="10">XBMC.ActivateWindow(MusicOSD)</button>
-      <button id="11">SkipNext</button>
-      <button id="12">SkipPrevious</button>
+      <button id="7">ShowPreset</button>
+      <button id="8">Info</button>
+      <button id="9">LockPreset</button>
+      <button id="10">RandomPreset</button>
+      <button id="11">SkipPrevious</button>
+      <button id="12">SkipNext</button>
       <button id="13">PreviousPreset</button>
       <button id="14">NextPreset</button>
+      <button id="15">ShowPreset</button>
       <axis id="3" limit="+1">AnalogRewind</axis>
       <axis id="3" limit="-1">AnalogFastForward</axis>
-      <hat id="1" position="up">SkipNext</hat>
-      <hat id="1" position="down">SkipPrevious</hat>
+      <hat id="1" position="up">SkipPrevious</hat>
+      <hat id="1" position="down">SkipNext</hat>
       <hat id="1" position="left">PreviousPreset</hat>
       <hat id="1" position="right">NextPreset</hat>
     </joystick>
@@ -505,16 +515,18 @@
       <button id="2">Stop</button>
       <button id="3">XBMC.ActivateWindow(MusicOSD)</button>
       <button id="5">XBMC.ActivateWindow(VisualisationPresetList)</button>
-      <button id="6">Info</button>
-      <button id="11">XBMC.ActivateWindow(MusicOSD)</button>
+      <button id="7">ShowPreset</button>
+      <button id="8">Info</button>
+      <button id="10">LockPreset</button>
+      <button id="11">RandomPreset</button>
       <button id="12">PreviousPreset</button>
       <button id="13">NextPreset</button>
-      <button id="14">SkipPrevious</button>
-      <button id="15">SkipNext</button>
+      <button id="14">SkipNext</button>
+      <button id="15">SkipPrevious</button>
       <axis id="6" limit="-1">AnalogRewind</axis>
       <axis id="6" limit="+1">AnalogFastForward</axis>
-      <hat id="1" position="up">SkipNext</hat>
-      <hat id="1" position="down">SkipPrevious</hat>
+      <hat id="1" position="up">SkipPrevious</hat>
+      <hat id="1" position="down">SkipNext</hat>
       <hat id="1" position="left">PreviousPreset</hat>
       <hat id="1" position="right">NextPreset</hat>
     </joystick>
@@ -537,7 +549,9 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
       <button id="3">Close</button>
-      <button id="6">Info</button>
+      <button id="8">Close</button>
+      <axis id="3" limit="+1">Left</axis>
+      <axis id="3" limit="-1">Right</axis>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -549,9 +563,54 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <button id="3">Close</button>
-      <button id="6">Info</button>
+      <button id="8">Close</button>
+      <axis id="6" limit="+1">Left</axis>
+      <axis id="6" limit="-1">Right</axis>
     </joystick>
   </MusicOSD>
+  <PictureInfo>
+    <joystick name="Controller (XBOX 360 For Windows)">
+      <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
+      <altname>Controller (Gamepad F310)</altname>
+      <altname>Controller (Gamepad for Xbox 360)</altname>
+      <altname>Controller (Rumble Gamepad F510)</altname>
+      <altname>Controller (Wireless Gamepad F710)</altname>
+      <altname>Controller (Xbox 360 Wireless Receiver for Windows)</altname>
+      <altname>Controller (Xbox wireless receiver for windows)</altname>
+      <altname>Controller (XBOX360 GAMEPAD)</altname>
+      <altname>Wireless Gamepad F710 (Controller)</altname>
+      <altname>XBOX 360 For Windows</altname>
+      <altname>XBOX 360 For Windows (Controller)</altname>
+      <altname>Xbox 360 Wireless Controller</altname>
+      <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
+      <altname>Xbox wireless receiver for windows (Controller)</altname>
+      <altname>Gamepad F310 (Controller)</altname>
+      <button id="2">Close</button>
+      <button id="3">Close</button>
+      <button id="8">Close</button>
+      <button id="13">PreviousPicture</button>
+      <button id="14">NextPicture</button>
+      <hat id="1" position="left">PreviousPicture</hat>
+      <hat id="1" position="right">NextPicture</hat>
+    </joystick>
+    <joystick name="Microsoft X-Box 360 pad">
+      <altname>BigBen Interactive XBOX 360 Controller</altname>
+      <altname>Generic X-Box pad</altname>
+      <altname>Logitech Chillstream Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller</altname>
+      <altname>Mad Catz Wired Xbox 360 Controller (SFIV)</altname>
+      <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
+      <altname>Xbox 360 Wireless Receiver</altname>
+      <button id="2">Close</button>
+      <button id="3">Close</button>
+      <button id="8">Close</button>
+      <button id="12">PreviousPicture</button>
+      <button id="13">NextPicture</button>
+      <hat id="1" position="left">PreviousPicture</hat>
+      <hat id="1" position="right">NextPicture</hat>
+    </joystick>
+  </PictureInfo>
   <VisualisationSettings>
     <joystick name="Controller (XBOX 360 For Windows)">
       <altname>Afterglow Gamepad for Xbox 360 (Controller)</altname>
@@ -570,6 +629,8 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
       <button id="2">Close</button>
+      <axis id="3" limit="+1">Up</axis>
+      <axis id="3" limit="-1">Down</axis>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -581,6 +642,8 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <button id="2">Close</button>
+      <axis id="6" limit="+1">Up</axis>
+      <axis id="6" limit="-1">Down</axis>
     </joystick>
   </VisualisationSettings>
   <VisualisationPresetList>
@@ -601,6 +664,7 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
       <button id="2">Close</button>
+      <button id="5">Close</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -612,6 +676,7 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <button id="2">Close</button>
+      <button id="5">Close</button>
     </joystick>
   </VisualisationPresetList>
   <SlideShow>
@@ -633,9 +698,10 @@
       <altname>Gamepad F310 (Controller)</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
+      <button id="3">CodecInfo</button>
       <button id="4">ZoomNormal</button>
       <button id="5">Rotate</button>
-      <button id="6">CodecInfo</button>
+      <button id="8">CodecInfo</button>
       <button id="11">ZoomIn</button>
       <button id="12">ZoomOut</button>
       <button id="13">PreviousPicture</button>
@@ -660,9 +726,10 @@
       <altname>Xbox 360 Wireless Receiver</altname>
       <button id="1">Pause</button>
       <button id="2">Stop</button>
+      <button id="3">CodecInfo</button>
       <button id="4">ZoomNormal</button>
       <button id="5">Rotate</button>
-      <button id="6">CodecInfo</button>
+      <button id="8">CodecInfo</button>
       <button id="12">PreviousPicture</button>
       <button id="13">NextPicture</button>
       <button id="14">ZoomIn</button>
@@ -765,6 +832,9 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
       <button id="3">Close</button>
+      <button id="8">Close</button>
+      <axis id="3" limit="+1">Left</axis>
+      <axis id="3" limit="-1">Right</axis>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -776,6 +846,9 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <button id="3">Close</button>
+      <button id="8">Close</button>
+      <axis id="6" limit="+1">Left</axis>
+      <axis id="6" limit="-1">Right</axis>
     </joystick>
   </VideoOSD>
   <VideoMenu>
@@ -832,8 +905,10 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
-      <button id="5">AspectRatio</button>
       <button id="3">Close</button>
+      <button id="8">Close</button>
+      <axis id="3" limit="+1">Up</axis>
+      <axis id="3" limit="-1">Down</axis>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -844,8 +919,10 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
-      <button id="5">AspectRatio</button>
       <button id="3">Close</button>
+      <button id="8">Close</button>
+      <axis id="6" limit="+1">Up</axis>
+      <axis id="6" limit="-1">Down</axis>
     </joystick>
   </OSDVideoSettings>
   <OSDAudioSettings>
@@ -865,8 +942,10 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
-      <button id="5">AspectRatio</button>
       <button id="3">Close</button>
+      <button id="8">Close</button>
+      <axis id="3" limit="+1">Up</axis>
+      <axis id="3" limit="-1">Down</axis>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -877,8 +956,10 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
-      <button id="5">AspectRatio</button>
       <button id="3">Close</button>
+      <button id="8">Close</button>
+      <axis id="6" limit="+1">Up</axis>
+      <axis id="6" limit="-1">Down</axis>
     </joystick>
   </OSDAudioSettings>
   <VideoBookmarks>
@@ -967,7 +1048,9 @@
       <button id="2">BackSpace</button>
       <button id="4">Symbols</button>
       <button id="5">Shift</button>
-      <button id="9">Enter</button>
+      <button id="7">PreviousMenu</button>
+      <button id="8">Enter</button>
+      <button id="15">PreviousMenu</button>
       <axis id="3" limit="+1">CursorLeft</axis>
       <axis id="3" limit="-1">CursorRight</axis>
     </joystick>
@@ -983,7 +1066,8 @@
       <button id="2">BackSpace</button>
       <button id="4">Symbols</button>
       <button id="5">Shift</button>
-      <button id="10">Enter</button>
+      <button id="7">PreviousMenu</button>
+      <button id="8">Enter</button>
       <axis id="6" limit="+1">CursorLeft</axis>
       <axis id="6" limit="-1">CursorRight</axis>
     </joystick>
@@ -1007,6 +1091,8 @@
       <altname>Gamepad F310 (Controller)</altname>
       <button id="2">Close</button>
       <button id="3">Close</button>
+      <axis id="3" limit="+1">Up</axis>
+      <axis id="3" limit="-1">Down</axis>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -1019,6 +1105,8 @@
       <altname>Xbox 360 Wireless Receiver</altname>
       <button id="2">Close</button>
       <button id="3">Close</button>
+      <axis id="6" limit="+1">Up</axis>
+      <axis id="6" limit="-1">Down</axis>
     </joystick>
   </ContextMenu>
   <Scripts>
@@ -1038,7 +1126,7 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
-      <button id="3">Info</button>
+      <button id="8">Info</button>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -1049,7 +1137,7 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
-      <button id="3">Info</button>
+      <button id="8">Info</button>
     </joystick>
   </Scripts>
   <Settings>
@@ -1132,6 +1220,8 @@
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
       <button id="2">Close</button>
+      <axis id="3" limit="+1">Up</axis>
+      <axis id="3" limit="-1">Down</axis>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -1143,6 +1233,8 @@
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
       <button id="2">Close</button>
+      <axis id="6" limit="+1">Up</axis>
+      <axis id="6" limit="-1">Down</axis>
     </joystick>
   </AddonSettings>
   <TextViewer>
@@ -1226,7 +1318,10 @@
       <altname>Xbox Receiver for Windows (Wireless Controller)</altname>
       <altname>Xbox wireless receiver for windows (Controller)</altname>
       <altname>Gamepad F310 (Controller)</altname>
-      <button id="2">PreviousMenu</button>
+      <button id="3">Close</button>
+      <button id="8">Close</button>
+      <axis id="3" limit="+1">Up</axis>
+      <axis id="3" limit="-1">Down</axis>
     </joystick>
     <joystick name="Microsoft X-Box 360 pad">
       <altname>BigBen Interactive XBOX 360 Controller</altname>
@@ -1237,7 +1332,9 @@
       <altname>Pelican 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Pelican PL-3601 'TSZ' Wired Xbox 360 Controller</altname>
       <altname>Xbox 360 Wireless Receiver</altname>
-      <button id="2">PreviousMenu</button>
+      <button id="3">Close</button>
+      <axis id="6" limit="+1">Up</axis>
+      <axis id="6" limit="-1">Down</axis>
     </joystick>
   </submenu>
   <MusicInformation>
