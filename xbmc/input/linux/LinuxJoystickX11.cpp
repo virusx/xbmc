@@ -25,15 +25,16 @@
 #include "LinuxJoystickX11.h"
 #include "utils/log.h"
 
-#include <iostream>
+#include <sstream>
 #include <X11/extensions/XInput2.h>
 #include <X11/Xlib.h>
 
 // Work-around to forward-declare anonymous struct
 struct _Forward_XIAnyClassInfo : public XIAnyClassInfo { };
 
+Display *CLinuxJoystickX11::m_display = NULL;
 
-CLinuxJoystickX11::CLinuxJoystickX11(Display *display) : m_state(), m_display(display)
+CLinuxJoystickX11::CLinuxJoystickX11(Display *display) : m_state()
 {
 }
 
