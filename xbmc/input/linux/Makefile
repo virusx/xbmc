@@ -1,7 +1,8 @@
 SRCS=LIRC.cpp \
      LinuxInputDevices.cpp \
      LinuxJoystick.cpp \
-     LinuxJoystickSDL.cpp
+     LinuxJoystickSDL.cpp \
+     LinuxJoystickXpad.cpp
 
 LIB=input_linux.a
 
