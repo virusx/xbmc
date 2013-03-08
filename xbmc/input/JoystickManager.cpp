@@ -66,7 +66,7 @@ void CJoystickManager::Initialize()
   CJoystickDX::Initialize(m_joysticks);
 #else
   CLinuxJoystick::Initialize(m_joysticks);
-  CLinuxJoystickSDL::Initialize(m_joysticks);
+  //CLinuxJoystickSDL::Initialize(m_joysticks);
 #endif
 
   while (m_joysticks.size() > JOY_ARRAY_LENGTH(m_states))
