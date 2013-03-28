@@ -19,7 +19,9 @@
 
 
 import os
+import sys
 import platform
+import threading
 import xbmc
 import xbmcaddon
 import xbmcgui
@@ -55,10 +57,39 @@ class Main:
                 else:
                     oldversion = _versioncheck()
                 if oldversion[0]:
-                    _upgrademessage(oldversion[1])
+                    # Don't show while watching a video
+                    if xbmc.Player().isPlayingVideo():
+                        condition = threading.Condition()
+                        condition.acquire()
+                        self.playbackObserver = PlaybackObserver(msg=oldversion[1], cv=condition)
+                        condition.wait()
+                    else:
+                        _upgrademessage(oldversion[1])
             else:
                 pass
-                
+
+class PlaybackObserver(xbmc.Player):
+    def __init__(self, *args, **kwargs):
+        xbmc.Player.__init__(self)
+        self.msg = kwargs['msg']
+        self.condition = kwargs['cv']
+
+    def onPlayBackStopped(self):
+        log("onPlayBackStopped")
+        self._runmsg()
+
+    def onPlayBackEnded(self):
+        log("onPlayBackEnded")
+        self._runmsg()
+
+    def _runmsg(self):
+        i = 0
+        while(i < 10 and not xbmc.abortRequested):
+            xbmc.sleep(500)
+            i += 1
+        _upgrademessage(self.msg)
+        self.condition.notify()
+
 def _versioncheck():
     # initial vars
     oldversion = False
@@ -213,13 +244,6 @@ def _apterrorhandler(error):
     raise error
 
 def _upgrademessage(msg):
-    # Don't show while watching a video
-    while(xbmc.Player().isPlayingVideo() and not xbmc.abortRequested):
-        xbmc.sleep(1000)
-    i = 0
-    while(i < 5 and not xbmc.abortRequested):
-        xbmc.sleep(1000)
-        i += 1
     # Detect if it's first run and only show OK dialog + ask to disable on that
     firstrun = __addon__.getSetting("versioncheck_firstrun") != 'false'
     if firstrun and not xbmc.abortRequested:
