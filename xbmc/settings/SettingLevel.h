@@ -23,8 +23,6 @@
 
 #include <vector>
 
-#define SETTINGS_LEVEL_DEFAULT  SettingLevelStandard
-
 #define XML_ELM_LEVEL           "level"
 #define XML_ELM_LEVELS          "levels"
 
@@ -90,6 +88,7 @@ public:
    * is specified and no level conditions are needed.
    */
   void SetLevel(SettingLevel level);
+  void SetDefault();
 
   /**
    * For complex levels with conditions, this applies the level conditions in

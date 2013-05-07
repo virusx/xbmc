@@ -25,6 +25,8 @@
 
 #include <algorithm>
 
+#define SETTINGS_LEVEL_DEFAULT  SettingLevelStandard
+
 #define XML_ATTR_DEFAULT   "default"
 #define XML_ATTR_VALUE     "value"
 
@@ -115,6 +117,11 @@ void CSettingLevel::SetLevel(SettingLevel level)
 {
   m_default = level;
   m_levelConditions.clear();
+}
+
+void CSettingLevel::SetDefault()
+{
+  SetLevel(SETTINGS_LEVEL_DEFAULT);
 }
 
 SettingLevel CSettingLevel::GetLevel() const

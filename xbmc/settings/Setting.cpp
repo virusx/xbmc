@@ -75,7 +75,7 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   // get the <level> or <levels> tag
   int level = -1;
   const TiXmlNode *levels;
-  m_level.SetLevel(SETTINGS_LEVEL_DEFAULT);
+  m_level.SetDefault();
   if (XMLUtils::GetInt(node, XML_ELM_LEVEL, level) && SettingLevelBasic <= level && level <= SettingLevelInternal)
   {
     m_level.SetLevel((SettingLevel)level);
