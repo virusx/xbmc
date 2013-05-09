@@ -1155,13 +1155,13 @@
         </setting>
       </group>
       <group id="3">
-        <setting id="musiclibrary.cleanup" type="action" label="334" help="36261">
+        <setting id="musiclibrary.cleanup" type="action" label="334" help="36148">
           <level>2</level>
         </setting>
         <setting id="musiclibrary.export" type="action" label="20196" help="36262">
           <level>2</level>
         </setting>
-        <setting id="musiclibrary.import" type="action" label="20197" help="36150">
+        <setting id="musiclibrary.import" type="action" label="20197" help="36263">
           <level>2</level>
         </setting>
       </group>
