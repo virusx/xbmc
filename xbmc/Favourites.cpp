@@ -173,6 +173,8 @@ CStdString CFavourites::GetExecutePath(const CFileItem *item, int contextWindow)
     execute.Format("ActivateWindow(%i,%s)", contextWindow, Paramify(item->GetPath()));
   else if (item->IsScript())
     execute.Format("RunScript(%s)", Paramify(item->GetPath().Mid(9)));
+  else if (item->IsAndroidApp())
+    execute.Format("StartAndroidActivity(%s)", Paramify(item->GetPath().Mid(26)));
   else  // assume a media file
   {
     if (item->IsVideoDb() && item->HasVideoInfoTag())
