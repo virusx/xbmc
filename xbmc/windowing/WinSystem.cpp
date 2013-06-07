@@ -70,9 +70,9 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
   newRes.iScreenHeight = height;
   newRes.strMode.Format("%dx%d", width, height);
   if (refreshRate > 1)
-    newRes.strMode.Format("%s @ %.2f%s - Full Screen", newRes.strMode, refreshRate, dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+    newRes.strMode.AppendFormat(" @ %.2f%s - Full Screen", refreshRate, dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
   if (screen > 0)
-    newRes.strMode.Format("%s #%d", newRes.strMode, screen + 1);
+    newRes.strMode.AppendFormat(" #%d", screen + 1);
 }
 
 void CWinSystemBase::UpdateResolutions()

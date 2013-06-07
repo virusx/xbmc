@@ -748,7 +748,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl, const CStdStr
 
         CStdString sYear;
         if (XMLUtils::GetString(pxeAlbum, "year", sYear))
-          sAlbumName.Format("%s (%s)", sAlbumName.c_str(), sYear.c_str());
+          sAlbumName.AppendFormat(" (%s)", sYear.c_str());
 
         // if no URL is provided, use the URL we got back from CreateAlbumSearchUrl
         // (e.g., in case we only got one result back and were sent to the detail page)

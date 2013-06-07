@@ -471,7 +471,7 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
 
     if (responseBody.size() > 0)
     {
-      response.Format("%sContent-Length: %d\r\n", response.c_str(), responseBody.size());
+      response.AppendFormat("Content-Length: %d\r\n", responseBody.size());
     }
     response += "\r\n";
 
@@ -535,8 +535,8 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent( CStdString& reverseHeader,
         break;
     }
     reverseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
-    reverseHeader.Format("%sContent-Length: %d\r\n",reverseHeader.c_str(),reverseBody.size());
-    reverseHeader.Format("%sx-apple-session-id: %s\r\n",reverseHeader.c_str(),m_sessionId.c_str());
+    reverseHeader.AppendFormat("Content-Length: %d\r\n", reverseBody.size());
+    reverseHeader.AppendFormat("x-apple-session-id: %s\r\n", m_sessionId.c_str());
     m_lastEvent = state;
   }
 }

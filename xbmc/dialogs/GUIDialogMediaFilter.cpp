@@ -650,7 +650,7 @@ void CGUIDialogMediaFilter::UpdateControls()
       else
       {
         CONTROL_ENABLE(itFilter->second.controlIndex);
-        label.Format("%s [%d]", label, size);
+        label.AppendFormat(" [%d]", size);
       }
       SET_CONTROL_LABEL(itFilter->second.controlIndex, label);
     }

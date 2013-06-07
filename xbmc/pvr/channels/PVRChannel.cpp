@@ -306,7 +306,7 @@ bool CPVRChannel::SetIconPath(const CStdString &strIconPath, bool bIsUserSetIcon
   if (m_strIconPath != strIconPath)
   {
     /* update the path */
-    m_strIconPath.Format("%s", strIconPath);
+    m_strIconPath = strIconPath;
     SetChanged();
     m_bChanged = true;
 
@@ -442,7 +442,7 @@ bool CPVRChannel::SetClientChannelName(const CStdString &strClientChannelName)
   if (m_strClientChannelName != strClientChannelName)
   {
     /* update the client channel name */
-    m_strClientChannelName.Format("%s", strClientChannelName);
+    m_strClientChannelName = strClientChannelName;
     SetChanged();
     // this is not persisted, so don't update m_bChanged
 
@@ -459,7 +459,7 @@ bool CPVRChannel::SetInputFormat(const CStdString &strInputFormat)
   if (m_strInputFormat != strInputFormat)
   {
     /* update the input format */
-    m_strInputFormat.Format("%s", strInputFormat);
+    m_strInputFormat = strInputFormat;
     SetChanged();
     m_bChanged = true;
 
@@ -476,7 +476,7 @@ bool CPVRChannel::SetStreamURL(const CStdString &strStreamURL)
   if (m_strStreamURL != strStreamURL)
   {
     /* update the stream url */
-    m_strStreamURL.Format("%s", strStreamURL);
+    m_strStreamURL = strStreamURL;
     SetChanged();
     m_bChanged = true;
 
@@ -687,7 +687,7 @@ bool CPVRChannel::SetEPGScraper(const CStdString &strScraper)
     bool bCleanEPG = !m_strEPGScraper.IsEmpty() || strScraper.IsEmpty();
 
     /* update the scraper name */
-    m_strEPGScraper.Format("%s", strScraper);
+    m_strEPGScraper = strScraper;
     SetChanged();
     m_bChanged = true;
 

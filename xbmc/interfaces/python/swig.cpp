@@ -176,7 +176,7 @@ namespace PythonBindings
             emptyString = PyString_FromString("");
             strRetval = PyObject_CallMethod(emptyString, (char*)"join", (char*)"O", tbList);
             
-            msg.Format("%s%s", msg.c_str(),PyString_AsString(strRetval));
+            msg.AppendFormat("%s", PyString_AsString(strRetval));
 
             Py_DECREF(tbList);
             Py_DECREF(emptyString);
