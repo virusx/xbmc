@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
+#include "addons/ContentAddons.h"
 #include "threads/SystemClock.h"
 #include "MusicSearchDirectory.h"
 #include "music/MusicDatabase.h"
@@ -49,6 +49,7 @@ bool CMusicSearchDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 
   // and retrieve the search details
   items.SetPath(strPath);
+  ADDON::CContentAddons::Get().MusicSearch(items, search);
   unsigned int time = XbmcThreads::SystemClockMillis();
   CMusicDatabase db;
   db.Open();

@@ -32,6 +32,7 @@
 #include "File.h"
 #include "SpecialProtocol.h"
 #include "utils/URIUtils.h"
+#include "addons/ContentAddons.h"
 #include "URL.h"
 
 using namespace ADDON;
@@ -316,6 +317,9 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
     }
     items.Add(item);
   }
+
+  if (content.Equals("audio"))
+    CContentAddons::Get().MusicGetAddons(items);
 
   items.Add(GetMoreItem(content));
 

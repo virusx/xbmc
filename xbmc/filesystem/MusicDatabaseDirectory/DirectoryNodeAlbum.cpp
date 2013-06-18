@@ -21,6 +21,7 @@
 #include "DirectoryNodeAlbum.h"
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
+#include "addons/ContentAddons.h"
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
@@ -54,7 +55,8 @@ bool CDirectoryNodeAlbum::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess=musicdatabase.GetAlbumsNav(BuildPath(), items, params.GetGenreId(), params.GetArtistId());
+  bool bSuccess = musicdatabase.GetAlbumsNav(BuildPath(), items, params.GetGenreId(), params.GetArtistId());
+  bSuccess |= ADDON::CContentAddons::Get().MusicGetAlbums(items, musicdatabase.GetArtistById(params.GetArtistId()));
 
   musicdatabase.Close();
 

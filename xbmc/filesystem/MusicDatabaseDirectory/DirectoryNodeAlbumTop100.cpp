@@ -21,8 +21,10 @@
 #include "DirectoryNodeAlbumTop100.h"
 #include "music/MusicDatabase.h"
 #include "FileItem.h"
+#include "addons/ContentAddons.h"
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
+using namespace ADDON;
 
 CDirectoryNodeAlbumTop100::CDirectoryNodeAlbumTop100(const CStdString& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_ALBUM_TOP100, strName, pParent)
@@ -69,6 +71,8 @@ bool CDirectoryNodeAlbumTop100::GetContent(CFileItemList& items) const
   }
 
   musicdatabase.Close();
+
+  CContentAddons::Get().MusicGetTop100(items, CONTENT_TOP100_TYPE_ALBUMS);
 
   return true;
 }

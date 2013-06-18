@@ -18,6 +18,7 @@
  *
  */
 
+#include "addons/ContentAddons.h"
 #include "DirectoryNodeOverview.h"
 #include "FileItem.h"
 #include "music/MusicDatabase.h"
@@ -38,6 +39,7 @@ namespace XFILE
                                 { NODE_TYPE_ALBUM_RECENTLY_ADDED,  6, 359 },
                                 { NODE_TYPE_ALBUM_RECENTLY_PLAYED, 7, 517 },
                                 { NODE_TYPE_ALBUM_COMPILATIONS,    8, 521 },
+                                { NODE_TYPE_CONTENT_ADDON,        99, 1038 },
                               };
   };
 };
@@ -84,6 +86,8 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
       continue;
     if (i == 9 && musicDatabase.GetCompilationAlbumsCount() == 0) // compilations
       continue;
+    if (i == 10)
+      continue;
 
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(OverviewChildren[i].label)));
     CStdString strDir;
@@ -93,6 +97,8 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
     pItem->SetCanQueue(false);
     items.Add(pItem);
   }
+
+  ADDON::CContentAddons::Get().MusicGetOverviewItems(items);
 
   return true;
 }

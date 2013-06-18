@@ -57,6 +57,7 @@
 #include "utils/Variant.h"
 #include "music/karaoke/karaokelyricsfactory.h"
 #include "utils/Mime.h"
+#include "addons/ContentAddons.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1179,6 +1180,19 @@ bool CFileItem::IsRemovable() const
   return IsOnDVD() || IsCDDA() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
 }
 
+bool CFileItem::IsContentAddon() const
+{
+  if (m_strPath.Left(10).Equals("content://"))
+    return true;
+  return false;
+}
+
+bool CFileItem::SupportsConcurrentStreams() const
+{
+  return !IsContentAddon() ||
+          ADDON::CContentAddons::Get().SupportsConcurrentStreams(m_strPath);
+}
+
 bool CFileItem::IsReadOnly() const
 {
   if (IsParentFolder()) return true;
@@ -1645,6 +1659,30 @@ void CFileItemList::Add(const CFileItemPtr &pItem)
   {
     m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
   }
+}
+
+void CFileItemList::AddAutoJoin(const CFileItemPtr &pItem)
+{
+  CSingleLock lock(m_lock);
+
+  for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); it++)
+  {
+    if ((*it)->GetLabel().Equals(pItem->GetLabel()) &&
+        (*it)->m_bIsFolder == pItem->m_bIsFolder)
+    {
+      std::set<CStdString> pathSet;
+      pathSet.insert((*it)->GetPath());
+      pathSet.insert(pItem->GetPath());
+      (*it)->SetPath(CMultiPathDirectory::ConstructMultiPath(pathSet));
+
+      // TODO
+      if (!pItem->GetProperty("artist_description").empty() && (*it)->GetProperty("artist_description").empty())
+        (*it)->SetProperty("artist_description", pItem->GetProperty("artist_description"));
+      return;
+    }
+  }
+
+  Add(pItem);
 }
 
 void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)

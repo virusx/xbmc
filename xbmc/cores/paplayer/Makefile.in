@@ -11,6 +11,7 @@ SRCS  = ADPCMCodec.cpp
 SRCS += AudioDecoder.cpp
 SRCS += CDDAcodec.cpp
 SRCS += CodecFactory.cpp
+SRCS += ContentAddonCodec.cpp
 SRCS += DVDPlayerCodec.cpp
 SRCS += FLACcodec.cpp
 SRCS += ModplugCodec.cpp

@@ -18,6 +18,7 @@
  *
  */
 
+#include "addons/ContentAddons.h"
 #include "DirectoryNodeSong.h"
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
@@ -40,7 +41,8 @@ bool CDirectoryNodeSong::GetContent(CFileItemList& items) const
   CollectQueryParams(params);
 
   CStdString strBaseDir=BuildPath();
-  bool bSuccess=musicdatabase.GetSongsNav(strBaseDir, items, params.GetGenreId(), params.GetArtistId(), params.GetAlbumId());
+  bool bSuccess = musicdatabase.GetSongsNav(strBaseDir, items, params.GetGenreId(), params.GetArtistId(), params.GetAlbumId());
+  bSuccess |= ADDON::CContentAddons::Get().MusicGetSongs(items, musicdatabase.GetArtistById(params.GetArtistId()), musicdatabase.GetAlbumById(params.GetAlbumId()));
 
   musicdatabase.Close();
 

@@ -23,6 +23,7 @@
 #include "addons/include/xbmc_pvr_types.h"
 #include "../../addons/library.xbmc.addon/libXBMC_addon.h"
 #include "../../addons/library.xbmc.gui/libXBMC_gui.h"
+#include "../../addons/library.xbmc.content/libXBMC_content.h"
 
 typedef void (*AddOnLogCallback)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);
 typedef void (*AddOnQueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
@@ -30,6 +31,7 @@ typedef bool (*AddOnGetSetting)(void *addonData, const char *settingName, void *
 typedef char* (*AddOnUnknownToUTF8)(const char *sourceDest);
 typedef char* (*AddOnGetLocalizedString)(const void* addonData, long dwCode);
 typedef char* (*AddOnGetDVDMenuLanguage)(const void* addonData);
+typedef char* (*AddOnGetBoxId)(const void* addonData);
 typedef void (*AddOnFreeString)(const void* addonData, char* str);
 
 typedef void* (*AddOnOpenFile)(const void* addonData, const char* strFileName, unsigned int flags);
@@ -81,6 +83,7 @@ typedef struct CB_AddOn
   AddOnCreateDirectory    CreateDirectory;
   AddOnDirectoryExists    DirectoryExists;
   AddOnRemoveDirectory    RemoveDirectory;
+  AddOnGetBoxId           GetBoxId;
 } CB_AddOnLib;
 
 typedef void (*GUILock)();
@@ -253,6 +256,12 @@ typedef struct CB_PVRLib
 
 } CB_PVRLib;
 
+typedef void (*CONTENTSetPlaystate)(void *userData, CONTENT_ADDON_PLAYSTATE newState);
+
+typedef struct CB_ContentLib
+{
+  CONTENTSetPlaystate SetPlaystate;
+} CB_ContentLib;
 
 typedef CB_AddOnLib* (*XBMCAddOnLib_RegisterMe)(void *addonData);
 typedef void (*XBMCAddOnLib_UnRegisterMe)(void *addonData, CB_AddOnLib *cbTable);
@@ -260,17 +269,21 @@ typedef CB_GUILib* (*XBMCGUILib_RegisterMe)(void *addonData);
 typedef void (*XBMCGUILib_UnRegisterMe)(void *addonData, CB_GUILib *cbTable);
 typedef CB_PVRLib* (*XBMCPVRLib_RegisterMe)(void *addonData);
 typedef void (*XBMCPVRLib_UnRegisterMe)(void *addonData, CB_PVRLib *cbTable);
+typedef CB_ContentLib* (*XBMCContentLib_RegisterMe)(void *addonData);
+typedef void (*XBMCContentLib_UnRegisterMe)(void *addonData, CB_ContentLib *cbTable);
 
 typedef struct AddonCB
 {
-  const char                *libBasePath;                  ///> Never, never change this!!!
-  void                      *addonData;
-  XBMCAddOnLib_RegisterMe    AddOnLib_RegisterMe;
-  XBMCAddOnLib_UnRegisterMe  AddOnLib_UnRegisterMe;
-  XBMCGUILib_RegisterMe      GUILib_RegisterMe;
-  XBMCGUILib_UnRegisterMe    GUILib_UnRegisterMe;
-  XBMCPVRLib_RegisterMe      PVRLib_RegisterMe;
-  XBMCPVRLib_UnRegisterMe    PVRLib_UnRegisterMe;
+  const char*                 libBasePath;                  ///> Never, never change this!!!
+  void*                       addonData;
+  XBMCAddOnLib_RegisterMe     AddOnLib_RegisterMe;
+  XBMCAddOnLib_UnRegisterMe   AddOnLib_UnRegisterMe;
+  XBMCGUILib_RegisterMe       GUILib_RegisterMe;
+  XBMCGUILib_UnRegisterMe     GUILib_UnRegisterMe;
+  XBMCPVRLib_RegisterMe       PVRLib_RegisterMe;
+  XBMCPVRLib_UnRegisterMe     PVRLib_UnRegisterMe;
+  XBMCContentLib_RegisterMe   ContentLib_RegisterMe;
+  XBMCContentLib_UnRegisterMe ContentLib_UnRegisterMe;
 } AddonCB;
 
 
@@ -281,6 +294,7 @@ class CAddon;
 class CAddonCallbacksAddon;
 class CAddonCallbacksGUI;
 class CAddonCallbacksPVR;
+class CAddonCallbacksContent;
 
 class CAddonCallbacks
 {
@@ -295,17 +309,21 @@ public:
   static void GUILib_UnRegisterMe(void *addonData, CB_GUILib *cbTable);
   static CB_PVRLib* PVRLib_RegisterMe(void *addonData);
   static void PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable);
+  static CB_ContentLib* ContentLib_RegisterMe(void *addonData);
+  static void ContentLib_UnRegisterMe(void *addonData, CB_ContentLib *cbTable);
 
-  CAddonCallbacksAddon *GetHelperAddon() { return m_helperAddon; }
-  CAddonCallbacksGUI *GetHelperGUI() { return m_helperGUI; }
-  CAddonCallbacksPVR *GetHelperPVR() { return m_helperPVR; }
+  CAddonCallbacksAddon*   GetHelperAddon()   { return m_helperAddon; }
+  CAddonCallbacksGUI*     GetHelperGUI()     { return m_helperGUI; }
+  CAddonCallbacksPVR*     GetHelperPVR()     { return m_helperPVR; }
+  CAddonCallbacksContent* GetHelperContent() { return m_helperContent; }
 
 private:
-  AddonCB             *m_callbacks;
-  CAddon              *m_addon;
-  CAddonCallbacksAddon *m_helperAddon;
-  CAddonCallbacksGUI   *m_helperGUI;
-  CAddonCallbacksPVR   *m_helperPVR;
+  AddonCB*                m_callbacks;
+  CAddon*                 m_addon;
+  CAddonCallbacksAddon*   m_helperAddon;
+  CAddonCallbacksGUI*     m_helperGUI;
+  CAddonCallbacksPVR*     m_helperPVR;
+  CAddonCallbacksContent* m_helperContent;
 };
 
 }; /* namespace ADDON */

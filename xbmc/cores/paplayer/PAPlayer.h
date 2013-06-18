@@ -72,7 +72,7 @@ public:
   virtual void SeekTime(int64_t iTime = 0);
   virtual bool SkipNext();
 
-  static bool HandlesType(const CStdString &type);
+  static bool HandlesType(const CURL &url);
 
   struct
   {
@@ -139,6 +139,7 @@ private:
   CSharedSection      m_streamsLock;         /* lock for the stream list */
   StreamList          m_streams;             /* playing streams */  
   StreamList          m_finishing;           /* finishing streams */
+  bool                m_bConcurrentStreamsSupported; /* true when concurrent streams are supported by the stream provider */
 
   bool QueueNextFileEx(const CFileItem &file, bool fadeIn = true);
   void SoftStart(bool wait = false);

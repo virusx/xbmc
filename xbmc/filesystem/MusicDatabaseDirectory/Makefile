@@ -9,6 +9,17 @@ SRCS=DirectoryNode.cpp \
      DirectoryNodeAlbumTop100.cpp \
      DirectoryNodeAlbumTop100Song.cpp \
      DirectoryNodeArtist.cpp \
+     DirectoryNodeArtistTop100.cpp \
+     DirectoryNodeContentAddon.cpp \
+     DirectoryNodeContentAddonAlbum.cpp \
+     DirectoryNodeContentAddonArtist.cpp \
+     DirectoryNodeContentAddonOverview.cpp \
+     DirectoryNodeContentAddonPlaylist.cpp \
+     DirectoryNodeContentAddonSong.cpp \
+     DirectoryNodeContentAddonAlbumTop100.cpp \
+     DirectoryNodeContentAddonArtistTop100.cpp \
+     DirectoryNodeContentAddonTop100.cpp \
+     DirectoryNodeContentAddonTop100Song.cpp \
      DirectoryNodeGenre.cpp \
      DirectoryNodeOverview.cpp \
      DirectoryNodeRoot.cpp \

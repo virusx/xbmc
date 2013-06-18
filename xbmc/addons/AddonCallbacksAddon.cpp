@@ -27,6 +27,7 @@
 #include "filesystem/File.h"
 #include "filesystem/Directory.h"
 #include "utils/URIUtils.h"
+#include "network/Network.h"
 #include "FileItem.h"
 
 using namespace XFILE;
@@ -46,6 +47,7 @@ CAddonCallbacksAddon::CAddonCallbacksAddon(CAddon* addon)
   m_callbacks->UnknownToUTF8      = UnknownToUTF8;
   m_callbacks->GetLocalizedString = GetLocalizedString;
   m_callbacks->GetDVDMenuLanguage = GetDVDMenuLanguage;
+  m_callbacks->GetBoxId           = GetBoxId;
   m_callbacks->FreeString         = FreeString;
 
   m_callbacks->OpenFile           = OpenFile;
@@ -268,6 +270,19 @@ char* CAddonCallbacksAddon::GetDVDMenuLanguage(const void* addonData)
   CStdString string = g_langInfo.GetDVDMenuLanguage();
 
   char* buffer = strdup(string.c_str());
+  return buffer;
+}
+
+char* CAddonCallbacksAddon::GetBoxId(const void* addonData)
+{
+  CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
+  if (!helper)
+    return NULL;
+
+  CStdString strId;
+  strId.Format("XBMC (%s)", g_application.getNetwork().GetFirstConnectedInterface()->GetMacAddress().c_str());
+
+  char* buffer = strdup(strId.c_str());
   return buffer;
 }
 

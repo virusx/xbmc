@@ -2290,6 +2290,16 @@ else
   final_message="$final_message\n  PVR add-ons:\t\tNo"
 fi
 
+USE_CONTENT_ADDONS=0
+DISABLE_CONTENT_ADDON_CONFIG=1
+if [[ -f "content-addons/Makefile.am" ]]; then
+  final_message="$final_message\n  content add-ons:\tYes"
+  USE_CONTENT_ADDONS=1
+  DISABLE_CONTENT_ADDON_CONFIG=0
+else
+  final_message="$final_message\n  content add-ons:\tNo"
+fi
+
 OUTPUT_FILES="Makefile \
     Makefile.include \
     addons/skin.confluence/media/Makefile \
@@ -2347,6 +2357,7 @@ OUTPUT_FILES="Makefile \
     xbmc/visualizations/OpenGLSpectrum/Makefile \
     xbmc/visualizations/WaveForm/Makefile \
     lib/addons/library.xbmc.addon/Makefile \
+    lib/addons/library.xbmc.content/Makefile \
     lib/addons/library.xbmc.gui/Makefile \
     lib/addons/library.xbmc.pvr/Makefile \
     xbmc/visualizations/EGLHelpers/Makefile \
@@ -2430,6 +2441,7 @@ AC_SUBST(USE_ANDROID)
 AC_SUBST(GTEST_CONFIGURED)
 AC_SUBST(USE_DOXYGEN)
 AC_SUBST(USE_PVR_ADDONS)
+AC_SUBST(USE_CONTENT_ADDONS)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
@@ -2751,6 +2763,22 @@ XB_CONFIG_MODULE([pvr-addons], [
     CFLAGS="$CFLAGS" \
     CXXFLAGS="$CXXFLAGS"
 ], [$DISABLE_PVR_ADDON_CONFIG])
+
+XB_CONFIG_MODULE([content-addons], [
+   if test "$USE_EXTERNAL_FFMPEG" = 1; then
+      CONTENT_EXT_FFMPEG="--enable-external-ffmpeg"
+   fi
+  ./configure \
+    --prefix="${prefix}" \
+    --host=$host_alias \
+    --build=$build_alias \
+    --target=$target_alias \
+    $CONTENT_EXT_FFMPEG \
+    CC="$CC" \
+    CXX="$CXX" \
+    CFLAGS="$CFLAGS" \
+    CXXFLAGS="$CXXFLAGS"
+], [$DISABLE_CONTENT_ADDON_CONFIG])
 
 AC_OUTPUT
 

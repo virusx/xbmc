@@ -179,6 +179,7 @@ public:
   bool IsParentFolder() const;
   bool IsFileFolder() const;
   bool IsRemovable() const;
+  bool IsContentAddon() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;
   bool IsHDHomeRun() const;
@@ -201,6 +202,7 @@ public:
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
   bool SortsOnBottom() const { return m_specialSort == SortSpecialOnBottom; }
   void SetSpecialSort(SortSpecial sort) { m_specialSort = sort; }
+  bool SupportsConcurrentStreams(void) const;
 
   inline bool HasMusicInfoTag() const
   {
@@ -485,6 +487,7 @@ public:
   void Clear();
   void ClearItems();
   void Add(const CFileItemPtr &pItem);
+  void AddAutoJoin(const CFileItemPtr &pItem);
   void AddFront(const CFileItemPtr &pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);

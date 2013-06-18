@@ -103,6 +103,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
 #include "utils/SeekHandler.h"
+#include "addons/ContentAddons.h"
 
 #include "input/KeyboardStat.h"
 #include "input/XBMC_vkeys.h"
@@ -1851,6 +1852,8 @@ void CApplication::StartServices()
   m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
 #endif
 
+  ADDON::CContentAddons::Get().Start();
+
   CLog::Log(LOGNOTICE, "initializing playlistplayer");
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, g_settings.m_bMyMusicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
   g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, g_settings.m_bMyMusicPlaylistShuffle);
@@ -1877,6 +1880,7 @@ void CApplication::StopServices()
   m_DetectDVDType.StopThread();
 #endif
 
+  ADDON::CContentAddons::Get().Stop();
   g_peripherals.Clear();
 }
 

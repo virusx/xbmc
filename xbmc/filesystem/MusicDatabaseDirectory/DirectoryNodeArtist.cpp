@@ -18,11 +18,13 @@
  *
  */
 
+#include "addons/ContentAddons.h"
 #include "DirectoryNodeArtist.h"
 #include "QueryParams.h"
 #include "music/MusicDatabase.h"
 #include "settings/GUISettings.h"
 
+using namespace ADDON;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeArtist::CDirectoryNodeArtist(const CStdString& strName, CDirectoryNode* pParent)
@@ -56,6 +58,7 @@ bool CDirectoryNodeArtist::GetContent(CFileItemList& items) const
   CollectQueryParams(params);
 
   bool bSuccess = musicdatabase.GetArtistsNav(BuildPath(), items, !g_guiSettings.GetBool("musiclibrary.showcompilationartists"), params.GetGenreId());
+  bSuccess |= ADDON::CContentAddons::Get().MusicGetArtists(items);
 
   musicdatabase.Close();
 

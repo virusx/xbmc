@@ -28,6 +28,8 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
+//TODO
+#include "addons/ContentAddons.h"
 
 #include "threads/SingleLock.h"
 #include "cores/AudioEngine/AEFactory.h"
@@ -59,7 +61,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_upcomingCrossfadeMS(0),
   m_currentStream      (NULL ),
   m_audioCallback      (NULL ),
-  m_FileItem           (new CFileItem())
+  m_FileItem           (new CFileItem()),
+  m_bConcurrentStreamsSupported(true)
 {
   memset(&m_playerGUIData, 0, sizeof(m_playerGUIData));
 }
@@ -75,9 +78,9 @@ PAPlayer::~PAPlayer()
   delete m_FileItem;
 }
 
-bool PAPlayer::HandlesType(const CStdString &type)
+bool PAPlayer::HandlesType(const CURL &url)
 {
-  ICodec* codec = CodecFactory::CreateCodec(type);
+  ICodec* codec = CodecFactory::CreateCodec(url);
   if (codec && codec->CanInit())
   {
     delete codec;
@@ -89,6 +92,7 @@ bool PAPlayer::HandlesType(const CStdString &type)
 
 void PAPlayer::SoftStart(bool wait/* = false */)
 {
+  unsigned int iFastXfadeTime = m_bConcurrentStreamsSupported ? FAST_XFADE_TIME : 0;
   CSharedLock lock(m_streamsLock);
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
@@ -96,16 +100,19 @@ void PAPlayer::SoftStart(bool wait/* = false */)
     if (si->m_fadeOutTriggered)
       continue;
 
-    si->m_stream->FadeVolume(0.0f, 1.0f, FAST_XFADE_TIME);
+    si->m_stream->FadeVolume(0.0f, 1.0f, iFastXfadeTime);
     si->m_stream->Resume();
   }
   
   if (wait)
   {
     /* wait for them to fade in */
-    lock.Leave();
-    Sleep(FAST_XFADE_TIME);
-    lock.Enter();
+    if (iFastXfadeTime > 0)
+    {
+      lock.Leave();
+      Sleep(iFastXfadeTime);
+      lock.Enter();
+    }
 
     /* be sure they have faded in */
     while(wait)
@@ -129,13 +136,15 @@ void PAPlayer::SoftStart(bool wait/* = false */)
 
 void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
 {
+  unsigned int iFastXfadeTime = m_bConcurrentStreamsSupported ? FAST_XFADE_TIME : 0;
+
   /* fade all the streams out fast for a nice soft stop */
   CSharedLock lock(m_streamsLock);
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
     if (si->m_stream)
-      si->m_stream->FadeVolume(1.0f, 0.0f, FAST_XFADE_TIME);
+      si->m_stream->FadeVolume(1.0f, 0.0f, iFastXfadeTime);
 
     if (close)
     {
@@ -149,9 +158,12 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
   if(wait)
   {
     /* wait for them to fade out */
-    lock.Leave();
-    Sleep(FAST_XFADE_TIME);
-    lock.Enter();
+    if (iFastXfadeTime > 0)
+    {
+      lock.Leave();
+      Sleep(iFastXfadeTime);
+      lock.Enter();
+    }
 
     /* be sure they have faded out */
     while(wait && !CAEFactory::IsSuspended())
@@ -229,7 +241,10 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  m_defaultCrossfadeMS = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
+  m_bConcurrentStreamsSupported = file.SupportsConcurrentStreams();
+  m_defaultCrossfadeMS = m_bConcurrentStreamsSupported ?
+      g_guiSettings.GetInt("musicplayer.crossfade") * 1000 :
+      0;
 
   if (m_streams.size() > 1 || !m_defaultCrossfadeMS || m_isPaused)
   {
@@ -244,7 +259,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   if (m_streams.size() == 2)
   {
     //do a short crossfade on trackskip, set to max 2 seconds for these prev/next transitions
-    m_upcomingCrossfadeMS = std::min(m_defaultCrossfadeMS, (unsigned int)MAX_SKIP_XFADE_TIME);
+    m_upcomingCrossfadeMS = std::min(m_defaultCrossfadeMS, m_bConcurrentStreamsSupported ? (unsigned int)MAX_SKIP_XFADE_TIME : 0);
 
     //start transition to next track
     StreamInfo* si = m_streams.front();
@@ -264,7 +279,11 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
 void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
 {
-  m_upcomingCrossfadeMS = m_defaultCrossfadeMS = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
+  if (file.SupportsConcurrentStreams())
+    m_upcomingCrossfadeMS = m_defaultCrossfadeMS = g_guiSettings.GetInt("musicplayer.crossfade") * 1000;
+  else
+    m_upcomingCrossfadeMS = 0;
+
   if (m_upcomingCrossfadeMS)
   {
     if (m_streams.size() == 0 ||
@@ -291,6 +310,16 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
 
 bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
 {
+  m_bConcurrentStreamsSupported = file.SupportsConcurrentStreams();
+  m_defaultCrossfadeMS = m_bConcurrentStreamsSupported ?
+      g_guiSettings.GetInt("musicplayer.crossfade") * 1000 :
+      0;
+
+  // TODO prequeue before waiting
+  ADDON::CONTENT_ADDON addon = ADDON::CContentAddons::Get().GetAddonForPath(file.GetPath());
+  if (addon)
+    addon->MusicPreloadFile(file.GetPath());
+
   StreamInfo *si = new StreamInfo();
 
   if (!si->m_decoder.Create(file, (file.m_lStartOffset * 1000) / 75))
@@ -346,8 +375,8 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
     streamTotalTime = si->m_endOffset - si->m_startOffset;
   
   si->m_prepareNextAtFrame = 0;
-  if (streamTotalTime >= TIME_TO_CACHE_NEXT_FILE + m_defaultCrossfadeMS)
-    si->m_prepareNextAtFrame = (int)((streamTotalTime - TIME_TO_CACHE_NEXT_FILE - m_defaultCrossfadeMS) * si->m_sampleRate / 1000.0f);
+  if (streamTotalTime >= (m_bConcurrentStreamsSupported ? TIME_TO_CACHE_NEXT_FILE : 0) + m_defaultCrossfadeMS)
+    si->m_prepareNextAtFrame = (int)((streamTotalTime - (m_bConcurrentStreamsSupported ? TIME_TO_CACHE_NEXT_FILE : 0) - m_defaultCrossfadeMS) * si->m_sampleRate / 1000.0f);
 
   si->m_prepareTriggered = false;
 

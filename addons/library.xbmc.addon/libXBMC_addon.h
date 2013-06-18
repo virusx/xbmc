@@ -250,6 +250,10 @@ namespace ADDON
         dlsym(m_libXBMC_addon, "XBMC_remove_directory");
       if (XBMC_remove_directory == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+      XBMC_get_box_id = (char* (*)(void *HANDLE, void* CB))
+        dlsym(m_libXBMC_addon, "XBMC_get_box_id");
+      if (XBMC_get_box_id == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
       m_Callbacks = XBMC_register_me(m_Handle);
       return m_Callbacks != NULL;
     }
@@ -535,6 +539,14 @@ namespace ADDON
       return XBMC_remove_directory(m_Handle, m_Callbacks, strPath);
     }
 
+    /*!
+     * @return A unique id for this box. Must be freed by calling FreeString() when done.
+     */
+    char* GetBoxId(void)
+    {
+      return XBMC_get_box_id(m_Handle, m_Callbacks);
+    }
+
   protected:
     void* (*XBMC_register_me)(void *HANDLE);
     void (*XBMC_unregister_me)(void *HANDLE, void* CB);
@@ -564,6 +576,7 @@ namespace ADDON
     bool (*XBMC_create_directory)(void *HANDLE, void* CB, const char* strPath);
     bool (*XBMC_directory_exists)(void *HANDLE, void* CB, const char* strPath);
     bool (*XBMC_remove_directory)(void *HANDLE, void* CB, const char* strPath);
+    char* (*XBMC_get_box_id)(void *HANDLE, void* CB);
 
   private:
     void *m_libXBMC_addon;

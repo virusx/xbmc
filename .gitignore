@@ -124,6 +124,7 @@ config.log
 /addons/visualization.itunes/iTunes.mvis
 /addons/script.module.pil/
 /addons/pvr.*
+/addons/content.*
 
 # /xbmc/android
 /xbmc/android/Makefile
@@ -169,6 +170,7 @@ config.log
 
 # /lib/addons/
 /lib/addons/library.xbmc.addon/Makefile
+/lib/addons/library.xbmc.content/Makefile
 /lib/addons/library.xbmc.gui/Makefile
 /lib/addons/library.xbmc.pvr/Makefile
 /lib/addons/library.xbmc.addon/project/VS2010Express/Release
@@ -1233,3 +1235,4 @@ xbmc/visualizations/EGLHelpers/Makefile
 /addons/library.xbmc.pvr/libXBMC_pvr.lib
 
 /pvr-addons
+/content-addons

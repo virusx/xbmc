@@ -21,8 +21,11 @@
 
 #include "utils/StdString.h"
 #include "utils/UrlOptions.h"
+#include <boost/shared_ptr.hpp>
 
 class CFileItemList;
+
+namespace ADDON { class CContentAddon; }
 
 namespace XFILE
 {
@@ -38,6 +41,7 @@ namespace XFILE
       NODE_TYPE_TOP100,
       NODE_TYPE_GENRE,
       NODE_TYPE_ARTIST,
+      NODE_TYPE_ARTIST_TOP100,
       NODE_TYPE_ALBUM,
       NODE_TYPE_ALBUM_RECENTLY_ADDED,
       NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS,
@@ -52,7 +56,17 @@ namespace XFILE
       NODE_TYPE_YEAR,
       NODE_TYPE_YEAR_ALBUM,
       NODE_TYPE_YEAR_SONG,
-      NODE_TYPE_SINGLES
+      NODE_TYPE_SINGLES,
+      NODE_TYPE_CONTENT_ADDON,
+      NODE_TYPE_CONTENT_ADDON_OVERVIEW,
+      NODE_TYPE_CONTENT_ADDON_ARTIST,
+      NODE_TYPE_CONTENT_ADDON_ALBUM,
+      NODE_TYPE_CONTENT_ADDON_SONG,
+      NODE_TYPE_CONTENT_ADDON_TOP100,
+      NODE_TYPE_CONTENT_ADDON_TOP100SONG,
+      NODE_TYPE_CONTENT_ADDON_ALBUMTOP100,
+      NODE_TYPE_CONTENT_ADDON_ARTISTTOP100,
+      NODE_TYPE_CONTENT_ADDON_PLAYLIST
     } NODE_TYPE;
 
     typedef struct {
@@ -100,6 +114,20 @@ namespace XFILE
       CStdString m_strName;
       CDirectoryNode* m_pParent;
       CUrlOptions m_options;
+    };
+
+    class CContentAddonDirectoryNode : public CDirectoryNode
+    {
+    public:
+      CContentAddonDirectoryNode(NODE_TYPE Type, const CStdString& strName, CDirectoryNode* pParent) :
+        CDirectoryNode(Type, strName, pParent) {}
+      virtual boost::shared_ptr<ADDON::CContentAddon> GetAddon(void) const;
+
+      virtual CStdString Artist(void) const;
+      virtual CStdString Album(void) const;
+      virtual CStdString Song(void) const;
+      virtual CStdString Playlist(void) const;
+      virtual CStdString Filename(void) const { CStdString strName(GetName()); return strName; }
     };
   }
 }

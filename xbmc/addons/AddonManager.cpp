@@ -49,6 +49,7 @@
 #include "Service.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "ContentAddons.h"
 #include "Util.h"
 
 using namespace std;
@@ -115,6 +116,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
     case ADDON_PVRDLL:
+    case ADDON_CONTENTDLL:
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
@@ -156,6 +158,10 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 #ifdef HAS_PVRCLIENTS
           return AddonPtr(new CPVRClient(props));
 #endif
+        }
+        else if (type == ADDON_CONTENTDLL)
+        {
+          return AddonPtr(new CContentAddon(props));
         }
         else
           return AddonPtr(new CScreenSaver(props));
@@ -415,6 +421,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
     if (m_database.IsAddonDisabled(props->plugin->identifier) != enabled)
     {
       // get a pointer to a running pvrclient if it's already started, or we won't be able to change settings
+      // TODO do something similar for content add-ons
       if (TranslateType(props->ext_point_id) == ADDON_PVRDLL &&
           enabled &&
           g_PVRManager.IsStarted())
@@ -452,6 +459,7 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
       if (enabledOnly && m_database.IsAddonDisabled(addon->ID()))
         return false;
 
+      // TODO do something similar for content add-ons
       if (addon->Type() == ADDON_PVRDLL && g_PVRManager.IsStarted())
       {
         AddonPtr pvrAddon;
@@ -623,6 +631,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CAddonLibrary(addonProps));
     case ADDON_PVRDLL:
       return AddonPtr(new CPVRClient(addonProps));
+    case ADDON_CONTENTDLL:
+      return AddonPtr(new CContentAddon(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
     default:

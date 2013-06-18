@@ -151,7 +151,8 @@ void CGUIDialogAddonInfo::UpdateControls()
 
   // TODO: System addons should be able to be disabled
   bool isPVR = isInstalled && m_localAddon->Type() == ADDON_PVRDLL;
-  bool canDisable = isInstalled && (!isSystem || isPVR) && !m_localAddon->IsInUse();
+  bool isContent = isInstalled && m_localAddon->Type() == ADDON_CONTENTDLL;
+  bool canDisable = isInstalled && (!isSystem || isPVR || isContent) && !m_localAddon->IsInUse();
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
 

@@ -56,6 +56,7 @@
 #include "utils/SeekHandler.h"
 #include "URL.h"
 #include "addons/Skin.h"
+#include "addons/ContentAddons.h"
 
 // stuff for current song
 #include "music/MusicInfoLoader.h"
@@ -5278,6 +5279,10 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
 {
   if (condition == LIBRARY_HAS_MUSIC)
   {
+    if (m_libraryHasMusic < 0)
+    { // query add-ons
+      m_libraryHasMusic = ADDON::CContentAddons::Get().HasAvailableMusicAddons() ? 1 : 0;
+    }
     if (m_libraryHasMusic < 0)
     { // query
       CMusicDatabase db;

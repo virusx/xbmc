@@ -28,6 +28,7 @@
 #include "guilib/TextureManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "addons/ContentAddons.h"
 
 using namespace std;
 using namespace XFILE;
@@ -46,7 +47,10 @@ bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
 
   if (!pNode.get())
+  {
+    CLog::Log(LOGDEBUG, "CMusicDatabaseDirectory::%s(%s) - invalid node", __FUNCTION__, strPath.c_str());
     return false;
+  }
 
   bool bResult = pNode->GetChilds(items);
   for (int i=0;i<items.Size();++i)
@@ -103,6 +107,12 @@ bool CMusicDatabaseDirectory::IsArtistDir(const CStdString& strDirectory)
 {
   NODE_TYPE node=GetDirectoryType(strDirectory);
   return (node==NODE_TYPE_ARTIST);
+}
+
+bool CMusicDatabaseDirectory::IsContentAddonDir(const CStdString& strDirectory)
+{
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strDirectory));
+  return pNode.get() && pNode->GetType() >= NODE_TYPE_CONTENT_ADDON && pNode->GetType() <= NODE_TYPE_CONTENT_ADDON_PLAYLIST;
 }
 
 bool CMusicDatabaseDirectory::HasAlbumInfo(const CStdString& strDirectory)
@@ -173,15 +183,18 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     switch (pNode->GetChildType())
     {
     case NODE_TYPE_TOP100:
+    case NODE_TYPE_CONTENT_ADDON_TOP100:
       strLabel = g_localizeStrings.Get(271); // Top 100
       break;
     case NODE_TYPE_GENRE:
       strLabel = g_localizeStrings.Get(135); // Genres
       break;
     case NODE_TYPE_ARTIST:
+    case NODE_TYPE_CONTENT_ADDON_ARTIST:
       strLabel = g_localizeStrings.Get(133); // Artists
       break;
     case NODE_TYPE_ALBUM:
+    case NODE_TYPE_CONTENT_ADDON_ALBUM:
       strLabel = g_localizeStrings.Get(132); // Albums
       break;
     case NODE_TYPE_ALBUM_RECENTLY_ADDED:
@@ -200,6 +213,7 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(1050); // Singles
       break;
     case NODE_TYPE_SONG:
+    case NODE_TYPE_CONTENT_ADDON_SONG:
       strLabel = g_localizeStrings.Get(134); // Songs
       break;
     case NODE_TYPE_SONG_TOP100:
@@ -215,6 +229,10 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(521);
       break;
     case NODE_TYPE_OVERVIEW:
+    case NODE_TYPE_CONTENT_ADDON_OVERVIEW:
+      strLabel = "";
+      break;
+    case NODE_TYPE_CONTENT_ADDON:
       strLabel = "";
       break;
     default:
@@ -266,13 +284,16 @@ CStdString CMusicDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   switch (GetDirectoryChildType(strDirectory))
   {
   case NODE_TYPE_ARTIST:
+  case NODE_TYPE_CONTENT_ADDON_ARTIST:
       return "DefaultMusicArtists.png";
   case NODE_TYPE_GENRE:
       return "DefaultMusicGenres.png";
   case NODE_TYPE_TOP100:
+  case NODE_TYPE_CONTENT_ADDON_TOP100:
       return "DefaultMusicTop100.png";
   case NODE_TYPE_ALBUM:
   case NODE_TYPE_YEAR_ALBUM:
+  case NODE_TYPE_CONTENT_ADDON_ALBUM:
     return "DefaultMusicAlbums.png";
   case NODE_TYPE_ALBUM_RECENTLY_ADDED:
   case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
@@ -284,6 +305,7 @@ CStdString CMusicDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   case NODE_TYPE_SONG:
   case NODE_TYPE_YEAR_SONG:
   case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
+  case NODE_TYPE_CONTENT_ADDON_SONG:
     return "DefaultMusicSongs.png";
   case NODE_TYPE_ALBUM_TOP100:
   case NODE_TYPE_ALBUM_TOP100_SONGS:
@@ -294,6 +316,10 @@ CStdString CMusicDatabaseDirectory::GetIcon(const CStdString &strDirectory)
     return "DefaultMusicYears.png";
   case NODE_TYPE_ALBUM_COMPILATIONS:
     return "DefaultMusicCompilations.png";
+  case NODE_TYPE_CONTENT_ADDON:
+  case NODE_TYPE_CONTENT_ADDON_OVERVIEW:
+  case NODE_TYPE_CONTENT_ADDON_PLAYLIST:
+    return "DefaultMusicSongs.png";
   default:
     CLog::Log(LOGWARNING, "%s - Unknown nodetype requested %s", __FUNCTION__, strDirectory.c_str());
     break;

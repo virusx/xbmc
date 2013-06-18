@@ -20,8 +20,10 @@
 
 #include "DirectoryNodeSongTop100.h"
 #include "music/MusicDatabase.h"
+#include "addons/ContentAddons.h"
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
+using namespace ADDON;
 
 CDirectoryNodeSongTop100::CDirectoryNodeSongTop100(const CStdString& strName, CDirectoryNode* pParent)
   : CDirectoryNode(NODE_TYPE_SONG_TOP100, strName, pParent)
@@ -37,6 +39,7 @@ bool CDirectoryNodeSongTop100::GetContent(CFileItemList& items) const
 
   CStdString strBaseDir=BuildPath();
   bool bSuccess=musicdatabase.GetTop100(strBaseDir, items);
+  bSuccess |= CContentAddons::Get().MusicGetTop100(items, CONTENT_TOP100_TYPE_SONGS);
 
   musicdatabase.Close();
 

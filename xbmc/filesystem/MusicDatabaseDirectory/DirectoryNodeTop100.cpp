@@ -18,6 +18,7 @@
  *
  */
 
+#include "addons/ContentAddons.h"
 #include "DirectoryNodeTop100.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
@@ -28,6 +29,7 @@ using namespace XFILE::MUSICDATABASEDIRECTORY;
 Node Top100Children[] = {
                           { NODE_TYPE_SONG_TOP100,  1, 10504 },
                           { NODE_TYPE_ALBUM_TOP100, 2, 10505 },
+                          { NODE_TYPE_ARTIST_TOP100, 3, 10512 },
                         };
 
 CDirectoryNodeTop100::CDirectoryNodeTop100(const CStdString& strName, CDirectoryNode* pParent)

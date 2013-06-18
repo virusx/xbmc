@@ -26,6 +26,7 @@
 #include "addons/Service.h"
 #include "dbwrappers/dataset.h"
 #include "pvr/PVRManager.h"
+#include "ContentAddons.h"
 
 using namespace ADDON;
 using namespace std;
@@ -602,6 +603,9 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
         if (service)
           service->Start();
       }
+      // TODO (re)start content add-ons
+      else if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_CONTENTDLL, false) && addon)
+        CContentAddons::Get().Start();
       // (re)start the pvr manager when enabling a pvr add-on
       else if (CAddonMgr::Get().GetAddon(addonID, addon, ADDON_PVRDLL, false) && addon)
         PVR::CPVRManager::Get().Start(true);

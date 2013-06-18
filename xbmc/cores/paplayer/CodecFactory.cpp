@@ -41,10 +41,15 @@
 #include "URL.h"
 #include "DVDPlayerCodec.h"
 #include "PCMCodec.h"
+#include "addons/ContentAddons.h"
+#include "ContentAddonCodec.h"
 
-ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
+ICodec* CodecFactory::CreateCodec(const CURL& url)
 {
-  if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
+  CStdString strFileType = url.GetFileType();
+  if (ADDON::CContentAddons::Get().IsSupported(url.Get()))
+    return new ContentAddonCodec();
+  else if (strFileType.Equals("mp3") || strFileType.Equals("mp2"))
     return new MP3Codec();
   else if (strFileType.Equals("pcm") || strFileType.Equals("l16"))
     return new PCMCodec();
@@ -201,7 +206,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     return CreateOGGCodec(strFile,filecache);
 
   //default
-  return CreateCodec(urlFile.GetFileType());
+  return CreateCodec(urlFile);
 }
 
 ICodec* CodecFactory::CreateOGGCodec(const CStdString& strFile,

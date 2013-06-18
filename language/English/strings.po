@@ -3803,7 +3803,11 @@ msgctxt "#10511"
 msgid "System info"
 msgstr ""
 
-#empty strings from id 10512 to 10515
+msgctxt "#10512"
+msgid "Top 100 Artists"
+msgstr ""
+
+#empty strings from id 10513 to 10515
 
 msgctxt "#10516"
 msgid "Music - Library"
@@ -10400,7 +10404,11 @@ msgctxt "#24023"
 msgid "Add-on disabled"
 msgstr ""
 
-#empty strings from id 24024 to 24026
+msgctxt "#24024"
+msgid "Content add-ons"
+msgstr ""
+
+#empty strings from id 24025 to 24026
 
 msgctxt "#24027"
 msgid "Weather"

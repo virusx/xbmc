@@ -54,6 +54,7 @@ namespace ADDON
     ADDON_AUDIO,
     ADDON_IMAGE,
     ADDON_EXECUTABLE,
+    ADDON_CONTENTDLL,
     ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
     ADDON_SCRAPER_LIBRARY,
     ADDON_SCRIPT_LIBRARY,

@@ -144,7 +144,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: matched %"PRIuS" rules with players", vecCores.size());
 
-  if( PAPlayer::HandlesType(url.GetFileType()) )
+  if( PAPlayer::HandlesType(url) )
   {
     // We no longer force PAPlayer as our default audio player (used to be true):
     bool bAdd = false;

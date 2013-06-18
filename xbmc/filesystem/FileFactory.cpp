@@ -95,6 +95,7 @@
 #include "Application.h"
 #include "URL.h"
 #include "utils/log.h"
+#include "ContentAddonFile.h"
 
 using namespace XFILE;
 
@@ -199,8 +200,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #if defined(TARGET_ANDROID)
     else if (strProtocol == "androidapp") return new CFileAndroidApp();
 #endif
+    else if (strProtocol == "content") return new CContentAddonFile();
   }
 
-  CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
+  CLog::Log(LOGWARNING, "%s - Unsupported file protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
   return NULL;
 }

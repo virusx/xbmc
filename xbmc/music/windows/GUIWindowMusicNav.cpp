@@ -18,6 +18,8 @@
  *
  */
 
+#include "addons/ContentAddons.h"
+
 #include "GUIWindowMusicNav.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
@@ -108,7 +110,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         return false;
 
       //  base class has opened the database, do our check
-      DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);
+      DisplayEmptyDatabaseMessage(!ADDON::CContentAddons::Get().HasAvailableMusicAddons() && m_musicdatabase.GetSongsCount() <= 0);
 
       if (m_bDisplayEmptyDatabaseMessage)
       {
@@ -284,6 +286,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   if (m_bDisplayEmptyDatabaseMessage)
     return true;
 
+  NODE_TYPE node = CMusicDatabaseDirectory::GetDirectoryChildType(strDirectory);
+
   if (strDirectory.IsEmpty())
     AddSearchFolder();
 
@@ -304,20 +308,21 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   }
   else if (strDirectory.Left(10).Equals("musicdb://"))
   {
-    CMusicDatabaseDirectory dir;
-    NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
     if (node == NODE_TYPE_ALBUM ||
         node == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
         node == NODE_TYPE_ALBUM_RECENTLY_PLAYED ||
         node == NODE_TYPE_ALBUM_TOP100 ||
         node == NODE_TYPE_ALBUM_COMPILATIONS ||
-        node == NODE_TYPE_YEAR_ALBUM)
+        node == NODE_TYPE_YEAR_ALBUM ||
+        node == NODE_TYPE_CONTENT_ADDON_ALBUM)
       items.SetContent("albums");
-    else if (node == NODE_TYPE_ARTIST)
+    else if (node == NODE_TYPE_ARTIST ||
+             node == NODE_TYPE_CONTENT_ADDON_ARTIST)
       items.SetContent("artists");
     else if (node == NODE_TYPE_SONG ||
              node == NODE_TYPE_SONG_TOP100 ||
-             node == NODE_TYPE_SINGLES)
+             node == NODE_TYPE_SINGLES ||
+             node == NODE_TYPE_CONTENT_ADDON_SONG)
       items.SetContent("songs");
     else if (node == NODE_TYPE_GENRE)
       items.SetContent("genres");
@@ -328,7 +333,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     items.SetContent("playlists");
   else if (strDirectory.Equals("plugin://music/"))
     items.SetContent("plugins");
-  else if (items.IsPlayList())
+  else if (node == NODE_TYPE_CONTENT_ADDON_PLAYLIST ||
+           items.IsPlayList())
     items.SetContent("songs");
 
   return bResult;
@@ -430,6 +436,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
        !item->IsLastFM() && !item->m_bIsFolder)
     {
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
+      ADDON::CContentAddons::Get().MusicGetContextButtons(item, buttons);
     }
     else if (item->IsVideoDb())
     {
@@ -447,7 +454,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
                               dir.IsArtistDir(item->GetPath())   )      &&
              !dir.IsAllItem(item->GetPath()) && !item->IsParentFolder() &&
              !item->IsLastFM() && !item->IsPlugin() && !item->IsScript() &&
-             !item->GetPath().Left(14).Equals("musicsearch://"))
+             !item->GetPath().Left(14).Equals("musicsearch://") &&
+             !dir.IsContentAddonDir(item->GetPath()))
     {
       if (dir.IsArtistDir(item->GetPath()))
         buttons.Add(CONTEXT_BUTTON_INFO, 21891);
@@ -462,6 +470,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
        !item->IsPlugin() && !item->GetPath().Left(14).Equals("musicsearch://"))
     {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
+      ADDON::CContentAddons::Get().MusicGetContextButtons(item, buttons);
     }
 
     // enable query all artist button only in album view
@@ -479,7 +488,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (!item->IsParentFolder() && !inPlaylists &&
         (nodetype == NODE_TYPE_ROOT     ||
          nodetype == NODE_TYPE_OVERVIEW ||
-         nodetype == NODE_TYPE_TOP100))
+         nodetype == NODE_TYPE_TOP100 ||
+         nodetype == NODE_TYPE_CONTENT_ADDON_TOP100))
     {
       if (!item->GetPath().Equals(g_settings.m_defaultMusicLibSource))
         buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
@@ -555,8 +565,12 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
+  if (button >= CONTEXT_BUTTON_ADDON1)
+    return ADDON::CContentAddons::Get().MusicClickContextButton(item, button);
+
   switch (button)
   {
+  //TODO context buttons for content add-ons
   case CONTEXT_BUTTON_INFO:
     {
       if (!item->IsVideoDb())

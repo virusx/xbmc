@@ -1,6 +1,7 @@
 SRCS=Addon.cpp \
      AddonCallbacks.cpp \
      AddonCallbacksAddon.cpp \
+     AddonCallbacksContent.cpp \
      AddonCallbacksGUI.cpp \
      AddonCallbacksPVR.cpp \
      AddonDatabase.cpp \
@@ -8,6 +9,8 @@ SRCS=Addon.cpp \
      AddonManager.cpp \
      AddonStatusHandler.cpp \
      AddonVersion.cpp \
+     ContentAddon.cpp \
+     ContentAddons.cpp \
      GUIDialogAddonInfo.cpp \
      GUIDialogAddonSettings.cpp \
      GUIViewStateAddonBrowser.cpp \

@@ -206,8 +206,9 @@ endif
 
 LIBADDON_DIRS=\
 	lib/addons/library.xbmc.addon \
-	lib/addons/library.xbmc.pvr \
+	lib/addons/library.xbmc.content \
 	lib/addons/library.xbmc.gui \
+	lib/addons/library.xbmc.pvr
 
 CONFLUENCE_MEDIA=addons/skin.confluence/media
 SKIN_DIRS=$(CONFLUENCE_MEDIA)
@@ -335,6 +336,7 @@ screensavers: $(SS_DIRS)
 
 libaddon: exports
 	$(MAKE) -C lib/addons/library.xbmc.addon
+	$(MAKE) -C lib/addons/library.xbmc.content
 	$(MAKE) -C lib/addons/library.xbmc.gui
 	$(MAKE) -C lib/addons/library.xbmc.pvr
 dvdpcodecs: dllloader
@@ -380,11 +382,16 @@ ifeq (@USE_PVR_ADDONS@,1)
 	$(MAKE) -C pvr-addons
 endif
 
+contentaddons: exports
+ifeq (@USE_CONTENT_ADDONS@,1)
+	$(MAKE) -C content-addons
+endif
+
 codecs: papcodecs dvdpcodecs
 
 libs: libhdhomerun imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
 
-externals: codecs libs visualizations screensavers libaddon pvraddons
+externals: codecs libs visualizations screensavers libaddon pvraddons contentaddons
 
 xcode_depends: \
 	codecs libs visualizations screensavers eventclients skins libaddon \
@@ -474,6 +481,9 @@ install-arch:
 	@# Arch dependent files
 ifeq (@USE_PVR_ADDONS@,1)
 	$(MAKE) -C pvr-addons install
+endif
+ifeq (@USE_CONTENT_ADDONS@,1)
+	$(MAKE) -C content-addons install
 endif
 ifeq ($(findstring freebsd,@ARCH@), freebsd)
 	@find -E system addons -type f -not -iregex ".*svn.*" \
@@ -575,11 +585,16 @@ clean-pvraddons:
 ifeq (@USE_PVR_ADDONS@,1)
 	if test -f pvr-addons/Makefile; then $(MAKE) -C pvr-addons clean; fi;
 endif
+clean-contentaddons:
+ifeq (@USE_CONTENT_ADDONS@,1)
+	if test -f content-addons/Makefile; then $(MAKE) -C content-addons clean; fi;
+endif
 
 clean-codecs: clean-dvdpcodecs clean-papcodecs
 
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
-	clean-screensavers clean-visualisations clean-libaddons clean-pvraddons
+	clean-screensavers clean-visualisations clean-libaddons clean-pvraddons \
+	clean-contentaddons
 
 ifeq (1,@GTEST_CONFIGURED@)
 check: testsuite

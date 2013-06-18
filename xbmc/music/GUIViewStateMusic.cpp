@@ -129,6 +129,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   switch (NodeType)
   {
   case NODE_TYPE_OVERVIEW:
+  case NODE_TYPE_CONTENT_ADDON_OVERVIEW:
     {
       AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%F", "", "%L", ""));  // Filename, empty | Foldername, empty
       SetSortMethod(SORT_METHOD_NONE);
@@ -139,6 +140,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     }
     break;
   case NODE_TYPE_TOP100:
+  case NODE_TYPE_CONTENT_ADDON_TOP100:
     {
       AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%F", "", "%L", ""));  // Filename, empty | Foldername, empty
       SetSortMethod(SORT_METHOD_NONE);
@@ -169,6 +171,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
     }
     break;
   case NODE_TYPE_ARTIST:
+  case NODE_TYPE_CONTENT_ADDON_ARTIST:
     {
       if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
       {
@@ -189,6 +192,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   case NODE_TYPE_ALBUM_COMPILATIONS:
   case NODE_TYPE_ALBUM:
   case NODE_TYPE_YEAR_ALBUM:
+  case NODE_TYPE_CONTENT_ADDON_ALBUM:
     {
       // album
       if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
@@ -290,6 +294,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   case NODE_TYPE_ALBUM_TOP100_SONGS:
   case NODE_TYPE_YEAR_SONG:
   case NODE_TYPE_SONG:
+  case NODE_TYPE_CONTENT_ADDON_SONG:
     {
       AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
       if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
@@ -349,22 +354,26 @@ void CGUIViewStateMusicDatabase::SaveViewState()
   switch (NodeType)
   {
     case NODE_TYPE_ARTIST:
+    case NODE_TYPE_CONTENT_ADDON_ARTIST:
       SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV, &g_settings.m_viewStateMusicNavArtists);
       break;
     case NODE_TYPE_ALBUM_COMPILATIONS:
     case NODE_TYPE_ALBUM:
     case NODE_TYPE_YEAR_ALBUM:
+    case NODE_TYPE_CONTENT_ADDON_ALBUM:
       SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV, &g_settings.m_viewStateMusicNavAlbums);
       break;
     case NODE_TYPE_ALBUM_RECENTLY_ADDED:
     case NODE_TYPE_ALBUM_TOP100:
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
+    case NODE_TYPE_CONTENT_ADDON_TOP100:
       SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV);
       break;
     case NODE_TYPE_SINGLES:
     case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
     case NODE_TYPE_SONG:
     case NODE_TYPE_YEAR_SONG:
+    case NODE_TYPE_CONTENT_ADDON_SONG:
       SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV, &g_settings.m_viewStateMusicNavSongs);
       break;
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:

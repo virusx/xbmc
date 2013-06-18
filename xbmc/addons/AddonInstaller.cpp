@@ -42,6 +42,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "URL.h"
 #include "pvr/PVRManager.h"
+#include "ContentAddons.h"
 
 using namespace std;
 using namespace XFILE;
@@ -581,6 +582,11 @@ bool CAddonInstallJob::OnPreInstall()
     // stop the pvr manager, so running pvr add-ons are stopped and closed
     PVR::CPVRManager::Get().Stop();
   }
+  if (m_addon->Type() == ADDON_CONTENTDLL)
+  {
+    // close the connection to content add-ons
+    ADDON::CContentAddons::Get().Stop();
+  }
   return false;
 }
 
@@ -707,6 +713,9 @@ void CAddonInstallJob::OnPostInstall(bool reloadAddon)
     // (re)start the pvr manager
     PVR::CPVRManager::Get().Start(true);
   }
+
+  if (m_addon->Type() == ADDON_CONTENTDLL)
+    ADDON::CContentAddons::Get().Start();
 }
 
 void CAddonInstallJob::ReportInstallError(const CStdString& addonID,
@@ -766,6 +775,11 @@ bool CAddonUnInstallJob::DoWork()
     // stop the pvr manager, so running pvr add-ons are stopped and closed
     PVR::CPVRManager::Get().Stop();
   }
+  if (m_addon->Type() == ADDON_CONTENTDLL)
+  {
+    // close the connection to content add-ons
+    ADDON::CContentAddons::Get().Stop();
+  }
   if (m_addon->Type() == ADDON_SERVICE)
   {
     boost::shared_ptr<CService> service = boost::dynamic_pointer_cast<CService>(m_addon);
@@ -809,4 +823,7 @@ void CAddonUnInstallJob::OnPostUnInstall()
     if (g_guiSettings.GetBool("pvrmanager.enabled"))
       PVR::CPVRManager::Get().Start(true);
   }
+
+  if (m_addon->Type() == ADDON_CONTENTDLL)
+    ADDON::CContentAddons::Get().Start();
 }

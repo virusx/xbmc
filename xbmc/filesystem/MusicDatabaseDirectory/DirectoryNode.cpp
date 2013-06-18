@@ -18,6 +18,7 @@
  *
  */
 
+#include "utils/log.h"
 #include "DirectoryNode.h"
 #include "utils/URIUtils.h"
 #include "QueryParams.h"
@@ -25,6 +26,7 @@
 #include "DirectoryNodeOverview.h"
 #include "DirectoryNodeGenre.h"
 #include "DirectoryNodeArtist.h"
+#include "DirectoryNodeArtistTop100.h"
 #include "DirectoryNodeAlbum.h"
 #include "DirectoryNodeSong.h"
 #include "DirectoryNodeAlbumRecentlyAdded.h"
@@ -41,12 +43,23 @@
 #include "DirectoryNodeYearAlbum.h"
 #include "DirectoryNodeYearSong.h"
 #include "DirectoryNodeSingles.h"
+#include "DirectoryNodeContentAddon.h"
+#include "DirectoryNodeContentAddonAlbum.h"
+#include "DirectoryNodeContentAddonArtist.h"
+#include "DirectoryNodeContentAddonOverview.h"
+#include "DirectoryNodeContentAddonPlaylist.h"
+#include "DirectoryNodeContentAddonSong.h"
+#include "DirectoryNodeContentAddonAlbumTop100.h"
+#include "DirectoryNodeContentAddonArtistTop100.h"
+#include "DirectoryNodeContentAddonTop100.h"
+#include "DirectoryNodeContentAddonTop100Song.h"
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicDbUrl.h"
+#include "addons/ContentAddon.h"
 
 using namespace std;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
@@ -151,6 +164,28 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeYearAlbum(strName, pParent);
   case NODE_TYPE_YEAR_SONG:
     return new CDirectoryNodeYearSong(strName, pParent);
+  case NODE_TYPE_ARTIST_TOP100:
+    return new CDirectoryNodeArtistTop100(strName, pParent);
+  case NODE_TYPE_CONTENT_ADDON:
+    return new CDirectoryNodeContentAddon(strName, pParent);
+  case NODE_TYPE_CONTENT_ADDON_OVERVIEW:
+    return new CDirectoryNodeContentAddonOverview(strName, pParent);
+  case NODE_TYPE_CONTENT_ADDON_ALBUM:
+    return new CDirectoryNodeContentAddonAlbum(strName, pParent);
+  case NODE_TYPE_CONTENT_ADDON_ARTIST:
+    return new CDirectoryNodeContentAddonArtist(strName, pParent);
+  case NODE_TYPE_CONTENT_ADDON_SONG:
+    return new CDirectoryNodeContentAddonSong(strName, pParent);
+  case NODE_TYPE_CONTENT_ADDON_TOP100:
+    return new CDirectoryNodeContentAddonTop100(strName, pParent);
+  case NODE_TYPE_CONTENT_ADDON_TOP100SONG:
+    return new CDirectoryNodeContentAddonTop100Song(strName, pParent);
+  case NODE_TYPE_CONTENT_ADDON_ALBUMTOP100:
+    return new CDirectoryNodeContentAddonAlbumTop100(strName, pParent);
+  case NODE_TYPE_CONTENT_ADDON_ARTISTTOP100:
+    return new CDirectoryNodeContentAddonArtistTop100(strName, pParent);
+  case NODE_TYPE_CONTENT_ADDON_PLAYLIST:
+    return new CDirectoryNodeContentAddonPlaylist(strName, pParent);
   default:
     break;
   }
@@ -373,4 +408,45 @@ bool CDirectoryNode::CanCache() const
   // JM: No need to cache these views, as caching is added in the mediawindow baseclass for anything that takes
   //     longer than a second
   return false;
+}
+
+boost::shared_ptr<ADDON::CContentAddon> CContentAddonDirectoryNode::GetAddon(void) const
+{
+  boost::shared_ptr<ADDON::CContentAddon> retval;
+  CContentAddonDirectoryNode* parent = dynamic_cast<CContentAddonDirectoryNode*>(GetParent());
+  if (parent)
+    retval = parent->GetAddon();
+  return retval;
+}
+
+CStdString CContentAddonDirectoryNode::Artist(void) const
+{
+  CContentAddonDirectoryNode* parent = dynamic_cast<CContentAddonDirectoryNode*>(GetParent());
+  if (parent)
+    return parent->Artist();
+  return "";
+}
+
+CStdString CContentAddonDirectoryNode::Album(void) const
+{
+  CContentAddonDirectoryNode* parent = dynamic_cast<CContentAddonDirectoryNode*>(GetParent());
+  if (parent)
+    return parent->Album();
+  return "";
+}
+
+CStdString CContentAddonDirectoryNode::Song(void) const
+{
+  CContentAddonDirectoryNode* parent = dynamic_cast<CContentAddonDirectoryNode*>(GetParent());
+  if (parent)
+    return parent->Song();
+  return "";
+}
+
+CStdString CContentAddonDirectoryNode::Playlist(void) const
+{
+  CContentAddonDirectoryNode* parent = dynamic_cast<CContentAddonDirectoryNode*>(GetParent());
+  if (parent)
+    return parent->Playlist();
+  return "";
 }

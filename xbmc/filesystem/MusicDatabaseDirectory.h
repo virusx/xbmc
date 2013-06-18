@@ -37,6 +37,7 @@ namespace XFILE
     static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);
     static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);
     bool IsArtistDir(const CStdString& strDirectory);
+    bool IsContentAddonDir(const CStdString& strDirectory);
     bool HasAlbumInfo(const CStdString& strDirectory);
     void ClearDirectoryCache(const CStdString& strDirectory);
     static bool IsAllItem(const CStdString& strDirectory);

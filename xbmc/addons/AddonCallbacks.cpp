@@ -21,6 +21,7 @@
 #include "Addon.h"
 #include "AddonCallbacks.h"
 #include "AddonCallbacksAddon.h"
+#include "AddonCallbacksContent.h"
 #include "AddonCallbacksGUI.h"
 #include "AddonCallbacksPVR.h"
 #include "filesystem/SpecialProtocol.h"
@@ -31,20 +32,23 @@ namespace ADDON
 
 CAddonCallbacks::CAddonCallbacks(CAddon* addon)
 {
-  m_addon       = addon;
-  m_callbacks   = new AddonCB;
-  m_helperAddon = NULL;
-  m_helperGUI   = NULL;
-  m_helperPVR   = NULL;
+  m_addon         = addon;
+  m_callbacks     = new AddonCB;
+  m_helperAddon   = NULL;
+  m_helperGUI     = NULL;
+  m_helperPVR     = NULL;
+  m_helperContent = NULL;
 
-  m_callbacks->libBasePath           = strdup(CSpecialProtocol::TranslatePath("special://xbmcbin/addons"));
-  m_callbacks->addonData             = this;
-  m_callbacks->AddOnLib_RegisterMe   = CAddonCallbacks::AddOnLib_RegisterMe;
-  m_callbacks->AddOnLib_UnRegisterMe = CAddonCallbacks::AddOnLib_UnRegisterMe;
-  m_callbacks->GUILib_RegisterMe     = CAddonCallbacks::GUILib_RegisterMe;
-  m_callbacks->GUILib_UnRegisterMe   = CAddonCallbacks::GUILib_UnRegisterMe;
-  m_callbacks->PVRLib_RegisterMe     = CAddonCallbacks::PVRLib_RegisterMe;
-  m_callbacks->PVRLib_UnRegisterMe   = CAddonCallbacks::PVRLib_UnRegisterMe;
+  m_callbacks->libBasePath             = strdup(CSpecialProtocol::TranslatePath("special://xbmcbin/addons"));
+  m_callbacks->addonData               = this;
+  m_callbacks->AddOnLib_RegisterMe     = CAddonCallbacks::AddOnLib_RegisterMe;
+  m_callbacks->AddOnLib_UnRegisterMe   = CAddonCallbacks::AddOnLib_UnRegisterMe;
+  m_callbacks->GUILib_RegisterMe       = CAddonCallbacks::GUILib_RegisterMe;
+  m_callbacks->GUILib_UnRegisterMe     = CAddonCallbacks::GUILib_UnRegisterMe;
+  m_callbacks->PVRLib_RegisterMe       = CAddonCallbacks::PVRLib_RegisterMe;
+  m_callbacks->PVRLib_UnRegisterMe     = CAddonCallbacks::PVRLib_UnRegisterMe;
+  m_callbacks->ContentLib_RegisterMe   = CAddonCallbacks::ContentLib_RegisterMe;
+  m_callbacks->ContentLib_UnRegisterMe = CAddonCallbacks::ContentLib_UnRegisterMe;
 }
 
 CAddonCallbacks::~CAddonCallbacks()
@@ -136,6 +140,32 @@ void CAddonCallbacks::PVRLib_UnRegisterMe(void *addonData, CB_PVRLib *cbTable)
 
   delete addon->m_helperPVR;
   addon->m_helperPVR = NULL;
+}
+
+CB_ContentLib* CAddonCallbacks::ContentLib_RegisterMe(void *addonData)
+{
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  if (addon == NULL)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    return NULL;
+  }
+
+  addon->m_helperContent = new CAddonCallbacksContent(addon->m_addon);
+  return addon->m_helperContent->GetCallbacks();
+}
+
+void CAddonCallbacks::ContentLib_UnRegisterMe(void *addonData, CB_ContentLib *cbTable)
+{
+  CAddonCallbacks* addon = (CAddonCallbacks*) addonData;
+  if (addon == NULL)
+  {
+    CLog::Log(LOGERROR, "CAddonCallbacks - %s - called with a null pointer", __FUNCTION__);
+    return;
+  }
+
+  delete addon->m_helperContent;
+  addon->m_helperContent = NULL;
 }
 
 }; /* namespace ADDON */

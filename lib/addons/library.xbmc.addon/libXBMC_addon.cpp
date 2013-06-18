@@ -269,4 +269,13 @@ DLLEXPORT bool XBMC_remove_directory(void *hdl, void* cb, const char *strPath)
   return ((CB_AddOnLib*)cb)->RemoveDirectory(((AddonCB*)hdl)->addonData, strPath);
 }
 
+DLLEXPORT char* XBMC_get_box_id(void *hdl, void* cb)
+{
+  if (cb == NULL)
+    return "";
+
+  string buffer = ((CB_AddOnLib*)cb)->GetBoxId(((AddonCB*)hdl)->addonData);
+  return strdup(buffer.c_str());
+}
+
 };
