@@ -255,6 +255,7 @@ bool CMusicDatabaseDirectory::ContainsSongs(const CStdString &path)
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_TOP100_SONGS) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG_TOP100) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_YEAR_SONG) return true;
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_CONTENT_ADDON_SONG) return true;
   return false;
 }
 
