@@ -196,9 +196,9 @@ void CContentAddon::ReadMusicFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItem
 
       CFileItemPtr pItem(new CFileItem(item));
       if (addonItems->items[iPtr].song.strThumb[0] != 0)
-        pItem->SetArt("thumb", addonItems->items[iPtr].song.strThumb);
+        pItem->SetArt("thumb", ContentBuildPath(addonItems->items[iPtr].song.strThumb));
       if (addonItems->items[iPtr].song.strFanart[0] != 0)
-        pItem->SetProperty("fanart_image", addonItems->items[iPtr].song.strFanart);
+        pItem->SetProperty("fanart_image", ContentBuildPath(addonItems->items[iPtr].song.strFanart));
 
       xbmcItems.AddAutoJoin(pItem);
     }
@@ -223,9 +223,9 @@ void CContentAddon::ReadMusicFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItem
       pItem->SetIconImage("DefaultArtist.png");
       pItem->SetProperty("artist_description", addonItems->items[iPtr].artist.strBiography);
       if (addonItems->items[iPtr].artist.strThumb[0] != 0)
-        pItem->SetArt("thumb", addonItems->items[iPtr].artist.strThumb);
+        pItem->SetArt("thumb", ContentBuildPath(addonItems->items[iPtr].artist.strThumb));
       if (addonItems->items[iPtr].artist.strFanart[0] != 0)
-        pItem->SetProperty("fanart_image", addonItems->items[iPtr].artist.strFanart);
+        pItem->SetArt("fanart_image", ContentBuildPath(addonItems->items[iPtr].artist.strFanart));
 
       {
         CSingleLock lock(m_critSection);
@@ -241,9 +241,9 @@ void CContentAddon::ReadMusicFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItem
 
       CFileItemPtr pItem(new CFileItem(item));
       if (addonItems->items[iPtr].playlist.strThumb[0] != 0)
-        pItem->SetArt("thumb", addonItems->items[iPtr].playlist.strThumb);
+        pItem->SetArt("thumb", ContentBuildPath(addonItems->items[iPtr].playlist.strThumb));
       if (addonItems->items[iPtr].playlist.strFanart[0] != 0)
-        pItem->SetProperty("fanart_image", addonItems->items[iPtr].playlist.strFanart);
+        pItem->SetProperty("fanart_image", ContentBuildPath(addonItems->items[iPtr].playlist.strFanart));
 
       {
         CSingleLock lock(m_critSection);
@@ -259,9 +259,9 @@ void CContentAddon::ReadMusicFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItem
 
       CFileItemPtr pItem(new CFileItem(item));
       if (addonItems->items[iPtr].directory.strThumb[0] != 0)
-        pItem->SetArt("thumb", addonItems->items[iPtr].directory.strThumb);
+        pItem->SetArt("thumb", ContentBuildPath(addonItems->items[iPtr].directory.strThumb));
       if (addonItems->items[iPtr].directory.strFanart[0] != 0)
-        pItem->SetProperty("fanart_image", addonItems->items[iPtr].directory.strFanart);
+        pItem->SetProperty("fanart_image", ContentBuildPath(addonItems->items[iPtr].directory.strFanart));
 
       xbmcItems.Add(pItem);
     }
@@ -294,9 +294,9 @@ void CContentAddon::ReadMusicFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItem
 
       CFileItemPtr pItem(new CFileItem(albumSource));
       if (addonItems->items[iPtr].album.strThumb[0] != 0)
-        pItem->SetArt("thumb", addonItems->items[iPtr].album.strThumb);
+        pItem->SetArt("thumb", ContentBuildPath(addonItems->items[iPtr].album.strThumb));
       if (addonItems->items[iPtr].album.strFanart[0] != 0)
-        pItem->SetProperty("fanart_image", addonItems->items[iPtr].album.strFanart);
+        pItem->SetProperty("fanart_image", ContentBuildPath(addonItems->items[iPtr].album.strFanart));
 
       {
         CSingleLock lock(m_critSection);
@@ -916,4 +916,14 @@ CStdString CContentAddon::MusicBuildPath(CONTENT_ADDON_TYPE type, const CStdStri
   }
 
   return strFilename;
+}
+
+CStdString CContentAddon::ContentBuildPath(const CStdString& strPath)
+{
+  if (URIUtils::IsInternetStream(CURL(strPath)))
+    return strPath;
+
+  CStdString retVal;
+  retVal.Format("%s%s/%s", CONTENT_NODE, ID().c_str(), strPath.c_str());
+  return retVal;
 }

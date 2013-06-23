@@ -29,6 +29,7 @@ class CAEChannelInfo;
 
 namespace ADDON
 {
+  #define CONTENT_NODE           "content://"
   #define MUSIC_VIRTUAL_NODE     "musicdb://99/"
   #define MUSIC_PLAYLIST         "playlist"
   #define MUSIC_ARTIST           "artist"
@@ -88,6 +89,7 @@ namespace ADDON
     CStdString   MusicGetArtistName(const CStdString& strArtist) const;
 
   private:
+    CStdString   ContentBuildPath(const CStdString& strPath);
     CStdString   MusicBuildPath(CONTENT_ADDON_TYPE type, const CStdString& strFilename, const CStdString& strArtist = "", const CStdString& strAlbum = "") const;
     CStdString   MusicGetFilename(const CStdString& strPath) const;
     bool CreateOnDemand(void);
