@@ -79,6 +79,14 @@ extern "C" {
     char strFanart[CONTENT_ADDON_FILENAME_STRING_LENGTH];
   } ATTRIBUTE_PACKED CONTENT_ADDON_DIRECTORY;
 
+  typedef struct CONTENT_ADDON_FILE
+  {
+    char strPath[CONTENT_ADDON_FILENAME_STRING_LENGTH];
+    char strName[CONTENT_ADDON_NAME_STRING_LENGTH];
+    char strThumb[CONTENT_ADDON_FILENAME_STRING_LENGTH];
+    char strFanart[CONTENT_ADDON_FILENAME_STRING_LENGTH];
+  } ATTRIBUTE_PACKED CONTENT_ADDON_FILE;
+
   typedef struct CONTENT_ADDON_SONG
   {
     char strFilename[CONTENT_ADDON_FILENAME_STRING_LENGTH];
@@ -137,9 +145,10 @@ extern "C" {
   {
     CONTENT_ADDON_TYPE_SONG,
     CONTENT_ADDON_TYPE_ARTIST,
-    CONTENT_ADDON_TYPE_DIRECTORY,
     CONTENT_ADDON_TYPE_PLAYLIST,
-    CONTENT_ADDON_TYPE_ALBUM
+    CONTENT_ADDON_TYPE_ALBUM,
+    CONTENT_ADDON_TYPE_DIRECTORY,
+    CONTENT_ADDON_TYPE_FILE
   } CONTENT_ADDON_TYPE;
 
   typedef struct CONTENT_ADDON_FILEITEM
@@ -148,10 +157,11 @@ extern "C" {
     union
     {
       CONTENT_ADDON_PLAYLIST  playlist;
-      CONTENT_ADDON_DIRECTORY directory;
       CONTENT_ADDON_ARTIST    artist;
       CONTENT_ADDON_SONG      song;
       CONTENT_ADDON_ALBUM     album;
+      CONTENT_ADDON_DIRECTORY directory;
+      CONTENT_ADDON_FILE      file;
     };
   } ATTRIBUTE_PACKED CONTENT_ADDON_FILEITEM;
 
@@ -245,6 +255,8 @@ extern "C" {
     CONTENT_TOP100_TYPE_SONGS
   } CONTENT_TOP100_TYPE;
 
+  typedef void* CONTENT_HANDLE;
+
   /*!
    * @brief Structure to transfer the methods from xbmc_content_dll.h to XBMC
    */
@@ -255,6 +267,18 @@ extern "C" {
     const char*      (__cdecl* GetServerName)(void);
     void             (__cdecl* FreeFileList)(CONTENT_ADDON_FILELIST*);
     bool             (__cdecl* SupportsFile)(const char* strFilename);
+
+    /// @name VFS operations
+    ///{
+    CONTENT_ERROR    (__cdecl* FileOpen)(const char*, CONTENT_HANDLE*);
+    void             (__cdecl* FileClose)(CONTENT_HANDLE);
+    unsigned int     (__cdecl* FileRead)(CONTENT_HANDLE, void*, int64_t);
+    int              (__cdecl* FileExists)(const char*);
+    int64_t          (__cdecl* FileSeek)(CONTENT_HANDLE, int64_t, int);
+    int64_t          (__cdecl* FileGetPosition)(CONTENT_HANDLE);
+    int64_t          (__cdecl* FileGetLength)(CONTENT_HANDLE);
+    CONTENT_ERROR    (__cdecl* FileGetDirectory)(CONTENT_ADDON_FILELIST**, const char*);
+    ///}
 
     /// @name Music files
     ///{

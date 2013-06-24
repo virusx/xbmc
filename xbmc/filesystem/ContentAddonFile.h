@@ -20,26 +20,33 @@
  */
 
 #include "IFile.h"
-#include "video/VideoInfoTag.h"
+#include <boost/shared_ptr.hpp>
+
+namespace ADDON { class CContentAddon; }
 
 namespace XFILE {
 
 class CContentAddonFile : public IFile
 {
 public:
-  CContentAddonFile();
-  virtual ~CContentAddonFile();
+  CContentAddonFile(void);
+  virtual ~CContentAddonFile(void);
 
   bool Open(const CURL& url);
-  bool Exists(const CURL& url) { return false; }
+  bool Exists(const CURL& url);
   int Stat(const CURL& url, struct __stat64* buffer) { return 0; }
   unsigned int Read(void* lpBuf, int64_t uiBufSize);
   int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-  void Close();
-  int64_t GetPosition();
-  int64_t GetLength();
+  void Close(void);
+  int64_t GetPosition(void);
+  int64_t GetLength(void);
 
   CStdString GetContent() { return "application/octet-stream"; }
+
+private:
+  boost::shared_ptr<ADDON::CContentAddon> m_addon;
+  void*                                   m_handle;
+  bool                                    m_bOpen;
 };
 
 }

@@ -19,64 +19,79 @@
  */
 
 #include "ContentAddonFile.h"
-#include "addons/ContentAddon.h"
-#include "Util.h"
-#include "cores/dvdplayer/DVDInputStreams/DVDInputStream.h"
+#include "addons/ContentAddons.h"
 #include "utils/log.h"
-#include "utils/StringUtils.h"
 #include "URL.h"
 
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
 
-CContentAddonFile::CContentAddonFile()
+CContentAddonFile::CContentAddonFile(void) :
+    m_handle(NULL),
+    m_bOpen(false)
 {
 }
 
-CContentAddonFile::~CContentAddonFile()
+CContentAddonFile::~CContentAddonFile(void)
 {
+  Close();
 }
 
 bool CContentAddonFile::Open(const CURL& url)
 {
-  CLog::Log(LOGDEBUG, "TODO: %s(%s)", __FUNCTION__, url.Get().c_str());
-//  Close();
-
-  //TODO
+  m_addon = CContentAddons::Get().GetAddonForPath(url.Get());
+  if (m_addon.get())
+  {
+    m_bOpen = m_addon->FileOpen(url.Get().c_str(), &m_handle);
+    return m_bOpen;
+  }
+  CLog::Log(LOGERROR, "%s(%s) failed to find add-on", __FUNCTION__, url.Get().c_str());
   return false;
 }
 
-void CContentAddonFile::Close()
+bool CContentAddonFile::Exists(const CURL& url)
 {
-  CLog::Log(LOGDEBUG, "TODO: %s()", __FUNCTION__);
-  //TODO
+  CONTENT_ADDON addon = CContentAddons::Get().GetAddonForPath(url.Get());
+  if (addon.get())
+    return addon->FileExists(url.Get().c_str());
+  return false;
+}
+
+void CContentAddonFile::Close(void)
+{
+  if (m_bOpen && m_addon.get())
+  {
+    m_addon->FileClose(m_handle);
+    m_bOpen  = false;
+    m_handle = NULL;
+  }
 }
 
 unsigned int CContentAddonFile::Read(void* buffer, int64_t size)
 {
-  CLog::Log(LOGDEBUG, "%s - TODO", __FUNCTION__);
-  //TODO
+  if (m_bOpen && m_addon.get())
+    return m_addon->FileRead(m_handle, buffer, size);
   return 0;
 }
 
-int64_t CContentAddonFile::GetLength()
+int64_t CContentAddonFile::GetLength(void)
 {
-  CLog::Log(LOGDEBUG, "%s - TODO", __FUNCTION__);
-  //TODO
+  if (m_bOpen && m_addon.get())
+    return m_addon->FileGetLength(m_handle);
   return 0;
 }
 
 int64_t CContentAddonFile::Seek(int64_t pos, int whence)
 {
-  CLog::Log(LOGDEBUG, "%s - TODO", __FUNCTION__);
-  //TODO
+  if (m_bOpen && m_addon.get())
+    return m_addon->FileSeek(m_handle, pos, whence);
   return 0;
 }
 
-int64_t CContentAddonFile::GetPosition()
+int64_t CContentAddonFile::GetPosition(void)
 {
-  CLog::Log(LOGDEBUG, "%s - TODO", __FUNCTION__);
-  //TODO
+  if (m_bOpen && m_addon.get())
+    return m_addon->FileGetPosition(m_handle);
   return 0;
 }

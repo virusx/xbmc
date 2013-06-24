@@ -19,40 +19,22 @@
  */
 
 #include "ContentAddonDirectory.h"
-#include "FileItem.h"
-#include "Util.h"
-#include "URL.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "guilib/LocalizeStrings.h"
 #include "addons/ContentAddons.h"
 
-using namespace std;
-using namespace XFILE;
 using namespace ADDON;
-
-CContentAddonDirectory::CContentAddonDirectory()
-{
-}
-
-CContentAddonDirectory::~CContentAddonDirectory()
-{
-}
 
 bool CContentAddonDirectory::Exists(const char* strPath)
 {
-  CLog::Log(LOGDEBUG, "TODO: %s(%s)", __FUNCTION__, strPath);
+  CONTENT_ADDON addon = CContentAddons::Get().GetAddonForPath(strPath);
+  if (addon.get())
+    return addon->FileExists(strPath);
   return false;
 }
 
 bool CContentAddonDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  CLog::Log(LOGDEBUG, "TODO: %s(%s)", __FUNCTION__, strPath.c_str());
+  CONTENT_ADDON addon = CContentAddons::Get().GetAddonForPath(strPath);
+  if (addon.get())
+    return addon->FileGetDirectory(items, strPath);
   return false;
 }
-
-bool CContentAddonDirectory::SupportsWriteFileOperations(const CStdString& strPath)
-{
-  return false;
-}
-

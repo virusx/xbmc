@@ -46,7 +46,8 @@ CContentAddon::CContentAddon(const AddonProps& props) :
     m_playState(CONTENT_ADDON_PLAYSTATE_STOP),
     m_bProvidesMusicCodec(false),
     m_bProvidesMusicFiles(false),
-    m_bSupportsConcurrentStreams(false)
+    m_bSupportsConcurrentStreams(false),
+    m_bProvidesFiles(false)
 {
   m_strUserPath          = CSpecialProtocol::TranslatePath(Profile()).c_str();
   m_strClientPath        = CSpecialProtocol::TranslatePath(Path()).c_str();
@@ -63,11 +64,13 @@ CContentAddon::CContentAddon(const cp_extension_t *ext) :
 {
   CStdString strProvidesMusicCodec = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_music_codec");
   CStdString strProvidesMusicFiles = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_music_files");
+  CStdString strProvidesFiles = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_files");
   CStdString strSupportsConcurrentStreams = CAddonMgr::Get().GetExtValue(ext->configuration, "@supports_concurrent_streams");
 
   m_fileTypes                  = StringUtils::Split(CAddonMgr::Get().GetExtValue(ext->configuration, "@filetypes"), "|");
   m_bProvidesMusicCodec        = strProvidesMusicCodec.ToLower().Equals("true") || strProvidesMusicCodec.Equals("1");
   m_bProvidesMusicFiles        = strProvidesMusicFiles.ToLower().Equals("true") || strProvidesMusicFiles.Equals("1");
+  m_bProvidesFiles             = strProvidesFiles.ToLower().Equals("true") || strProvidesFiles.Equals("1");
   m_bSupportsConcurrentStreams = strSupportsConcurrentStreams.ToLower().Equals("true") || strSupportsConcurrentStreams.Equals("1");
   m_strUserPath                = CSpecialProtocol::TranslatePath(Profile()).c_str();
   m_strClientPath              = CSpecialProtocol::TranslatePath(Path()).c_str();
@@ -177,7 +180,7 @@ void CContentAddon::FreeFileList(CONTENT_ADDON_FILELIST* items)
   catch (exception &e) { LogException(e, __FUNCTION__); }
 }
 
-void CContentAddon::ReadMusicFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItemList& xbmcItems, const string& strArtist /* = "" */, const string& strAlbum /* = "" */)
+void CContentAddon::ReadFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItemList& xbmcItems, const string& strArtist /* = "" */, const string& strAlbum /* = "" */)
 {
   for (unsigned iPtr = 0; iPtr < addonItems->iSize; iPtr++)
   {
@@ -251,20 +254,6 @@ void CContentAddon::ReadMusicFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItem
       }
       xbmcItems.Add(pItem);
     }
-    else if (addonItems->items[iPtr].type == CONTENT_ADDON_TYPE_DIRECTORY)
-    {
-      CMediaSource item;
-      item.strPath = MusicBuildPath(CONTENT_ADDON_TYPE_DIRECTORY, addonItems->items[iPtr].directory.strPath);
-      item.strName = addonItems->items[iPtr].directory.strName;
-
-      CFileItemPtr pItem(new CFileItem(item));
-      if (addonItems->items[iPtr].directory.strThumb[0] != 0)
-        pItem->SetArt("thumb", ContentBuildPath(addonItems->items[iPtr].directory.strThumb));
-      if (addonItems->items[iPtr].directory.strFanart[0] != 0)
-        pItem->SetProperty("fanart_image", ContentBuildPath(addonItems->items[iPtr].directory.strFanart));
-
-      xbmcItems.Add(pItem);
-    }
     else if (addonItems->items[iPtr].type == CONTENT_ADDON_TYPE_ALBUM)
     {
       // TODO do something useful with CAlbum
@@ -312,6 +301,34 @@ void CContentAddon::ReadMusicFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItem
       }
       xbmcItems.Add(pItem);
     }
+    else if (addonItems->items[iPtr].type == CONTENT_ADDON_TYPE_DIRECTORY)
+    {
+      CMediaSource item;
+      item.strPath = ContentBuildPath(addonItems->items[iPtr].directory.strPath);
+      item.strName = addonItems->items[iPtr].directory.strName;
+
+      CFileItemPtr pItem(new CFileItem(item));
+      if (addonItems->items[iPtr].directory.strThumb[0] != 0)
+        pItem->SetArt("thumb", ContentBuildPath(addonItems->items[iPtr].directory.strThumb));
+      if (addonItems->items[iPtr].directory.strFanart[0] != 0)
+        pItem->SetProperty("fanart_image", ContentBuildPath(addonItems->items[iPtr].directory.strFanart));
+
+      xbmcItems.Add(pItem);
+    }
+    else if (addonItems->items[iPtr].type == CONTENT_ADDON_TYPE_FILE)
+    {
+      CMediaSource item;
+      item.strPath = ContentBuildPath(addonItems->items[iPtr].directory.strPath);
+      item.strName = addonItems->items[iPtr].directory.strName;
+
+      CFileItemPtr pItem(new CFileItem(item));
+      if (addonItems->items[iPtr].directory.strThumb[0] != 0)
+        pItem->SetArt("thumb", ContentBuildPath(addonItems->items[iPtr].directory.strThumb));
+      if (addonItems->items[iPtr].directory.strFanart[0] != 0)
+        pItem->SetProperty("fanart_image", ContentBuildPath(addonItems->items[iPtr].directory.strFanart));
+
+      xbmcItems.Add(pItem);
+    }
     else
     {
       CLog::Log(LOGWARNING, "invalid filetype: %d", addonItems->items[iPtr].type);
@@ -333,7 +350,7 @@ bool CContentAddon::MusicGetPlaylists(CFileItemList& items)
 
   if (err == CONTENT_ERROR_NO_ERROR && retVal)
   {
-    ReadMusicFiles(retVal, items);
+    ReadFiles(retVal, items);
 
     FreeFileList(retVal);
     return true;
@@ -356,7 +373,7 @@ bool CContentAddon::MusicGetArtists(CFileItemList& items)
 
   if (err == CONTENT_ERROR_NO_ERROR && retVal)
   {
-    ReadMusicFiles(retVal, items);
+    ReadFiles(retVal, items);
     FreeFileList(retVal);
     return true;
   }
@@ -378,7 +395,7 @@ bool CContentAddon::MusicGetPlaylistContent(CFileItemList& items, const CStdStri
 
   if (err == CONTENT_ERROR_NO_ERROR && retVal)
   {
-    ReadMusicFiles(retVal, items);
+    ReadFiles(retVal, items);
     FreeFileList(retVal);
     return true;
   }
@@ -403,7 +420,7 @@ bool CContentAddon::MusicGetAlbums(CFileItemList& items, const CStdString& strAr
 
   if (err == CONTENT_ERROR_NO_ERROR && retVal)
   {
-    ReadMusicFiles(retVal, items, strArtist);
+    ReadFiles(retVal, items, strArtist);
     FreeFileList(retVal);
     return true;
   }
@@ -429,7 +446,7 @@ bool CContentAddon::MusicGetSongs(CFileItemList& items, const CStdString& strArt
 
   if (err == CONTENT_ERROR_NO_ERROR && retVal)
   {
-    ReadMusicFiles(retVal, items, strArtist, strAlbum);
+    ReadFiles(retVal, items, strArtist, strAlbum);
 
     FreeFileList(retVal);
     return true;
@@ -443,16 +460,22 @@ bool CContentAddon::MusicGetCodecInfo(const string& strPath, CONTENT_ADDON_CODEC
   if (!ReadyToUse() || !ProvidesMusicCodec())
     return false;
 
-  CStdString strFilePath = MusicGetFilename(strPath);
+  CStdString strFilePath = GetFilename(strPath);
 
   try { return m_pStruct->MusicGetCodecInfo(strFilePath.c_str(), info) == CONTENT_ERROR_NO_ERROR; }
   catch (exception &e) { LogException(e, __FUNCTION__); }
   return false;
 }
 
-CStdString CContentAddon::MusicGetFilename(const CStdString& strPath) const
+CStdString CContentAddon::GetFilename(const CStdString& strPath) const
 {
   CStdString retval(strPath);
+
+  // check whether the filename starts with content://id/
+  CStdString strContentNode;
+  strContentNode.Format("%s%s/", CONTENT_NODE, ID().c_str());
+  if (strPath.Left(strContentNode.length()).Equals(strContentNode))
+    return strPath.Right(strPath.length() - strContentNode.length());
 
   // check whether the file resolves to a directory node that we created
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
@@ -475,7 +498,7 @@ bool CContentAddon::MusicOpenFile(const string& strPath)
   if (!CreateOnDemand() || !ProvidesMusicCodec() || !SupportsFile(strPath))
     return false;
 
-  CStdString strFilePath = MusicGetFilename(strPath);
+  CStdString strFilePath = GetFilename(strPath);
 
   CONTENT_ERROR err(CONTENT_ERROR_UNKNOWN);
   try { err = m_pStruct->MusicOpenFile(strFilePath.c_str()); }
@@ -492,7 +515,7 @@ bool CContentAddon::MusicPreloadFile(const string& strPath)
   if (!CreateOnDemand() || !ProvidesMusicCodec())
     return false;
 
-  CStdString strFilePath = MusicGetFilename(strPath);
+  CStdString strFilePath = GetFilename(strPath);
 
   CONTENT_ERROR err(CONTENT_ERROR_UNKNOWN);
   try { err = m_pStruct->MusicPreloadFile(strFilePath.c_str()); }
@@ -635,7 +658,7 @@ bool CContentAddon::MusicGetTop100(CFileItemList& items, CONTENT_TOP100_TYPE typ
 
   if (err == CONTENT_ERROR_NO_ERROR && retVal)
   {
-    ReadMusicFiles(retVal, items);
+    ReadFiles(retVal, items);
     FreeFileList(retVal);
     return true;
   }
@@ -657,7 +680,7 @@ bool CContentAddon::MusicGetOverviewItems(CFileItemList& items)
 
   if (err == CONTENT_ERROR_NO_ERROR && retVal)
   {
-    ReadMusicFiles(retVal, items);
+    ReadFiles(retVal, items);
     FreeFileList(retVal);
     return true;
   }
@@ -763,7 +786,7 @@ bool CContentAddon::MusicSearch(CFileItemList& items, const CStdString& strQuery
 
   if (err == CONTENT_ERROR_NO_ERROR && retVal)
   {
-    ReadMusicFiles(retVal, items);
+    ReadFiles(retVal, items);
 
     FreeFileList(retVal);
     return true;
@@ -826,6 +849,11 @@ void CContentAddon::SetPlaystate(CONTENT_ADDON_PLAYSTATE newState)
 bool CContentAddon::SupportsFile(const CStdString& strPath) const
 {
   // check whether the file resolves to a directory node that we created
+  CStdString strContentNode;
+  strContentNode.Format("%s%s/", CONTENT_NODE, ID().c_str());
+  if (strPath.Left(strContentNode.length()).Equals(strContentNode))
+    return true;
+
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
   if (pNode.get())
   {
@@ -926,4 +954,108 @@ CStdString CContentAddon::ContentBuildPath(const CStdString& strPath)
   CStdString retVal;
   retVal.Format("%s%s/%s", CONTENT_NODE, ID().c_str(), strPath.c_str());
   return retVal;
+}
+
+bool CContentAddon::FileOpen(const CStdString& strFileName, CONTENT_HANDLE* handle)
+{
+  CONTENT_ERROR err(CONTENT_ERROR_UNKNOWN);
+
+  if (ProvidesFiles())
+  {
+    CStdString strFilePath = GetFilename(strFileName);
+    try { err = m_pStruct->FileOpen(strFilePath.c_str(), handle); }
+    catch (exception &e) { LogException(e, __FUNCTION__); return false; }
+
+    if (err != CONTENT_ERROR_NO_ERROR)
+      CLog::Log(LOGERROR, "add-on '%s' returned an error from FileOpen(%s): %d", Name().c_str(), strFileName.c_str(), err);
+  }
+
+  return err == CONTENT_ERROR_NO_ERROR;
+}
+
+void CContentAddon::FileClose(CONTENT_HANDLE handle)
+{
+  if (ProvidesFiles())
+  {
+    try { m_pStruct->FileClose(handle); }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
+}
+
+unsigned int CContentAddon::FileRead(CONTENT_HANDLE handle, void* pBuffer, int64_t iBufLen)
+{
+  if (ProvidesFiles())
+  {
+    try { return m_pStruct->FileRead(handle, pBuffer, iBufLen); }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
+
+  return 0;
+}
+
+bool CContentAddon::FileExists(const CStdString& strFileName)
+{
+  if (ProvidesFiles())
+  {
+    CStdString strFilePath = GetFilename(strFileName);
+    try { return m_pStruct->FileExists(strFilePath.c_str()) == 0; }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
+
+  return false;
+}
+
+int64_t CContentAddon::FileSeek(CONTENT_HANDLE handle, int64_t iFilePosition, int iWhence)
+{
+  if (ProvidesFiles())
+  {
+    try { return m_pStruct->FileSeek(handle, iFilePosition, iWhence); }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
+
+  return 0;
+}
+
+int64_t CContentAddon::FileGetPosition(CONTENT_HANDLE handle)
+{
+  if (ProvidesFiles())
+  {
+    try { return m_pStruct->FileGetPosition(handle); }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
+
+  return 0;
+}
+
+int64_t CContentAddon::FileGetLength(CONTENT_HANDLE handle)
+{
+  if (ProvidesFiles())
+  {
+    try { return m_pStruct->FileGetLength(handle); }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
+
+  return 0;
+}
+
+bool CContentAddon::FileGetDirectory(CFileItemList& items, const CStdString& strPath)
+{
+  if (ProvidesFiles())
+  {
+    CONTENT_ADDON_FILELIST* retVal = NULL;
+    CONTENT_ERROR err(CONTENT_ERROR_UNKNOWN);
+    CLog::Log(LOGDEBUG, "getting directory '%s' from add-on '%s'", strPath.c_str(), Name().c_str());
+
+    try { err = m_pStruct->FileGetDirectory(&retVal, strPath.c_str()); }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+
+    if (err == CONTENT_ERROR_NO_ERROR && retVal)
+    {
+      ReadFiles(retVal, items);
+      FreeFileList(retVal);
+      return true;
+    }
+  }
+
+  return false;
 }

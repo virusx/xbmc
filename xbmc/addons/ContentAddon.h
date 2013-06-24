@@ -62,7 +62,17 @@ namespace ADDON
     bool         OnDemand(void) const { return !m_bProvidesMusicFiles && ProvidesMusicCodec(); }
     bool         ProvidesMusicCodec(void) const { return m_bReadyToUse && m_bProvidesMusicCodec; }
     bool         ProvidesMusicFiles(void) const { return m_bReadyToUse && m_bProvidesMusicFiles; }
+    bool         ProvidesFiles(void) const { return m_bReadyToUse && m_bProvidesFiles; }
     bool         SupportsConcurrentStreams(void) const { return m_bReadyToUse && m_bSupportsConcurrentStreams; }
+
+    bool         FileOpen(const CStdString& strFileName, CONTENT_HANDLE* handle);
+    void         FileClose(CONTENT_HANDLE handle);
+    unsigned int FileRead(CONTENT_HANDLE handle, void* pBuffer, int64_t iBufLen);
+    bool         FileExists(const CStdString& strFileName);
+    int64_t      FileSeek(CONTENT_HANDLE handle, int64_t iFilePosition, int iWhence);
+    int64_t      FileGetPosition(CONTENT_HANDLE handle);
+    int64_t      FileGetLength(CONTENT_HANDLE handle);
+    bool         FileGetDirectory(CFileItemList& items, const CStdString& strPath);
 
     const char*  GetServerName(void);
     bool         MusicGetOverview(CFileItemList& items);
@@ -91,14 +101,14 @@ namespace ADDON
   private:
     CStdString   ContentBuildPath(const CStdString& strPath);
     CStdString   MusicBuildPath(CONTENT_ADDON_TYPE type, const CStdString& strFilename, const CStdString& strArtist = "", const CStdString& strAlbum = "") const;
-    CStdString   MusicGetFilename(const CStdString& strPath) const;
+    CStdString   GetFilename(const CStdString& strPath) const;
     bool CreateOnDemand(void);
     void SetPlaystate(CONTENT_ADDON_PLAYSTATE newState);
     void FreeFileList(CONTENT_ADDON_FILELIST* items);
     void LogException(const std::exception& e, const char* strFunctionName) const;
     void ResetProperties(void);
     bool GetAddonCapabilities(void);
-    void ReadMusicFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItemList& xbmcItems, const std::string& strArtist = "", const std::string& strAlbum = "");
+    void ReadFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItemList& xbmcItems, const std::string& strArtist = "", const std::string& strAlbum = "");
 
     CCriticalSection                                        m_critSection;
     AddonVersion                                            m_apiVersion;
@@ -114,5 +124,6 @@ namespace ADDON
     bool                                                    m_bProvidesMusicCodec;
     bool                                                    m_bProvidesMusicFiles;
     bool                                                    m_bSupportsConcurrentStreams;
+    bool                                                    m_bProvidesFiles;
   };
 }

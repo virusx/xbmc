@@ -26,13 +26,14 @@ namespace XFILE
   class CContentAddonDirectory : public IDirectory
   {
   public:
-    CContentAddonDirectory();
-    virtual ~CContentAddonDirectory();
+    CContentAddonDirectory(void) {}
+    virtual ~CContentAddonDirectory(void) {}
 
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     virtual bool IsAllowed(const CStdString &strFile) const { return true; }
-    static bool SupportsWriteFileOperations(const CStdString& strPath);
-
     virtual bool Exists(const char* strPath);
+
+    static bool SupportsWriteFileOperations(const CStdString& strPath) { return false; }
+
   };
 }

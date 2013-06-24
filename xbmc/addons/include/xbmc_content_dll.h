@@ -56,18 +56,88 @@ extern "C" {
   bool        SupportsFile(const char* strFilename);
 
   /*!
+   * @note #define CONTENT_ADDON_FILES before including xbmc_content_dll.h in the add-on if the add-on provides files
+   *       and add provides_files="true" to the xbmc.content extension point node in addon.xml
+   */
+  ///{
+#ifdef CONTENT_ADDON_FILES
+  /*!
+   * Open a file to be read by FileRead
+   * @param strFileName The file to open
+   * @param handle The handle for this file, set by the add-on, that is passed to file operations.
+   * @return CONTENT_ERROR_NO_ERROR when the file has been opened successfully.
+   */
+  CONTENT_ERROR FileOpen(const char* strFileName, CONTENT_HANDLE* handle);
+
+  /*!
+   * Close a file opened by FileOpen, and invalidate the handle
+   * @param handle The handle to close
+   */
+  void          FileClose(CONTENT_HANDLE handle);
+
+  /*!
+   * Read raw bytes from a file that has been opened with FileOpen
+   * @param handle The handle assigned by FileOpen
+   * @param pBuffer The buffer to write the data to
+   * @param iBufLen The maximum size to read
+   * @return The number of bytes that were added to the buffer
+   */
+  unsigned int  FileRead(CONTENT_HANDLE handle, void* pBuffer, int64_t iBufLen);
+
+  /*!
+   * Check whether the add-on can open a file
+   * @param strFileName The file to check
+   * @return 1 when the file can be opened, 0 otherwise
+   */
+  int           FileExists(const char* strFileName);
+
+  /*!
+   * Seek to the given position
+   * @param handle The handle of the file to seek
+   * @param iFilePosition The position to seek to
+   * @param iWhence Seek type. See stdio.h for possible value
+   * @return The new file position
+   */
+  int64_t       FileSeek(CONTENT_HANDLE handle, int64_t iFilePosition, int iWhence);
+
+  /*!
+   * Get the current position
+   * @param handle The handle of the file to get the position for
+   * @return The position. -1 when eof or not found
+   */
+  int64_t       FileGetPosition(CONTENT_HANDLE handle);
+
+  /*!
+   * Total number of bytes in an open file
+   * @param handle The handle of the file to get the length for
+   * @return The total length or -1 when not found
+   */
+  int64_t       FileGetLength(CONTENT_HANDLE handle);
+
+  /*!
+   * Get the files in a directory
+   * @param directory The directory contents. Must be freed by calling FreeFileList when done
+   * @param strPath The directory to get
+   * @return CONTENT_ERROR_NO_ERROR if the files were assigned successfully
+   */
+  CONTENT_ERROR FileGetDirectory(CONTENT_ADDON_FILELIST** directory, const char* strPath);
+#endif
+
+  /*!
    * @note #define CONTENT_ADDON_MUSIC_FILES before including xbmc_content_dll.h in the add-on if the add-on provides files to be integrated into the music database
    *       and add provides_music_files="true" to the xbmc.content extension point node in addon.xml
    * @todo implement support for add-ons with multiple extension points in xbmc...
    */
   ///{
-#ifdef CONTENT_ADDON_MUSIC_FILES
+#if defined(CONTENT_ADDON_MUSIC_FILES) || defined(CONTENT_ADDON_FILES)
   /*!
    * Free a file list allocated by the add-on
    * @param items The file list to free
    */
   void FreeFileList(CONTENT_ADDON_FILELIST* items);
+#endif
 
+#ifdef CONTENT_ADDON_MUSIC_FILES
   /*!
    * Get all playlists
    * @param playlists The requested playlists. Must be freed by calling FreeFileList when done
@@ -201,6 +271,17 @@ extern "C" {
     pClient->GetMininumContentAPIVersion = GetMininumContentAPIVersion;
     pClient->GetServerName               = GetServerName;
     pClient->SupportsFile                = SupportsFile;
+
+#ifdef CONTENT_ADDON_FILES
+    pClient->FileOpen         = FileOpen;
+    pClient->FileClose        = FileClose;
+    pClient->FileRead         = FileRead;
+    pClient->FileExists       = FileExists;
+    pClient->FileSeek         = FileSeek;
+    pClient->FileGetPosition  = FileGetPosition;
+    pClient->FileGetLength    = FileGetLength;
+    pClient->FileGetDirectory = FileGetDirectory;
+#endif
 
 #ifdef CONTENT_ADDON_MUSIC_FILES
     pClient->FreeFileList                = FreeFileList;
