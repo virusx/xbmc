@@ -280,6 +280,9 @@
     <Filter Include="interfaces\python\test">
       <UniqueIdentifier>{0a84b5ee-2ad4-4ae2-9a8d-fc585c6d8aae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="addons\include">
+      <UniqueIdentifier>{e6d17d45-37f2-47fa-9d2b-9aef4e934836}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2959,6 +2962,58 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusCEC.cpp">
       <Filter>peripherals\bus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\FFmpegVideoDecoder.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\AddonCallbacksContent.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\ContentAddon.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\ContentAddons.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\paplayer\ContentAddonCodec.cpp">
+      <Filter>cores\paplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\ContentAddonDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\ContentAddonFile.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeArtistTop100.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddon.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonAlbum.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonAlbumTop100.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonArtist.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonArtistTop100.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonOverview.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonPlaylist.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonSong.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonTop100.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonTop100Song.cpp">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5778,6 +5833,101 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusCEC.h">
       <Filter>peripherals\bus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\music\karaoke\karaokevideobackground.h" />
+    <ClInclude Include="..\..\xbmc\video\FFmpegVideoDecoder.h" />
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_addon_cpp_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_addon_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_addon_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_content_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_content_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_epg_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_pvr_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_pvr_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_scr_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_scr_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_vis_dll.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_vis_types.h">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonCallbacksContent.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\BinaryAddonManager.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\ContentAddon.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\ContentAddons.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\DllContentAddon.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\paplayer\ContentAddonCodec.h">
+      <Filter>cores\paplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\ContentAddonDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\ContentAddonFile.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeArtistTop100.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddon.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonAlbum.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonAlbumTop100.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonArtist.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonArtistTop100.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonOverview.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonPlaylist.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonSong.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonTop100.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonTop100Song.h">
+      <Filter>filesystem\MusicDatabaseDirectory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

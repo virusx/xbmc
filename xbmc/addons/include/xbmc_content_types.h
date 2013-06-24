@@ -30,6 +30,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include <stdint.h>
 #else
 #ifndef __cdecl
 #define __cdecl
