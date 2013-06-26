@@ -188,7 +188,7 @@ map<string, CONTENT_ADDON_FILE_PROPERTY> FileListToMap(CONTENT_ADDON_FILE_PROPER
   return retval;
 }
 
-CStdString CContentAddon::GetPropertyString(map<string, CONTENT_ADDON_FILE_PROPERTY>& m, const CStdString& strKey, const CStdString& strDefault /* = "" */)
+CStdString CContentAddon::GetAndRemovePropertyString(map<string, CONTENT_ADDON_FILE_PROPERTY>& m, const CStdString& strKey, const CStdString& strDefault /* = "" */)
 {
   CStdString strReturn(strDefault);
   map<string, CONTENT_ADDON_FILE_PROPERTY>::iterator it = m.find(strKey);
@@ -200,7 +200,7 @@ CStdString CContentAddon::GetPropertyString(map<string, CONTENT_ADDON_FILE_PROPE
   return strReturn;
 }
 
-int CContentAddon::GetPropertyInt(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& m, const CStdString& strKey, int iDefault /* = 0 */)
+int CContentAddon::GetAndRemovePropertyInt(map<string, CONTENT_ADDON_FILE_PROPERTY>& m, const CStdString& strKey, int iDefault /* = 0 */)
 {
   int iReturn(iDefault);
   map<string, CONTENT_ADDON_FILE_PROPERTY>::iterator it = m.find(strKey);
@@ -212,12 +212,12 @@ int CContentAddon::GetPropertyInt(std::map<std::string, CONTENT_ADDON_FILE_PROPE
   return iReturn;
 }
 
-void CContentAddon::AddCommonProperties(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& item, CFileItemPtr& fileItem)
+void CContentAddon::AddCommonProperties(map<string, CONTENT_ADDON_FILE_PROPERTY>& item, CFileItemPtr& fileItem)
 {
-  CStdString strThumb = ContentBuildPath(GetPropertyString(item, "thumb"));
+  CStdString strThumb = ContentBuildPath(GetAndRemovePropertyString(item, "thumb"));
   if (!strThumb.empty())
     fileItem->SetArt("thumb", strThumb);
-  CStdString strArt   = ContentBuildPath(GetPropertyString(item, "fanart_image"));
+  CStdString strArt   = ContentBuildPath(GetAndRemovePropertyString(item, "fanart_image"));
   if (!strArt.empty())
     fileItem->SetProperty("fanart_image", strArt);
 
@@ -230,74 +230,56 @@ void CContentAddon::AddCommonProperties(std::map<std::string, CONTENT_ADDON_FILE
   }
 }
 
-void CContentAddon::ReadFilePlaylist(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems)
+void CContentAddon::ReadFilePlaylist(map<string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList)
 {
   CMediaSource playlist;
-  playlist.strPath = MusicBuildPath(CONTENT_ADDON_TYPE_PLAYLIST, GetPropertyString(item, "path"));
-  playlist.strName = GetPropertyString(item, "name");
+  playlist.strPath = MusicBuildPath(CONTENT_ADDON_TYPE_PLAYLIST, GetAndRemovePropertyString(properties, "path"));
+  playlist.strName = GetAndRemovePropertyString(properties, "name");
   if (playlist.strPath.empty() || playlist.strName.empty()) return;
 
   CFileItemPtr pItem(new CFileItem(playlist));
-  AddCommonProperties(item, pItem);
+  AddCommonProperties(properties, pItem);
 
   {
     CSingleLock lock(m_critSection);
     m_playlistNames.insert(make_pair(playlist.strPath, playlist.strName));
   }
-  xbmcItems.Add(pItem);
+  fileList.Add(pItem);
 }
 
-void CContentAddon::ReadFileSong(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems, const string& strArtist /* = "" */, const string& strAlbum /* = "" */)
+void CContentAddon::ReadFileSong(map<string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList, const string& strArtist /* = "" */, const string& strAlbum /* = "" */)
 {
   CSong song;
-  song.strFileName = MusicBuildPath(CONTENT_ADDON_TYPE_SONG, GetPropertyString(item, "path"), strArtist, strAlbum);
-  song.strTitle    = GetPropertyString(item, "name");
+  song.strFileName = MusicBuildPath(CONTENT_ADDON_TYPE_SONG, GetAndRemovePropertyString(properties, "path"), strArtist, strAlbum);
+  song.strTitle    = GetAndRemovePropertyString(properties, "name");
   if (song.strFileName.empty() || song.strTitle.empty()) return;
 
-  song.iTrack      = GetPropertyInt(item, "track");
-  song.iDuration   = GetPropertyInt(item, "duration");
-  song.rating      = GetPropertyInt(item, "rating");
-  song.artist      = StringUtils::Split(GetPropertyString(item, "artists"), g_advancedSettings.m_musicItemSeparator);
-  song.iYear       = GetPropertyInt(item, "year");
-  song.strAlbum    = GetPropertyString(item, "album");
-  song.albumArtist = StringUtils::Split(GetPropertyString(item, "album_artists"), g_advancedSettings.m_musicItemSeparator);
+  song.iTrack      = GetAndRemovePropertyInt(properties, "track");
+  song.iDuration   = GetAndRemovePropertyInt(properties, "duration");
+  song.rating      = GetAndRemovePropertyInt(properties, "rating");
+  song.artist      = StringUtils::Split(GetAndRemovePropertyString(properties, "artists"), g_advancedSettings.m_musicItemSeparator);
+  song.iYear       = GetAndRemovePropertyInt(properties, "year");
+  song.strAlbum    = GetAndRemovePropertyString(properties, "album");
+  song.albumArtist = StringUtils::Split(GetAndRemovePropertyString(properties, "album_artists"), g_advancedSettings.m_musicItemSeparator);
 
   CFileItemPtr pItem(new CFileItem(song));
-  AddCommonProperties(item, pItem);
+  AddCommonProperties(properties, pItem);
 
-  xbmcItems.AddAutoJoin(pItem);
+  fileList.AddAutoJoin(pItem);
 }
 
-void CContentAddon::ReadFileAlbum(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems, const std::string& strArtist /* = "" */)
+void CContentAddon::ReadFileAlbum(map<string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList, const string& strArtist /* = "" */)
 {
-// TODO do something useful with CAlbum
-//      CAlbum album;
-//      album.strAlbum = addonItems->items[iPtr].album.strAlbum;
-//      if (album.strAlbum.IsEmpty())
-//        album.strAlbum = g_localizeStrings.Get(1050);
-//      album.artist = StringUtils::Split(addonItems->items[iPtr].album.strArtists, g_advancedSettings.m_musicItemSeparator);
-//      album.genre = StringUtils::Split(addonItems->items[iPtr].album.strGenres, g_advancedSettings.m_musicItemSeparator);
-//      album.iYear = addonItems->items[iPtr].album.iYear;
-//      if (addonItems->items[iPtr].album.strThumb[0] != 0)
-//        album.thumbURL.ParseString(addonItems->items[iPtr].album.strThumb);
-//      album.iRating = addonItems->items[iPtr].album.iRating;
-//      album.strReview = addonItems->items[iPtr].album.strReview;
-//      album.styles = StringUtils::Split(addonItems->items[iPtr].album.strStyles, g_advancedSettings.m_musicItemSeparator);
-//      album.moods = StringUtils::Split(addonItems->items[iPtr].album.strMoods, g_advancedSettings.m_musicItemSeparator);
-//      album.themes = StringUtils::Split(addonItems->items[iPtr].album.strThemes, g_advancedSettings.m_musicItemSeparator);
-//      album.strLabel = addonItems->items[iPtr].album.strLabel;
-//      album.strType = addonItems->items[iPtr].album.strType;
-//      album.bCompilation = addonItems->items[iPtr].album.bCompilation == 1;
-
-  vector<string> artists = StringUtils::Split(GetPropertyString(item, "artists"), g_advancedSettings.m_musicItemSeparator);
+  //TODO do something useful with CAlbum
+  vector<string> artists = StringUtils::Split(GetAndRemovePropertyString(properties, "artists"), g_advancedSettings.m_musicItemSeparator);
   const CStdString strAlbumArtist(strArtist.empty() && !artists.empty() ? artists.at(0) : strArtist);
   CMediaSource albumSource;
-  albumSource.strPath = MusicBuildPath(CONTENT_ADDON_TYPE_ALBUM, GetPropertyString(item, "path"), strAlbumArtist);
-  albumSource.strName = GetPropertyString(item, "name");
+  albumSource.strPath = MusicBuildPath(CONTENT_ADDON_TYPE_ALBUM, GetAndRemovePropertyString(properties, "path"), strAlbumArtist);
+  albumSource.strName = GetAndRemovePropertyString(properties, "name");
   if (albumSource.strPath.empty() || albumSource.strName.empty()) return;
 
   CFileItemPtr pItem(new CFileItem(albumSource));
-  AddCommonProperties(item, pItem);
+  AddCommonProperties(properties, pItem);
 
   {
     CSingleLock lock(m_critSection);
@@ -311,94 +293,94 @@ void CContentAddon::ReadFileAlbum(std::map<std::string, CONTENT_ADDON_FILE_PROPE
       m_albumNames.insert(make_pair(strAlbumArtist, m));
     }
   }
-  xbmcItems.Add(pItem);
+  fileList.Add(pItem);
 }
 
-void CContentAddon::ReadFileArtist(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems)
+void CContentAddon::ReadFileArtist(map<string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList)
 {
   CArtist artist;
-  CStdString strPath  = MusicBuildPath(CONTENT_ADDON_TYPE_ARTIST, GetPropertyString(item, "path"));
-  artist.strArtist    = GetPropertyString(item, "name");
+  CStdString strPath  = MusicBuildPath(CONTENT_ADDON_TYPE_ARTIST, GetAndRemovePropertyString(properties, "path"));
+  artist.strArtist    = GetAndRemovePropertyString(properties, "name");
   if (strPath.empty() || artist.strArtist.empty()) return;
 
-  artist.genre        = StringUtils::Split(GetPropertyString(item, "genres"), g_advancedSettings.m_musicItemSeparator);
-  artist.strBiography = GetPropertyString(item, "biography");
-  artist.styles       = StringUtils::Split(GetPropertyString(item, "styles"), g_advancedSettings.m_musicItemSeparator);
-  artist.moods        = StringUtils::Split(GetPropertyString(item, "moods"), g_advancedSettings.m_musicItemSeparator);
-  artist.strBorn      = GetPropertyString(item, "born");
-  artist.strFormed    = GetPropertyString(item, "formed");
-  artist.strDied      = GetPropertyString(item, "died");
-  artist.strDisbanded = GetPropertyString(item, "disbanded");
-  artist.yearsActive  = StringUtils::Split(GetPropertyString(item, "years_active"), g_advancedSettings.m_musicItemSeparator);
-  artist.instruments  = StringUtils::Split(GetPropertyString(item, "instruments"), g_advancedSettings.m_musicItemSeparator);
+  artist.genre        = StringUtils::Split(GetAndRemovePropertyString(properties, "genres"), g_advancedSettings.m_musicItemSeparator);
+  artist.strBiography = GetAndRemovePropertyString(properties, "biography");
+  artist.styles       = StringUtils::Split(GetAndRemovePropertyString(properties, "styles"), g_advancedSettings.m_musicItemSeparator);
+  artist.moods        = StringUtils::Split(GetAndRemovePropertyString(properties, "moods"), g_advancedSettings.m_musicItemSeparator);
+  artist.strBorn      = GetAndRemovePropertyString(properties, "born");
+  artist.strFormed    = GetAndRemovePropertyString(properties, "formed");
+  artist.strDied      = GetAndRemovePropertyString(properties, "died");
+  artist.strDisbanded = GetAndRemovePropertyString(properties, "disbanded");
+  artist.yearsActive  = StringUtils::Split(GetAndRemovePropertyString(properties, "years_active"), g_advancedSettings.m_musicItemSeparator);
+  artist.instruments  = StringUtils::Split(GetAndRemovePropertyString(properties, "instruments"), g_advancedSettings.m_musicItemSeparator);
 
   CFileItemPtr pItem(new CFileItem(artist));
   pItem->SetPath(strPath);
   pItem->SetIconImage("DefaultArtist.png");
   pItem->SetProperty("artist_description", artist.strBiography);
-  AddCommonProperties(item, pItem);
+  AddCommonProperties(properties, pItem);
 
   {
     CSingleLock lock(m_critSection);
     m_artistNames.insert(make_pair(strPath, artist.strArtist));
   }
-  xbmcItems.AddAutoJoin(pItem);
+  fileList.AddAutoJoin(pItem);
 }
 
-void CContentAddon::ReadFileDirectory(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems)
+void CContentAddon::ReadFileDirectory(map<string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList)
 {
   CMediaSource m;
-  m.strPath = ContentBuildPath(GetPropertyString(item, "path"));
-  m.strName = GetPropertyString(item, "name");
+  m.strPath = ContentBuildPath(GetAndRemovePropertyString(properties, "path"));
+  m.strName = GetAndRemovePropertyString(properties, "name");
 
   if (m.strPath.empty() || m.strName.empty())
     return;
 
   CFileItemPtr pItem(new CFileItem(m));
-  AddCommonProperties(item, pItem);
+  AddCommonProperties(properties, pItem);
 
-  xbmcItems.Add(pItem);
+  fileList.Add(pItem);
 }
 
-void CContentAddon::ReadFileFile(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems)
+void CContentAddon::ReadFileFile(map<string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList)
 {
   CMediaSource m;
-  m.strPath = ContentBuildPath(GetPropertyString(item, "path"));
-  m.strName = GetPropertyString(item, "name");
+  m.strPath = ContentBuildPath(GetAndRemovePropertyString(properties, "path"));
+  m.strName = GetAndRemovePropertyString(properties, "name");
 
   if (m.strPath.empty() || m.strName.empty())
     return;
 
   CFileItemPtr pItem(new CFileItem(m));
-  AddCommonProperties(item, pItem);
+  AddCommonProperties(properties, pItem);
 
-  xbmcItems.Add(pItem);
+  fileList.Add(pItem);
 }
 
 void CContentAddon::ReadFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItemList& xbmcItems, const string& strArtist /* = "" */, const string& strAlbum /* = "" */)
 {
   for (unsigned iPtr = 0; iPtr < addonItems->iSize; iPtr++)
   {
-    map<string, CONTENT_ADDON_FILE_PROPERTY> m = FileListToMap(addonItems->items[iPtr].properties, addonItems->items[iPtr].iSize);
+    map<string, CONTENT_ADDON_FILE_PROPERTY> properties = FileListToMap(addonItems->items[iPtr].properties, addonItems->items[iPtr].iSize);
     switch (addonItems->items[iPtr].type)
     {
     case CONTENT_ADDON_TYPE_SONG:
-      ReadFileSong(m, xbmcItems, strArtist, strAlbum);
+      ReadFileSong(properties, xbmcItems, strArtist, strAlbum);
       break;
     case CONTENT_ADDON_TYPE_ARTIST:
-      ReadFileArtist(m, xbmcItems);
+      ReadFileArtist(properties, xbmcItems);
       break;
     case CONTENT_ADDON_TYPE_ALBUM:
-      ReadFileAlbum(m, xbmcItems, strArtist);
+      ReadFileAlbum(properties, xbmcItems, strArtist);
       break;
     case CONTENT_ADDON_TYPE_PLAYLIST:
-      ReadFilePlaylist(m, xbmcItems);
+      ReadFilePlaylist(properties, xbmcItems);
       break;
     case CONTENT_ADDON_TYPE_DIRECTORY:
-      ReadFileDirectory(m, xbmcItems);
+      ReadFileDirectory(properties, xbmcItems);
       break;
     case CONTENT_ADDON_TYPE_FILE:
-      ReadFileFile(m, xbmcItems);
+      ReadFileFile(properties, xbmcItems);
       break;
     default:
       CLog::Log(LOGWARNING, "invalid filetype: %d", addonItems->items[iPtr].type);
