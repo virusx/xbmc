@@ -146,7 +146,7 @@ extern "C" {
    *   optional string fanart_image
    *
    * Properties that are found and that are not listed in this list will be
-   * added as standard properties to fileitems in XBMC. (TODO)
+   * added as standard properties to fileitems in XBMC.
    */
   typedef struct CONTENT_ADDON_FILEITEM
   {

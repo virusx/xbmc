@@ -109,9 +109,9 @@ namespace ADDON
     void ResetProperties(void);
     bool GetAddonCapabilities(void);
 
-    CStdString GetPropertyString(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> m, const CStdString& strKey, const CStdString& strDefault = "");
-    int        GetPropertyInt(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> m, const CStdString& strKey, int iDefault = 0);
-    void       ReadFileThumbArt(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemPtr& fileItem);
+    CStdString GetPropertyString(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& m, const CStdString& strKey, const CStdString& strDefault = "");
+    int        GetPropertyInt(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& m, const CStdString& strKey, int iDefault = 0);
+    void       AddCommonProperties(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& item, CFileItemPtr& fileItem);
 
     void ReadFileArtist(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems);
     void ReadFileAlbum(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems, const std::string& strArtist = "");

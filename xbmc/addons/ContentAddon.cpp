@@ -188,25 +188,31 @@ map<string, CONTENT_ADDON_FILE_PROPERTY> FileListToMap(CONTENT_ADDON_FILE_PROPER
   return retval;
 }
 
-CStdString CContentAddon::GetPropertyString(map<string, CONTENT_ADDON_FILE_PROPERTY> m, const CStdString& strKey, const CStdString& strDefault /* = "" */)
+CStdString CContentAddon::GetPropertyString(map<string, CONTENT_ADDON_FILE_PROPERTY>& m, const CStdString& strKey, const CStdString& strDefault /* = "" */)
 {
   CStdString strReturn(strDefault);
   map<string, CONTENT_ADDON_FILE_PROPERTY>::iterator it = m.find(strKey);
   if (it != m.end() && it->second.type == CONTENT_ADDON_PROPERTY_TYPE_STRING)
+  {
     strReturn = it->second.strValue;
+    m.erase(it);
+  }
   return strReturn;
 }
 
-int CContentAddon::GetPropertyInt(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> m, const CStdString& strKey, int iDefault /* = 0 */)
+int CContentAddon::GetPropertyInt(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& m, const CStdString& strKey, int iDefault /* = 0 */)
 {
   int iReturn(iDefault);
   map<string, CONTENT_ADDON_FILE_PROPERTY>::iterator it = m.find(strKey);
   if (it != m.end() && it->second.type == CONTENT_ADDON_PROPERTY_TYPE_INT)
+  {
     iReturn = it->second.iValue;
+    m.erase(it);
+  }
   return iReturn;
 }
 
-void CContentAddon::ReadFileThumbArt(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemPtr& fileItem)
+void CContentAddon::AddCommonProperties(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& item, CFileItemPtr& fileItem)
 {
   CStdString strThumb = ContentBuildPath(GetPropertyString(item, "thumb"));
   if (!strThumb.empty())
@@ -214,6 +220,14 @@ void CContentAddon::ReadFileThumbArt(std::map<std::string, CONTENT_ADDON_FILE_PR
   CStdString strArt   = ContentBuildPath(GetPropertyString(item, "fanart_image"));
   if (!strArt.empty())
     fileItem->SetProperty("fanart_image", strArt);
+
+  for (map<string, CONTENT_ADDON_FILE_PROPERTY>::iterator it = item.begin(); it != item.end(); it++)
+  {
+    if (it->second.type == CONTENT_ADDON_PROPERTY_TYPE_STRING)
+      fileItem->SetProperty(it->first, CVariant(it->second.strValue));
+    else if (it->second.type == CONTENT_ADDON_PROPERTY_TYPE_INT)
+      fileItem->SetProperty(it->first, CVariant(it->second.iValue));
+  }
 }
 
 void CContentAddon::ReadFilePlaylist(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems)
@@ -224,7 +238,7 @@ void CContentAddon::ReadFilePlaylist(std::map<std::string, CONTENT_ADDON_FILE_PR
   if (playlist.strPath.empty() || playlist.strName.empty()) return;
 
   CFileItemPtr pItem(new CFileItem(playlist));
-  ReadFileThumbArt(item, pItem);
+  AddCommonProperties(item, pItem);
 
   {
     CSingleLock lock(m_critSection);
@@ -249,7 +263,7 @@ void CContentAddon::ReadFileSong(std::map<std::string, CONTENT_ADDON_FILE_PROPER
   song.albumArtist = StringUtils::Split(GetPropertyString(item, "album_artists"), g_advancedSettings.m_musicItemSeparator);
 
   CFileItemPtr pItem(new CFileItem(song));
-  ReadFileThumbArt(item, pItem);
+  AddCommonProperties(item, pItem);
 
   xbmcItems.AddAutoJoin(pItem);
 }
@@ -283,7 +297,7 @@ void CContentAddon::ReadFileAlbum(std::map<std::string, CONTENT_ADDON_FILE_PROPE
   if (albumSource.strPath.empty() || albumSource.strName.empty()) return;
 
   CFileItemPtr pItem(new CFileItem(albumSource));
-  ReadFileThumbArt(item, pItem);
+  AddCommonProperties(item, pItem);
 
   {
     CSingleLock lock(m_critSection);
@@ -322,7 +336,7 @@ void CContentAddon::ReadFileArtist(std::map<std::string, CONTENT_ADDON_FILE_PROP
   pItem->SetPath(strPath);
   pItem->SetIconImage("DefaultArtist.png");
   pItem->SetProperty("artist_description", artist.strBiography);
-  ReadFileThumbArt(item, pItem);
+  AddCommonProperties(item, pItem);
 
   {
     CSingleLock lock(m_critSection);
@@ -341,7 +355,7 @@ void CContentAddon::ReadFileDirectory(std::map<std::string, CONTENT_ADDON_FILE_P
     return;
 
   CFileItemPtr pItem(new CFileItem(m));
-  ReadFileThumbArt(item, pItem);
+  AddCommonProperties(item, pItem);
 
   xbmcItems.Add(pItem);
 }
@@ -356,7 +370,7 @@ void CContentAddon::ReadFileFile(std::map<std::string, CONTENT_ADDON_FILE_PROPER
     return;
 
   CFileItemPtr pItem(new CFileItem(m));
-  ReadFileThumbArt(item, pItem);
+  AddCommonProperties(item, pItem);
 
   xbmcItems.Add(pItem);
 }
