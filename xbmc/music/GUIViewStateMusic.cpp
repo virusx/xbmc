@@ -29,6 +29,7 @@
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 
 #include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
@@ -596,7 +597,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
 
   // Search share
   share.strName=g_localizeStrings.Get(137); // Search
-  share.strPath = "musicsearch://";
+  share.strPath = URIUtils::MakeMusicSearchPath(MUSICSEARCH_TARGET_ALL);
   share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicSearch.png");
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);

@@ -25,8 +25,10 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/URIUtils.h" // for MUSICSEARCH_TARGET_* defines
 #include "guilib/LocalizeStrings.h"
 
+using namespace ADDON;
 using namespace XFILE;
 
 CMusicSearchDirectory::CMusicSearchDirectory(void)
@@ -40,21 +42,40 @@ CMusicSearchDirectory::~CMusicSearchDirectory(void)
 bool CMusicSearchDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   // break up our path
-  // format is:  musicsearch://<url encoded search string>
+  // format is: musicsearch://<target>/<search string>
+  // target is: MUSICSEARCH_TARGET_ALL, MUSICSEARCH_TARGET_LIBRARY or content add-on ID
   CURL url(strPath);
-  CStdString search(url.GetHostName());
+  CStdString target(url.GetHostName());
+  CStdString search(url.GetFileName());
 
   if (search.IsEmpty())
     return false;
 
+  CONTENT_ADDON addon;
+  if (!target.Equals(MUSICSEARCH_TARGET_ALL) && !target.Equals(MUSICSEARCH_TARGET_LIBRARY) &&
+      !(addon = CContentAddons::Get().GetAddonByID(target)))
+    return false;
+
   // and retrieve the search details
   items.SetPath(strPath);
-  ADDON::CContentAddons::Get().MusicSearch(items, search);
   unsigned int time = XbmcThreads::SystemClockMillis();
-  CMusicDatabase db;
-  db.Open();
-  db.Search(search, items);
-  db.Close();
+  if (target.Equals(MUSICSEARCH_TARGET_ALL))
+    CContentAddons::Get().MusicSearch(items, search);
+  else if (!target.Equals(MUSICSEARCH_TARGET_LIBRARY))
+  {
+    // target is a content add-on ID
+    if (addon->ProvidesMusicFiles())
+      addon->MusicSearch(items, search);
+  }
+  if (target.Equals(MUSICSEARCH_TARGET_ALL) || target.Equals(MUSICSEARCH_TARGET_LIBRARY))
+  {
+    CMusicDatabase db;
+    if (db.Open())
+    {
+      db.Search(search, items);
+      db.Close();
+    }
+  }
   CLog::Log(LOGDEBUG, "%s (%s) took %u ms",
             __FUNCTION__, strPath.c_str(), XbmcThreads::SystemClockMillis() - time);
   items.SetLabel(g_localizeStrings.Get(137)); // Search

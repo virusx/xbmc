@@ -787,6 +787,13 @@ bool CContentAddon::MusicGetOverview(CFileItemList& items)
   pPlaylistItem->SetCanQueue(false);
   items.Add(pPlaylistItem);
 
+  CFileItemPtr pSearchItem(new CFileItem(g_localizeStrings.Get(137)));
+  strDir = URIUtils::MakeMusicSearchPath(ID());
+  pSearchItem->SetPath(strDir);
+  pSearchItem->m_bIsFolder = true;
+  pSearchItem->SetCanQueue(false);
+  items.Add(pSearchItem);
+
   return true;
 }
 
@@ -833,7 +840,7 @@ bool CContentAddon::MusicSearch(CFileItemList& items, const CStdString& strQuery
   CONTENT_ADDON_FILELIST* retVal = NULL;
   CONTENT_ERROR err(CONTENT_ERROR_UNKNOWN);
 
-  CLog::Log(LOGDEBUG, "getting searching for '%s' in add-on '%s'", strQuery.c_str(), Name().c_str());
+  CLog::Log(LOGDEBUG, "searching for '%s' in add-on '%s'", strQuery.c_str(), Name().c_str());
   try { err = m_pStruct->MusicSearch(&retVal, strQuery.c_str()); }
   catch (exception &e) { LogException(e, __FUNCTION__); return false; }
 

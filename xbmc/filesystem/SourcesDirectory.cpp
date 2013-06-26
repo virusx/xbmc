@@ -64,7 +64,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
   {
     const CMediaSource& share = sources[i];
     CFileItemPtr pItem(new CFileItem(share));
-    if (pItem->IsLastFM() || (pItem->GetPath().Left(14).Equals("musicsearch://")))
+    if (pItem->IsLastFM() || URIUtils::IsMusicSearchPath(pItem->GetPath()))
       pItem->SetCanQueue(false);
     
     CStdString strIcon;
@@ -85,7 +85,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
              || pItem->IsPlugin()
              || pItem->GetPath() == "special://musicplaylists/"
              || pItem->GetPath() == "special://videoplaylists/"
-             || pItem->GetPath() == "musicsearch://")
+             || URIUtils::IsMusicSearchPath(pItem->GetPath()))
       strIcon = "DefaultFolder.png";
     else if (pItem->IsRemote())
       strIcon = "DefaultNetwork.png";

@@ -294,7 +294,8 @@ void CGUIWindowMusicBase::OnInfo(int iItem, bool bShowInfo)
 void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
 {
   if ((pItem->IsMusicDb() && !pItem->HasMusicInfoTag()) || pItem->IsParentFolder() ||
-       URIUtils::IsSpecial(pItem->GetPath()) || pItem->GetPath().Left(14).Equals("musicsearch://"))
+       URIUtils::IsSpecial(pItem->GetPath()) ||
+       URIUtils::IsMusicSearchPath(pItem->GetPath()))
     return; // nothing to do
 
   if (!pItem->m_bIsFolder)

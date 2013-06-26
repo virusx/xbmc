@@ -35,6 +35,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define MUSICSEARCH_PROTOCOL  "musicsearch"
+
 using namespace std;
 using namespace XFILE;
 
@@ -239,7 +241,7 @@ bool URIUtils::ProtocolHasParentInHostname(const CStdString& prot)
 bool URIUtils::ProtocolHasEncodedHostname(const CStdString& prot)
 {
   return ProtocolHasParentInHostname(prot)
-      || prot.Equals("musicsearch")
+      || prot.Equals(MUSICSEARCH_PROTOCOL)
       || prot.Equals("image");
 }
 
@@ -662,6 +664,12 @@ bool URIUtils::IsSourcesPath(const CStdString& strPath)
   return url.GetProtocol().Equals("sources");
 }
 
+bool URIUtils::IsMusicSearchPath(const CStdString& strPath)
+{
+  CURL url(strPath);
+  return url.GetProtocol().Equals(MUSICSEARCH_PROTOCOL);
+}
+
 bool URIUtils::IsCDDA(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("cdda:");
@@ -854,6 +862,13 @@ bool URIUtils::IsDOSPath(const CStdString &path)
     return true;
 
   return false;
+}
+
+CStdString URIUtils::MakeMusicSearchPath(const CStdString &target, const CStdString &search /* = "" */)
+{
+  CStdString musicsearch;
+  musicsearch.Format("%s://%s/%s", MUSICSEARCH_PROTOCOL, target.c_str(), search.c_str());
+  return musicsearch;
 }
 
 void URIUtils::AddSlashAtEnd(CStdString& strFolder)

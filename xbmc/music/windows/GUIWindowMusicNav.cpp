@@ -162,11 +162,19 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           CGUIMessage selected(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_SEARCH);
           OnMessage(selected);
           SetProperty("search", selected.GetLabel());
-          return true;
         }
-        CStdString search(GetProperty("search").asString());
-        CGUIKeyboardFactory::ShowAndGetFilter(search, true);
-        SetProperty("search", search);
+        else
+        {
+          CStdString search(GetProperty("search").asString());
+          CGUIKeyboardFactory::ShowAndGetFilter(search, true);
+          SetProperty("search", search);
+        }
+
+        if (GetProperty("search").empty())
+          SetProperty("searchtarget", "");
+        else
+          SetProperty("searchtarget", MUSICSEARCH_TARGET_ALL);
+
         return true;
       }
     }
@@ -249,8 +257,10 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size()) return false;
 
   CFileItemPtr item = m_vecItems->Get(iItem);
-  if (item->GetPath().Left(14) == "musicsearch://")
+  if (URIUtils::IsMusicSearchPath(item->GetPath()))
   {
+    CURL url(item->GetPath());
+    SetProperty("searchtarget", url.GetHostName());
     if (m_searchWithEdit)
       OnSearchUpdate();
     else
@@ -454,7 +464,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
                               dir.IsArtistDir(item->GetPath())   )      &&
              !dir.IsAllItem(item->GetPath()) && !item->IsParentFolder() &&
              !item->IsLastFM() && !item->IsPlugin() && !item->IsScript() &&
-             !item->GetPath().Left(14).Equals("musicsearch://") &&
+             !URIUtils::IsMusicSearchPath(item->GetPath()) &&
              !dir.IsContentAddonDir(item->GetPath()))
     {
       if (dir.IsArtistDir(item->GetPath()))
@@ -467,7 +477,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (dir.HasAlbumInfo(item->GetPath()) && !dir.IsAllItem(item->GetPath()) &&
         item->m_bIsFolder && !item->IsVideoDb() && !item->IsParentFolder()   &&
        !item->IsLastFM()                                                     &&
-       !item->IsPlugin() && !item->GetPath().Left(14).Equals("musicsearch://"))
+       !item->IsPlugin() && !URIUtils::IsMusicSearchPath(item->GetPath()))
     {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
       ADDON::CContentAddons::Get().MusicGetContextButtons(item, buttons);
@@ -785,10 +795,12 @@ void CGUIWindowMusicNav::DisplayEmptyDatabaseMessage(bool bDisplay)
 void CGUIWindowMusicNav::OnSearchUpdate()
 {
   CStdString search(GetProperty("search").asString());
-  CURL::Encode(search);
+  CStdString searchtarget(GetProperty("searchtarget").asString());
   if (!search.IsEmpty())
   {
-    CStdString path = "musicsearch://" + search + "/";
+    if (searchtarget.IsEmpty())
+      searchtarget = MUSICSEARCH_TARGET_ALL;
+    CStdString path = URIUtils::MakeMusicSearchPath(searchtarget, search);
     m_history.ClearSearchHistory();
     Update(path);
   }
@@ -835,7 +847,7 @@ void CGUIWindowMusicNav::AddSearchFolder()
     for (IVECSOURCES it = sources.begin(); it != sources.end(); ++it)
     {
       CMediaSource& share = *it;
-      if (share.strPath == "musicsearch://")
+      if (URIUtils::IsMusicSearchPath(share.strPath))
       {
         haveSearchSource = true;
         if (!needSearchSource)
@@ -850,7 +862,7 @@ void CGUIWindowMusicNav::AddSearchFolder()
       // add earch share
       CMediaSource share;
       share.strName=g_localizeStrings.Get(137); // Search
-      share.strPath = "musicsearch://";
+      share.strPath = URIUtils::MakeMusicSearchPath(MUSICSEARCH_TARGET_ALL);
       share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
       sources.push_back(share);
     }

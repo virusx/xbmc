@@ -21,6 +21,9 @@
 
 #include "StdString.h"
 
+#define MUSICSEARCH_TARGET_ALL      "all"
+#define MUSICSEARCH_TARGET_LIBRARY  "library"
+
 class CURL;
 
 class URIUtils
@@ -53,6 +56,7 @@ public:
 
   static bool IsAddonsPath(const CStdString& strFile);
   static bool IsSourcesPath(const CStdString& strFile);
+  static bool IsMusicSearchPath(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsDOSPath(const CStdString &path);
@@ -95,6 +99,15 @@ public:
   static bool IsArchive(const CStdString& strFile);
   static bool IsBluray(const CStdString& strFile);
   static bool IsAndroidApp(const CStdString& strFile);
+
+  /*!
+   * \brief Create a musicsearch:// URI.
+   * \param target Content add-on ID. Alternatively, set to MUSICSEARCH_TARGET_ALL to
+   *               search the library and all add-ons. Set to MUSICSEARCH_TARGET_LIBRARY
+   *               to only search the library (exclusing add-ons).
+   * \param search The search query. If empty, URI will invoke a search dialog.
+   */
+  static CStdString MakeMusicSearchPath(const CStdString &target, const CStdString &search = "");
 
   static void AddSlashAtEnd(CStdString& strFolder);
   static bool HasSlashAtEnd(const CStdString& strFile, bool checkURL = false);
