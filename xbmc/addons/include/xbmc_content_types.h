@@ -56,119 +56,108 @@
 #define PRAGMA_PACK 1
 #endif
 
-#define CONTENT_ADDON_NAME_STRING_LENGTH         1024
-#define CONTENT_ADDON_FILENAME_STRING_LENGTH     1024
-#define CONTENT_ADDON_TEXT_LENGTH                4096
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-  typedef struct CONTENT_ADDON_PLAYLIST
+  typedef enum
   {
-    char strPath[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strName[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strThumb[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strFanart[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-  } ATTRIBUTE_PACKED CONTENT_ADDON_PLAYLIST;
+    CONTENT_ADDON_PROPERTY_TYPE_STRING,
+    CONTENT_ADDON_PROPERTY_TYPE_INT
+  } CONTENT_ADDON_PROPERTY_TYPE;
 
-  typedef struct CONTENT_ADDON_DIRECTORY
+  typedef struct CONTENT_ADDON_FILE_PROPERTY
   {
-    char strPath[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strName[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strThumb[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strFanart[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-  } ATTRIBUTE_PACKED CONTENT_ADDON_DIRECTORY;
-
-  typedef struct CONTENT_ADDON_FILE
-  {
-    char strPath[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strName[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strThumb[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strFanart[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-  } ATTRIBUTE_PACKED CONTENT_ADDON_FILE;
-
-  typedef struct CONTENT_ADDON_SONG
-  {
-    char strFilename[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strThumb[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strFanart[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strTitle[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strArtist[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strAlbum[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strAlbumArtist[CONTENT_ADDON_NAME_STRING_LENGTH];
-    int  iTrack;
-    int  iDuration;
-    int  iYear;
-    int  iRating;
-  } ATTRIBUTE_PACKED CONTENT_ADDON_SONG;
-
-  typedef struct CONTENT_ADDON_ARTIST
-  {
-    char strPath[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strArtist[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strGenres[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strBiography[CONTENT_ADDON_TEXT_LENGTH];
-    char strStyles[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strMoods[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strInstruments[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strBorn[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strFormed[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strDied[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strDisbanded[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strYearsActive[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strThumb[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strFanart[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strDiscography[CONTENT_ADDON_NAME_STRING_LENGTH];
-  } ATTRIBUTE_PACKED CONTENT_ADDON_ARTIST;
-
-  typedef struct CONTENT_ADDON_ALBUM
-  {
-    char strPath[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strAlbum[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strArtists[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strGenres[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strStyles[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strMoods[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strThemes[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strLabel[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strType[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strDateOfRelease[CONTENT_ADDON_NAME_STRING_LENGTH];
-    char strReview[CONTENT_ADDON_TEXT_LENGTH];
-    char strThumb[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    char strFanart[CONTENT_ADDON_FILENAME_STRING_LENGTH];
-    int  bCompilation;
-    int  iYear;
-    int  iRating;
-  } ATTRIBUTE_PACKED CONTENT_ADDON_ALBUM;
+    char*                       key;
+    CONTENT_ADDON_PROPERTY_TYPE type;
+    union
+    {
+      int   iValue;
+      char* strValue;
+    };
+  } ATTRIBUTE_PACKED CONTENT_ADDON_FILE_PROPERTY;
 
   typedef enum CONTENT_ADDON_TYPE
   {
-    CONTENT_ADDON_TYPE_SONG,
     CONTENT_ADDON_TYPE_ARTIST,
-    CONTENT_ADDON_TYPE_PLAYLIST,
     CONTENT_ADDON_TYPE_ALBUM,
+    CONTENT_ADDON_TYPE_SONG,
+    CONTENT_ADDON_TYPE_PLAYLIST,
+
     CONTENT_ADDON_TYPE_DIRECTORY,
     CONTENT_ADDON_TYPE_FILE
   } CONTENT_ADDON_TYPE;
 
+  /*!
+   * Representation of a file or directory. Types are described below: (TODO actually describe them)
+   *
+   * CONTENT_ADDON_TYPE_ARTIST:
+   *   required string path
+   *   required string name
+   *   optional string genres
+   *   optional string biography
+   *   optional string styles
+   *   optional string moods
+   *   optional string born
+   *   optional string formed
+   *   optional string died
+   *   optional string disbanded
+   *   optional string years_active
+   *   optional string instruments
+   *   optional string thumb
+   *   optional string fanart_image
+   *
+   * CONTENT_ADDON_TYPE_ALBUM:
+   *   required string path
+   *   required string name
+   *   required string artists
+   *   optional string thumb
+   *   optional string fanart_image
+   *
+   * CONTENT_ADDON_TYPE_SONG:
+   *   required string path
+   *   required string name
+   *   optional int    track
+   *   optional int    duration
+   *   optional int    rating
+   *   optional string artists
+   *   optional int    year
+   *   optional string album
+   *   optional string album_artists
+   *   optional string thumb
+   *   optional string fanart_image
+   *
+   * CONTENT_ADDON_TYPE_PLAYLIST:
+   *   required string path
+   *   required string name
+   *   optional string thumb
+   *   optional string fanart_image
+   *
+   * CONTENT_ADDON_TYPE_DIRECTORY:
+   *   required string path
+   *   required string name
+   *   optional string thumb
+   *   optional string fanart_image
+   *
+   * CONTENT_ADDON_TYPE_FILES:
+   *   required string path
+   *   required string name
+   *   optional string thumb
+   *   optional string fanart_image
+   *
+   * Properties that are found and that are not listed in this list will be
+   * added as standard properties to fileitems in XBMC. (TODO)
+   */
   typedef struct CONTENT_ADDON_FILEITEM
   {
-    CONTENT_ADDON_TYPE type;
-    union
-    {
-      CONTENT_ADDON_PLAYLIST  playlist;
-      CONTENT_ADDON_ARTIST    artist;
-      CONTENT_ADDON_SONG      song;
-      CONTENT_ADDON_ALBUM     album;
-      CONTENT_ADDON_DIRECTORY directory;
-      CONTENT_ADDON_FILE      file;
-    };
+    CONTENT_ADDON_TYPE           type;
+    unsigned int                 iSize;
+    CONTENT_ADDON_FILE_PROPERTY* properties;
   } ATTRIBUTE_PACKED CONTENT_ADDON_FILEITEM;
 
   typedef struct CONTENT_ADDON_FILELIST
   {
-    unsigned int iSize;
+    unsigned int            iSize;
     CONTENT_ADDON_FILEITEM* items;
   } ATTRIBUTE_PACKED CONTENT_ADDON_FILELIST;
 

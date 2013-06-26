@@ -108,6 +108,19 @@ namespace ADDON
     void LogException(const std::exception& e, const char* strFunctionName) const;
     void ResetProperties(void);
     bool GetAddonCapabilities(void);
+
+    CStdString GetPropertyString(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> m, const CStdString& strKey, const CStdString& strDefault = "");
+    int        GetPropertyInt(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> m, const CStdString& strKey, int iDefault = 0);
+    void       ReadFileThumbArt(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemPtr& fileItem);
+
+    void ReadFileArtist(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems);
+    void ReadFileAlbum(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems, const std::string& strArtist = "");
+    void ReadFileSong(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems, const std::string& strArtist = "", const std::string& strAlbum = "");
+    void ReadFilePlaylist(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems);
+
+    void ReadFileDirectory(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems);
+    void ReadFileFile(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY> item, CFileItemList& xbmcItems);
+
     void ReadFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItemList& xbmcItems, const std::string& strArtist = "", const std::string& strAlbum = "");
 
     CCriticalSection                                        m_critSection;
