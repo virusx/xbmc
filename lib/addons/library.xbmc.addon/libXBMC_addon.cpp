@@ -274,8 +274,7 @@ DLLEXPORT char* XBMC_get_box_id(void *hdl, void* cb)
   if (cb == NULL)
     return "";
 
-  string buffer = ((CB_AddOnLib*)cb)->GetBoxId(((AddonCB*)hdl)->addonData);
-  return strdup(buffer.c_str());
+  return ((CB_AddOnLib*)cb)->GetBoxId(((AddonCB*)hdl)->addonData);
 }
 
 };
