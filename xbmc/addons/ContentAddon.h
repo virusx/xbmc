@@ -84,7 +84,7 @@ namespace ADDON
     bool         MusicGetSongs(CFileItemList& items, const CStdString& strArtist, const CStdString& strAlbum);
     bool         MusicGetTop100(CFileItemList& items, CONTENT_TOP100_TYPE type);
     bool         MusicGetOverviewItems(CFileItemList& items);
-    bool         MusicSearch(CFileItemList& items, const CStdString& query);
+    bool         MusicSearch(CFileItemList& items, const CStdString& query, CONTENT_ADDON_SEARCH_TYPE type = CONTENT_SEARCH_ALL);
     bool         MusicGetContextButtons(const CFileItemPtr& item, CContextButtons &buttons);
     bool         MusicClickContextButton(const CFileItemPtr& item, CONTEXT_BUTTON button);
     bool         MusicOpenFile(const std::string& strPath);

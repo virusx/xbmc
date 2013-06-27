@@ -832,7 +832,7 @@ bool CContentAddon::MusicGetTop100Overview(CFileItemList& items)
   return true;
 }
 
-bool CContentAddon::MusicSearch(CFileItemList& items, const CStdString& strQuery)
+bool CContentAddon::MusicSearch(CFileItemList& items, const CStdString& strQuery, CONTENT_ADDON_SEARCH_TYPE type /* = CONTENT_SEARCH_ALL */)
 {
   if (!ReadyToUse() || !ProvidesMusicFiles())
     return false;
@@ -841,7 +841,7 @@ bool CContentAddon::MusicSearch(CFileItemList& items, const CStdString& strQuery
   CONTENT_ERROR err(CONTENT_ERROR_UNKNOWN);
 
   CLog::Log(LOGDEBUG, "searching for '%s' in add-on '%s'", strQuery.c_str(), Name().c_str());
-  try { err = m_pStruct->MusicSearch(&retVal, strQuery.c_str()); }
+  try { err = m_pStruct->MusicSearch(&retVal, strQuery.c_str(), type); }
   catch (exception &e) { LogException(e, __FUNCTION__); return false; }
 
   if (err == CONTENT_ERROR_NO_ERROR && retVal)

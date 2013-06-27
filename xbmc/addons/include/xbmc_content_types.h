@@ -245,6 +245,14 @@ extern "C" {
     CONTENT_TOP100_TYPE_SONGS
   } CONTENT_TOP100_TYPE;
 
+  typedef enum CONTENT_ADDON_SEARCH_TYPE
+  {
+    CONTENT_SEARCH_ALL,
+    CONTENT_SEARCH_TRACKS,
+    CONTENT_SEARCH_ALBUMS,
+    CONTENT_SEARCH_ARTISTS
+  } CONTENT_ADDON_SEARCH_TYPE;
+
   typedef void* CONTENT_HANDLE;
 
   /*!
@@ -279,7 +287,7 @@ extern "C" {
     CONTENT_ERROR    (__cdecl* MusicGetSongs)(CONTENT_ADDON_FILELIST**, const char*, const char*);
     CONTENT_ERROR    (__cdecl* MusicGetTop100)(CONTENT_ADDON_FILELIST**, CONTENT_TOP100_TYPE);
     CONTENT_ERROR    (__cdecl* MusicGetOverviewItems)(CONTENT_ADDON_FILELIST**);
-    CONTENT_ERROR    (__cdecl* MusicSearch)(CONTENT_ADDON_FILELIST**, const char*);
+    CONTENT_ERROR    (__cdecl* MusicSearch)(CONTENT_ADDON_FILELIST**, const char*, CONTENT_ADDON_SEARCH_TYPE);
     ///}
 
     /// @name Music codec

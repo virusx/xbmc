@@ -196,9 +196,10 @@ extern "C" {
    * Search for artist, albums or songs
    * @param items The requested items. Must be freed by calling FreeFileList when done
    * @param strQuery The search query
+   * @param type The type of search to perform
    * @return CONTENT_ERROR_NO_ERROR if the items were assigned successfully
    */
-  CONTENT_ERROR MusicSearch(CONTENT_ADDON_FILELIST** items, const char* strQuery);
+  CONTENT_ERROR MusicSearch(CONTENT_ADDON_FILELIST** items, const char* strQuery, CONTENT_ADDON_SEARCH_TYPE type);
 #endif
   ///}
 
