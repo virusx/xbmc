@@ -126,6 +126,7 @@ extern "C" {
    *   optional string album_artists
    *   optional string thumb
    *   optional string fanart_image
+   *   optional string provider_icon    (relative to the add-on's path)
    *
    * CONTENT_ADDON_TYPE_PLAYLIST:
    *   required string path
@@ -248,7 +249,7 @@ extern "C" {
   typedef enum CONTENT_ADDON_SEARCH_TYPE
   {
     CONTENT_SEARCH_ALL,
-    CONTENT_SEARCH_TRACKS,
+    CONTENT_SEARCH_SONGS,
     CONTENT_SEARCH_ALBUMS,
     CONTENT_SEARCH_ARTISTS
   } CONTENT_ADDON_SEARCH_TYPE;
