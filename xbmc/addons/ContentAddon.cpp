@@ -265,6 +265,13 @@ void CContentAddon::ReadFileSong(map<string, CONTENT_ADDON_FILE_PROPERTY>& prope
   CFileItemPtr pItem(new CFileItem(song));
   AddCommonProperties(properties, pItem);
 
+  // Make sure the provider logo is set to a valid full path
+  CStdString strProvider(pItem->GetProperty("provider_icon").asString());
+  if (strProvider.empty())
+    pItem->SetProperty("provider_icon", Icon());
+  else if (!CURL::IsFullPath(strProvider))
+    pItem->SetProperty("provider_icon", URIUtils::AddFileToFolder(Path(), strProvider));
+
   fileList.AddAutoJoin(pItem);
 }
 
