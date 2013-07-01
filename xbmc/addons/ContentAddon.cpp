@@ -68,10 +68,10 @@ CContentAddon::CContentAddon(const cp_extension_t *ext) :
   CStdString strSupportsConcurrentStreams = CAddonMgr::Get().GetExtValue(ext->configuration, "@supports_concurrent_streams");
 
   m_fileTypes                  = StringUtils::Split(CAddonMgr::Get().GetExtValue(ext->configuration, "@filetypes"), "|");
-  m_bProvidesMusicCodec        = strProvidesMusicCodec.ToLower().Equals("true") || strProvidesMusicCodec.Equals("1");
-  m_bProvidesMusicFiles        = strProvidesMusicFiles.ToLower().Equals("true") || strProvidesMusicFiles.Equals("1");
-  m_bProvidesFiles             = strProvidesFiles.ToLower().Equals("true") || strProvidesFiles.Equals("1");
-  m_bSupportsConcurrentStreams = strSupportsConcurrentStreams.ToLower().Equals("true") || strSupportsConcurrentStreams.Equals("1");
+  m_bProvidesMusicCodec        = strProvidesMusicCodec.Equals("true") || strProvidesMusicCodec.Equals("1");
+  m_bProvidesMusicFiles        = strProvidesMusicFiles.Equals("true") || strProvidesMusicFiles.Equals("1");
+  m_bProvidesFiles             = strProvidesFiles.Equals("true") || strProvidesFiles.Equals("1");
+  m_bSupportsConcurrentStreams = strSupportsConcurrentStreams.Equals("true") || strSupportsConcurrentStreams.Equals("1");
   m_strUserPath                = CSpecialProtocol::TranslatePath(Profile()).c_str();
   m_strClientPath              = CSpecialProtocol::TranslatePath(Path()).c_str();
   m_pInfo                      = new CONTENT_PROPERTIES;
