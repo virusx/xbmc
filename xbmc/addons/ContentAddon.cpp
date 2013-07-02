@@ -205,6 +205,13 @@ void CContentAddon::AddCommonProperties(AddonFileItem* file, CFileItemPtr& fileI
     else if (it->second->Type() == CONTENT_ADDON_PROPERTY_TYPE_INT)
       fileItem->SetProperty(it->first, CVariant(it->second->ValueAsInt()));
   }
+
+  // Make sure the provider logo is set to a valid full path
+  CStdString strProvider(fileItem->GetProperty("provider_icon").asString());
+  if (strProvider.empty())
+    fileItem->SetProperty("provider_icon", Icon());
+  else if (!CURL::IsFullPath(strProvider))
+    fileItem->SetProperty("provider_icon", URIUtils::AddFileToFolder(Path(), strProvider));
 }
 
 void CContentAddon::ReadFilePlaylist(AddonFileItem* file, CFileItemList& fileList)
@@ -248,13 +255,6 @@ void CContentAddon::ReadFileSong(AddonFileItem* file, CFileItemList& fileList, c
 
   CFileItemPtr pItem(new CFileItem(song));
   AddCommonProperties(file, pItem);
-
-  // Make sure the provider logo is set to a valid full path
-  CStdString strProvider(pItem->GetProperty("provider_icon").asString());
-  if (strProvider.empty())
-    pItem->SetProperty("provider_icon", Icon());
-  else if (!CURL::IsFullPath(strProvider))
-    pItem->SetProperty("provider_icon", URIUtils::AddFileToFolder(Path(), strProvider));
 
   fileList.AddAutoJoin(pItem);
 }
