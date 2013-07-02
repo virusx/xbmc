@@ -24,6 +24,7 @@
 #include "ContentAddons.h"
 #include "music/Song.h"
 #include "music/Artist.h"
+#include "music/Album.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
@@ -261,30 +262,40 @@ void CContentAddon::ReadFileSong(AddonFileItem* file, CFileItemList& fileList, c
 
 void CContentAddon::ReadFileAlbum(AddonFileItem* file, CFileItemList& fileList, const string& strArtist /* = "" */)
 {
-  //TODO do something useful with CAlbum
   AddonFileAlbum* albumFile = reinterpret_cast<AddonFileAlbum*>(file);
   if (!albumFile)
     return;
 
-  vector<string> artists = StringUtils::Split(albumFile->Artists(true), g_advancedSettings.m_musicItemSeparator);
-  const CStdString strAlbumArtist(strArtist.empty() && !artists.empty() ? artists.at(0) : strArtist);
-  CMediaSource albumSource;
-  albumSource.strPath = MusicBuildPath(CONTENT_ADDON_TYPE_ALBUM, albumFile->Path(true), strAlbumArtist);
-  albumSource.strName = albumFile->Name(true);
-  if (albumSource.strPath.empty() || albumSource.strName.empty()) return;
+  CAlbum album;
+  album.strAlbum = albumFile->Name(true);
+  album.artist = StringUtils::Split(albumFile->Artists(true), g_advancedSettings.m_musicItemSeparator);
+  album.genre = StringUtils::Split(albumFile->Genres(true), g_advancedSettings.m_musicItemSeparator);
+  album.iYear = albumFile->Year(true);
+  album.iRating = albumFile->Rating(true);
+  album.strReview = albumFile->Review(true);
+  album.styles = StringUtils::Split(albumFile->Styles(true), g_advancedSettings.m_musicItemSeparator);
+  album.moods = StringUtils::Split(albumFile->Moods(true), g_advancedSettings.m_musicItemSeparator);
+  album.themes = StringUtils::Split(albumFile->Themes(true), g_advancedSettings.m_musicItemSeparator);
+  album.strLabel = albumFile->Label(true);
+  album.strType = albumFile->Type(true);
+  album.bCompilation = albumFile->Compilation(true);
+  album.iTimesPlayed = albumFile->TimesPlayed(true);
 
-  CFileItemPtr pItem(new CFileItem(albumSource));
+  const CStdString strAlbumArtist(strArtist.empty() && !album.artist.empty() ? album.artist.at(0) : strArtist);
+  const CStdString strPath = MusicBuildPath(CONTENT_ADDON_TYPE_ALBUM, albumFile->Path(true), strAlbumArtist);
+  CFileItemPtr pItem(new CFileItem(strPath, album));
+
   AddCommonProperties(file, pItem);
 
   {
     CSingleLock lock(m_critSection);
     map<CStdString, map<CStdString, CStdString> >::iterator it = m_albumNames.find(strAlbumArtist);
     if (it != m_albumNames.end())
-      it->second.insert(make_pair(albumSource.strPath, albumSource.strName));
+      it->second.insert(make_pair(pItem->GetPath(), album.strAlbum));
     else
     {
       map<CStdString, CStdString> m;
-      m.insert(make_pair(albumSource.strPath, albumSource.strName));
+      m.insert(make_pair(pItem->GetPath(), album.strAlbum));
       m_albumNames.insert(make_pair(strAlbumArtist, m));
     }
   }

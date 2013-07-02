@@ -462,6 +462,36 @@ public:
 
   std::string Artists(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("artists") : GetPropertyString("artists"); }
   void SetArtists(const std::string& strArtists) { AddPropertyString("artists", strArtists); }
+
+  std::string Genres(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("genres") : GetPropertyString("genres"); }
+  void SetGenres(const std::string& strGenres) { AddPropertyString("genres", strGenres); }
+
+  int Rating(bool bRemove = false) { return bRemove ? GetAndRemovePropertyInt("rating") : GetPropertyInt("rating"); }
+  void SetRating(int iRating) { AddPropertyInt("rating", iRating); }
+
+  std::string Review(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("review") : GetPropertyString("review"); }
+  void SetReview(const std::string& strReview) { AddPropertyString("review", strReview); }
+
+  std::string Styles(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("styles") : GetPropertyString("styles"); }
+  void SetStyles(const std::string& strStyles) { AddPropertyString("styles", strStyles); }
+
+  std::string Moods(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("moods") : GetPropertyString("moods"); }
+  void SetMoods(const std::string& strMoods) { AddPropertyString("moods", strMoods); }
+
+  std::string Themes(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("themes") : GetPropertyString("themes"); }
+  void SetThemes(const std::string& strThemes) { AddPropertyString("themes", strThemes); }
+
+  std::string Label(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("label") : GetPropertyString("label"); }
+  void SetLabel(const std::string& strLabel) { AddPropertyString("label", strLabel); }
+
+  std::string Type(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("type") : GetPropertyString("type"); }
+  void SetType(const std::string& strType) { AddPropertyString("type", strType); }
+
+  bool Compilation(bool bRemove = false) { return bRemove ? GetAndRemovePropertyInt("compilation") == 1 : GetPropertyInt("compilation") == 1; }
+  void SetCompilation(bool bCompilation) { AddPropertyInt("compilation", bCompilation?1:0); }
+
+  int TimesPlayed(bool bRemove = false) { return bRemove ? GetAndRemovePropertyInt("times_played") : GetPropertyInt("times_played"); }
+  void SetTimesPlayed(int iTimesPlayed) { AddPropertyInt("times_played", iTimesPlayed); }
 };
 
 class AddonFilePlaylist : public AddonFileItem

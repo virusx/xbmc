@@ -111,8 +111,18 @@ extern "C" {
    * CONTENT_ADDON_TYPE_ALBUM:
    *   required string path
    *   required string name
-   *   optional string artists
    *   optional int    year
+   *   optional string artists
+   *   optional string genres
+   *   optional int    rating
+   *   optional string review
+   *   optional string styles
+   *   optional string moods
+   *   optional string themes
+   *   optional string label
+   *   optional string type
+   *   optional int    compilation
+   *   optional int    times_played
    *   optional string thumb
    *   optional string fanart_image
    *
