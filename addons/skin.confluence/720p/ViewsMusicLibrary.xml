@@ -304,6 +304,13 @@
 						<texture background="true">$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="image">
+						<posx>120</posx>
+						<posy>140</posy>
+						<width>30</width>
+						<height>30</height>
+						<texture>$INFO[ListItem.Property(provider_icon)]</texture>
+					</control>
+					<control type="image">
 						<posx>6</posx>
 						<posy>24</posy>
 						<width>152</width>
@@ -322,6 +329,13 @@
 						<bordersize>4</bordersize>
 						<fadetime>200</fadetime>
 						<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="image">
+						<posx>120</posx>
+						<posy>190</posy>
+						<width>30</width>
+						<height>30</height>
+						<texture flipy="true" diffuse="diffuse_icon.png">$INFO[ListItem.Property(provider_icon)]</texture>
 					</control>
 				</itemlayout>
 				<focusedlayout height="200" width="160">
@@ -353,6 +367,15 @@
 							<effect type="fade" start="100" end="0" time="200" />
 							<effect type="slide" end="0,0" start="40,40" time="200" />
 						</animation>
+					</control>
+					<control type="image">
+						<posx>120</posx>
+						<posy>140</posy>
+						<width>30</width>
+						<height>30</height>
+						<texture>$INFO[ListItem.Property(provider_icon)]</texture>
+						<animation reversible="false" effect="zoom" start="120,140,30,30" end="128,138,40,40" time="200">focus</animation>
+						<animation reversible="false" effect="zoom" end="128,138,40,40" start="120,140,30,30" time="200">unfocus</animation>
 					</control>
 				</focusedlayout>
 			</control>
@@ -751,7 +774,7 @@
 					<control type="label">
 						<posx>10</posx>
 						<posy>0</posy>
-						<width>560</width>
+						<width>540</width>
 						<height>40</height>
 						<font>font13</font>
 						<textcolor>grey2</textcolor>
@@ -759,6 +782,13 @@
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="image">
+						<posx>550</posx>
+						<posy>12</posy>
+						<width>20</width>
+						<height>20</height>
+						<texture>$INFO[ListItem.Property(provider_icon)]</texture>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="580">
@@ -783,7 +813,7 @@
 					<control type="label">
 						<posx>10</posx>
 						<posy>0</posy>
-						<width>560</width>
+						<width>540</width>
 						<height>40</height>
 						<font>font13</font>
 						<textcolor>white</textcolor>
@@ -791,6 +821,13 @@
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="image">
+						<posx>550</posx>
+						<posy>12</posy>
+						<width>20</width>
+						<height>20</height>
+						<texture>$INFO[ListItem.Property(provider_icon)]</texture>
 					</control>
 				</focusedlayout>
 			</control>
@@ -963,9 +1000,9 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>760</posx>
+						<posx>750</posx>
 						<posy>0</posy>
-						<width>700</width>
+						<width>690</width>
 						<height>40</height>
 						<font>font12</font>
 						<textcolor>grey2</textcolor>
@@ -973,6 +1010,13 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
+					</control>
+					<control type="image">
+						<posx>760</posx>
+						<posy>12</posy>
+						<width>20</width>
+						<height>20</height>
+						<texture>$INFO[ListItem.Property(provider_icon)]</texture>
 					</control>
 				</itemlayout>
 				<focusedlayout height="40" width="780">
@@ -1015,9 +1059,9 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>760</posx>
+						<posx>750</posx>
 						<posy>0</posy>
-						<width>700</width>
+						<width>690</width>
 						<height>40</height>
 						<font>font12</font>
 						<textcolor>grey2</textcolor>
@@ -1025,6 +1069,13 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
+					</control>
+					<control type="image">
+						<posx>760</posx>
+						<posy>12</posy>
+						<width>20</width>
+						<height>20</height>
+						<texture>$INFO[ListItem.Property(provider_icon)]</texture>
 					</control>
 				</focusedlayout>
 			</control>
