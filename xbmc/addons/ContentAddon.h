@@ -26,6 +26,7 @@
 #include "dialogs/GUIDialogContextMenu.h"
 
 class CAEChannelInfo;
+class AddonFileItem;
 
 namespace ADDON
 {
@@ -110,37 +111,19 @@ namespace ADDON
     bool GetAddonCapabilities(void);
 
     /*!
-     * Get a property of type string from the properties map and remove that property from the list
-     * @param properties The properties
-     * @param strKey The key of the property to get
-     * @param strDefault The default value, if no item with this key was found. Defaults to ""
-     * @return The requested value, or strDefault when not found
-     */
-    CStdString GetAndRemovePropertyString(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& properties, const CStdString& strKey, const CStdString& strDefault = "");
-
-    /*!
-     * Get a property of type int from the properties map and remove that property from the list
-     * @param properties The properties
-     * @param strKey The key of the property to get
-     * @param iDefault The default value, if no item with this key was found. Defaults to 0
-     * @return The requested value, or iDefault when not found
-     */
-    int GetAndRemovePropertyInt(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& properties, const CStdString& strKey, int iDefault = 0);
-
-    /*!
      * Add common properties and properties that have not been used to a fileitem
      * @param properties The properties
      * @param fileItem The item to add the properties to
      */
-    void AddCommonProperties(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemPtr& fileItem);
+    void AddCommonProperties(AddonFileItem* file, CFileItemPtr& fileItem);
 
-    void ReadFileArtist(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList);
-    void ReadFileAlbum(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList, const std::string& strArtist = "");
-    void ReadFileSong(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList, const std::string& strArtist = "", const std::string& strAlbum = "");
-    void ReadFilePlaylist(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList);
+    void ReadFileArtist(AddonFileItem* file, CFileItemList& fileList);
+    void ReadFileAlbum(AddonFileItem* file, CFileItemList& fileList, const std::string& strArtist = "");
+    void ReadFileSong(AddonFileItem* file, CFileItemList& fileList, const std::string& strArtist = "", const std::string& strAlbum = "");
+    void ReadFilePlaylist(AddonFileItem* file, CFileItemList& fileList);
 
-    void ReadFileDirectory(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList);
-    void ReadFileFile(std::map<std::string, CONTENT_ADDON_FILE_PROPERTY>& properties, CFileItemList& fileList);
+    void ReadFileDirectory(AddonFileItem* file, CFileItemList& fileList);
+    void ReadFileFile(AddonFileItem* file, CFileItemList& fileList);
 
     void ReadFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItemList& fileList, const std::string& strArtist = "", const std::string& strAlbum = "");
 

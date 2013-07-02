@@ -32,6 +32,7 @@
 #include <windows.h>
 #include <stdint.h>
 #else
+#include <sys/types.h>
 #ifndef __cdecl
 #define __cdecl
 #endif
@@ -110,7 +111,8 @@ extern "C" {
    * CONTENT_ADDON_TYPE_ALBUM:
    *   required string path
    *   required string name
-   *   required string artists
+   *   optional string artists
+   *   optional int    year
    *   optional string thumb
    *   optional string fanart_image
    *
@@ -140,7 +142,7 @@ extern "C" {
    *   optional string thumb
    *   optional string fanart_image
    *
-   * CONTENT_ADDON_TYPE_FILES:
+   * CONTENT_ADDON_TYPE_FILE:
    *   required string path
    *   required string name
    *   optional string thumb
