@@ -222,7 +222,8 @@ void CContentAddon::ReadFilePlaylist(AddonFileItem* file, CFileItemList& fileLis
   if (!playlistFile)
     return;
 
-  playlist.strPath = MusicBuildPath(CONTENT_ADDON_TYPE_PLAYLIST, playlistFile->Path(true));
+  const CStdString strAddonFilePath = playlistFile->Path(true);
+  playlist.strPath = MusicBuildPath(CONTENT_ADDON_TYPE_PLAYLIST, strAddonFilePath);
   playlist.strName = playlistFile->Name(true);
   if (playlist.strPath.empty() || playlist.strName.empty()) return;
 
@@ -231,7 +232,7 @@ void CContentAddon::ReadFilePlaylist(AddonFileItem* file, CFileItemList& fileLis
 
   {
     CSingleLock lock(m_critSection);
-    m_playlistNames.insert(make_pair(playlist.strPath, playlist.strName));
+    m_playlistNames.insert(make_pair(strAddonFilePath, playlist.strName));
   }
   fileList.Add(pItem);
 }
@@ -242,6 +243,7 @@ void CContentAddon::ReadFileSong(AddonFileItem* file, CFileItemList& fileList, c
   AddonFileSong* songFile = reinterpret_cast<AddonFileSong*>(file);
   if (!songFile)
     return;
+
   song.strFileName = MusicBuildPath(CONTENT_ADDON_TYPE_SONG, songFile->Path(true), strArtist, strAlbum);
   song.strTitle    = songFile->Name(true);
   if (song.strFileName.empty() || song.strTitle.empty()) return;
@@ -282,7 +284,8 @@ void CContentAddon::ReadFileAlbum(AddonFileItem* file, CFileItemList& fileList, 
   album.iTimesPlayed = albumFile->TimesPlayed(true);
 
   const CStdString strAlbumArtist(strArtist.empty() && !album.artist.empty() ? album.artist.at(0) : strArtist);
-  const CStdString strPath = MusicBuildPath(CONTENT_ADDON_TYPE_ALBUM, albumFile->Path(true), strAlbumArtist);
+  const CStdString strAddonFilePath = albumFile->Path(true);
+  const CStdString strPath = MusicBuildPath(CONTENT_ADDON_TYPE_ALBUM, strAddonFilePath, strAlbumArtist);
   CFileItemPtr pItem(new CFileItem(strPath, album));
 
   AddCommonProperties(file, pItem);
@@ -291,11 +294,11 @@ void CContentAddon::ReadFileAlbum(AddonFileItem* file, CFileItemList& fileList, 
     CSingleLock lock(m_critSection);
     map<CStdString, map<CStdString, CStdString> >::iterator it = m_albumNames.find(strAlbumArtist);
     if (it != m_albumNames.end())
-      it->second.insert(make_pair(pItem->GetPath(), album.strAlbum));
+      it->second.insert(make_pair(strAddonFilePath, album.strAlbum));
     else
     {
       map<CStdString, CStdString> m;
-      m.insert(make_pair(pItem->GetPath(), album.strAlbum));
+      m.insert(make_pair(strAddonFilePath, album.strAlbum));
       m_albumNames.insert(make_pair(strAlbumArtist, m));
     }
   }
@@ -309,7 +312,8 @@ void CContentAddon::ReadFileArtist(AddonFileItem* file, CFileItemList& fileList)
   if (!artistFile)
     return;
 
-  CStdString strPath  = MusicBuildPath(CONTENT_ADDON_TYPE_ARTIST, artistFile->Path(true));
+  const CStdString strAddonFilePath = artistFile->Path(true);
+  const CStdString strPath  = MusicBuildPath(CONTENT_ADDON_TYPE_ARTIST, strAddonFilePath);
   artist.strArtist    = artistFile->Name(true);
   if (strPath.empty() || artist.strArtist.empty()) return;
 
@@ -332,7 +336,7 @@ void CContentAddon::ReadFileArtist(AddonFileItem* file, CFileItemList& fileList)
 
   {
     CSingleLock lock(m_critSection);
-    m_artistNames.insert(make_pair(strPath, artist.strArtist));
+    m_artistNames.insert(make_pair(strAddonFilePath, artist.strArtist));
   }
   fileList.AddAutoJoin(pItem);
 }
