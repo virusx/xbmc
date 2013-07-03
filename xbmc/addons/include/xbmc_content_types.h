@@ -160,6 +160,9 @@ extern "C" {
    *
    * Properties that are found and that are not listed in this list will be
    * added as standard properties to fileitems in XBMC.
+   *
+   * The following texts will be replaced by XBMC when used as file name:
+   *   [logo]   add-on icon
    */
   typedef struct CONTENT_ADDON_FILEITEM
   {

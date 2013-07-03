@@ -1035,7 +1035,10 @@ CStdString CContentAddon::ContentBuildPath(const CStdString& strPath)
     return strPath;
 
   CStdString retVal;
-  retVal.Format("%s%s/%s", CONTENT_NODE, ID().c_str(), strPath.c_str());
+  if (strPath.Equals("[logo]"))
+    retVal = Icon();
+  else
+    retVal.Format("%s%s/%s", CONTENT_NODE, ID().c_str(), strPath.c_str());
   return retVal;
 }
 
