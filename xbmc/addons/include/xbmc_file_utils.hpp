@@ -330,9 +330,12 @@ public:
    */
   static void Free(CONTENT_ADDON_FILELIST* items)
   {
+    if (!items)
+      return;
+
     for (unsigned int iPtr = 0; iPtr < items->iSize; iPtr++)
     {
-      for (unsigned int iPtr2 = 0; iPtr < items->items[iPtr].iSize; iPtr++)
+      for (unsigned int iPtr2 = 0; iPtr2 < items->items[iPtr].iSize; iPtr2++)
       {
         free(items->items[iPtr].properties[iPtr2].key);
         if (items->items[iPtr].properties[iPtr2].type == CONTENT_ADDON_PROPERTY_TYPE_STRING)
@@ -342,8 +345,6 @@ public:
     }
 
     free(items->items);
-    items->iSize = 0;
-    items->items = NULL;
     free(items);
   }
 
