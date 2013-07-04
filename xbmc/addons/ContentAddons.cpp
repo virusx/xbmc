@@ -20,12 +20,14 @@
 
 #include "ContentAddons.h"
 #include "Application.h"
+#include "filesystem/AddonsDirectory.h"
 #include "MediaSource.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
 
 using namespace std;
 using namespace ADDON;
+using namespace XFILE;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 //TODO remove musicdb:// hacks
@@ -66,13 +68,8 @@ bool CContentAddons::MusicGetAddons(CFileItemList& items) const
   {
     if (it->second->ProvidesMusicFiles())
     {
-      CMediaSource item;
-      item.strPath.Format("%s%s", MUSIC_VIRTUAL_NODE, it->second->ID().c_str());
-      item.strName = it->second->Name();
-
-      CFileItemPtr pItem(new CFileItem(item));
-//      pItem->SetArt("thumb", "");
-      items.Add(pItem);
+      AddonPtr addon = boost::dynamic_pointer_cast<IAddon>(it->second);
+      items.Add(CAddonsDirectory::FileItemFromAddon(addon, MUSIC_VIRTUAL_NODE, true));
     }
   }
   return true;

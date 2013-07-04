@@ -240,7 +240,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
 
   // TODO: This can probably be done more efficiently
   CURL url(basePath);
-  url.SetFileName(addon->ID());
+  url.SetFileName(URIUtils::AddFileToFolder(url.GetFileName(), addon->ID()));
   CStdString path(url.Get());
   if (folder)
     URIUtils::AddSlashAtEnd(path);
