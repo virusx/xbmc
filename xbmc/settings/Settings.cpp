@@ -325,14 +325,13 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
       for (int j = 0; j < (int)vecPaths.size(); ++j)
       {
         CURL url(vecPaths[j]);
-        CStdString protocol = url.GetProtocol();
         bool bIsInvalid = false;
 
         // for my programs
         if (category.Equals("programs") || category.Equals("myprograms"))
         {
           // only allow HD and plugins
-          if (url.IsLocal() || protocol.Equals("plugin"))
+          if (url.IsLocal() || URIUtils::IsPlugin(vecPaths[j]))
             verifiedPaths.push_back(vecPaths[j]);
           else
             bIsInvalid = true;
