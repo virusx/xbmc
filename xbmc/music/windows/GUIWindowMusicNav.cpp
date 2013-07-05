@@ -499,6 +499,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         (nodetype == NODE_TYPE_ROOT     ||
          nodetype == NODE_TYPE_OVERVIEW ||
          nodetype == NODE_TYPE_TOP100 ||
+         nodetype == NODE_TYPE_CONTENT_ADDON ||
+         nodetype == NODE_TYPE_CONTENT_ADDON_OVERVIEW ||
          nodetype == NODE_TYPE_CONTENT_ADDON_TOP100))
     {
       if (!item->GetPath().Equals(g_settings.m_defaultMusicLibSource))
