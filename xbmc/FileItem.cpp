@@ -1182,7 +1182,7 @@ bool CFileItem::IsRemovable() const
 
 bool CFileItem::IsContentAddon() const
 {
-  if (m_strPath.Left(10).Equals("content://"))
+  if (m_strPath.Left(10).Equals(CONTENT_NODE))
     return true;
   return false;
 }
