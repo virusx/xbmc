@@ -280,7 +280,8 @@ char* CAddonCallbacksAddon::GetBoxId(const void* addonData)
     return NULL;
 
   CStdString strId;
-  strId.Format("XBMC (%s)", g_application.getNetwork().GetFirstConnectedInterface()->GetMacAddress().c_str());
+  CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+  strId.Format("XBMC (%s)", iface ? iface->GetMacAddress().c_str() : "00:00:00:00:00:00");
 
   char* buffer = strdup(strId.c_str());
   return buffer;
