@@ -43,7 +43,7 @@ bool CContentAddonFile::Open(const CURL& url)
   m_addon = CContentAddons::Get().GetAddonForPath(url.Get());
   if (m_addon.get())
   {
-    m_bOpen = m_addon->FileOpen(url.Get().c_str(), &m_handle);
+    m_bOpen = m_addon->FileOpen(url.Get(), &m_handle);
     return m_bOpen;
   }
   CLog::Log(LOGERROR, "%s(%s) failed to find add-on", __FUNCTION__, url.Get().c_str());
@@ -54,7 +54,7 @@ bool CContentAddonFile::Exists(const CURL& url)
 {
   CONTENT_ADDON addon = CContentAddons::Get().GetAddonForPath(url.Get());
   if (addon.get())
-    return addon->FileExists(url.Get().c_str());
+    return addon->FileExists(url.Get());
   return false;
 }
 
