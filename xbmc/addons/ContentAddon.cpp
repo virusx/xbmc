@@ -555,16 +555,13 @@ CStdString CContentAddon::GetFilename(const CStdString& strPath) const
     return strPath.Right(strPath.length() - strContentNode.length());
 
   // check whether the file resolves to a directory node that we created
-  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
-  if (pNode.get())
+  CDirectoryNode* pNode = CDirectoryNode::ParseURL(strPath);
+  CContentAddonDirectoryNode* pAddonNode = dynamic_cast<CContentAddonDirectoryNode*>(pNode);
+  if (pAddonNode)
   {
-    CContentAddonDirectoryNode* pAddonNode = dynamic_cast<CContentAddonDirectoryNode*>(pNode.get());
-    if (pAddonNode)
-    {
-      CONTENT_ADDON addon = pAddonNode->GetAddon();
-      if (addon.get() && addon->ID().Equals(ID()))
-        retval = pAddonNode->Filename();
-    }
+    CONTENT_ADDON addon = pAddonNode->GetAddon();
+    if (addon && addon->ID().Equals(ID()))
+      retval = pAddonNode->Filename();
   }
 
   return retval;
