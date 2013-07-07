@@ -27,6 +27,7 @@
 #include "Util.h"
 #include "network/libscrobbler/lastfmscrobbler.h"
 #include "utils/URIUtils.h"
+#include "filesystem/MusicDatabaseDirectory.h"
 #include "utils/Weather.h"
 #include "PartyModeManager.h"
 #include "addons/Visualisation.h"
@@ -1562,6 +1563,12 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow, CStdString *fa
         {
           strLabel = url.GetFileName();
           URIUtils::RemoveSlashAtEnd(strLabel);
+        }
+        else if (url.GetProtocol().Equals("musicdb"))
+        {
+          CONTENT_ADDON addon = CMusicDatabaseDirectory::GetAddon(url.Get());
+          if (addon)
+            strLabel = addon->ID();
         }
       }
       break;
