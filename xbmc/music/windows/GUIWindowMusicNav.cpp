@@ -563,7 +563,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);     // Stop Scanning
   else
   {
-    if (!m_vecItems->IsPlugin())
+    if (!m_vecItems->IsPlugin() || CMusicDatabaseDirectory::IsContentAddonDir(m_vecItems->GetPath()))
       buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY, 653);
   }
 
