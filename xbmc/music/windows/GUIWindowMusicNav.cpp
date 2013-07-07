@@ -464,8 +464,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
                               dir.IsArtistDir(item->GetPath())   )      &&
              !dir.IsAllItem(item->GetPath()) && !item->IsParentFolder() &&
              !item->IsLastFM() && !item->IsPlugin() && !item->IsScript() &&
-             !URIUtils::IsMusicSearchPath(item->GetPath()) &&
-             !dir.IsContentAddonDir(item->GetPath()))
+             !URIUtils::IsMusicSearchPath(item->GetPath()))
     {
       if (dir.IsArtistDir(item->GetPath()))
         buttons.Add(CONTEXT_BUTTON_INFO, 21891);
