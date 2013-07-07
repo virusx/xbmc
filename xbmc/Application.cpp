@@ -3918,7 +3918,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.IsPlayList())
     return false;
 
-  if (item.IsPlugin())
+  if (item.GetPath().Left(9).Equals("plugin://"))
   { // we modify the item so that it becomes a real URL
     CFileItem item_new(item);
     if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
