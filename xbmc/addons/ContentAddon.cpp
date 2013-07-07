@@ -1092,6 +1092,18 @@ bool CContentAddon::FileExists(const CStdString& strFileName)
   return false;
 }
 
+int CContentAddon::FileStat(const CStdString& strFileName, struct __stat64* buffer)
+{
+  if (ProvidesFiles())
+  {
+    CStdString strFilePath = GetFilename(strFileName);
+    try { return m_pStruct->FileStat(strFilePath.c_str(), buffer); }
+    catch (exception &e) { LogException(e, __FUNCTION__); }
+  }
+
+  return -1;
+}
+
 int64_t CContentAddon::FileSeek(CONTENT_HANDLE handle, int64_t iFilePosition, int iWhence)
 {
   if (ProvidesFiles())

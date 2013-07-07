@@ -70,6 +70,7 @@ namespace ADDON
     void         FileClose(CONTENT_HANDLE handle);
     unsigned int FileRead(CONTENT_HANDLE handle, void* pBuffer, int64_t iBufLen);
     bool         FileExists(const CStdString& strFileName);
+    int          FileStat(const CStdString& strFileName, struct __stat64* buffer);
     int64_t      FileSeek(CONTENT_HANDLE handle, int64_t iFilePosition, int iWhence);
     int64_t      FileGetPosition(CONTENT_HANDLE handle);
     int64_t      FileGetLength(CONTENT_HANDLE handle);

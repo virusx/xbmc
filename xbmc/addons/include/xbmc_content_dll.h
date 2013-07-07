@@ -92,6 +92,14 @@ extern "C" {
   int           FileExists(const char* strFileName);
 
   /*!
+   * Perform a stat operation on the specified file
+   * @param strFileName The file to stat
+   * @param buffer The zero-initialized stat structure
+   * @return 0 is returned on success, -1 is returned on error
+   */
+  int           FileStat(const char* strFileName, struct __stat64* buffer);
+
+  /*!
    * Seek to the given position
    * @param handle The handle of the file to seek
    * @param iFilePosition The position to seek to
@@ -278,6 +286,7 @@ extern "C" {
     pClient->FileClose        = FileClose;
     pClient->FileRead         = FileRead;
     pClient->FileExists       = FileExists;
+    pClient->FileStat         = FileStat;
     pClient->FileSeek         = FileSeek;
     pClient->FileGetPosition  = FileGetPosition;
     pClient->FileGetLength    = FileGetLength;

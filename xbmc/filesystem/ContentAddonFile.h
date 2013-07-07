@@ -34,7 +34,7 @@ public:
 
   bool Open(const CURL& url);
   bool Exists(const CURL& url);
-  int Stat(const CURL& url, struct __stat64* buffer) { return 0; }
+  int Stat(const CURL& url, struct __stat64* buffer);
   unsigned int Read(void* lpBuf, int64_t uiBufSize);
   int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   void Close(void);
