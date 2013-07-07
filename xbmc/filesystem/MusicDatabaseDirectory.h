@@ -23,6 +23,8 @@
 #include "MusicDatabaseDirectory/DirectoryNode.h"
 #include "MusicDatabaseDirectory/QueryParams.h"
 
+namespace ADDON { class CContentAddon; }
+
 namespace XFILE
 {
   class CMusicDatabaseDirectory : public IDirectory
@@ -38,6 +40,12 @@ namespace XFILE
     static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);
     bool IsArtistDir(const CStdString& strDirectory);
     bool IsContentAddonDir(const CStdString& strDirectory);
+    /*!
+     * \brief Returns an add-on ptr for the addon ID in the provided musicdb:// URL.
+     * \param strDirectory The musicdb content add-on path (starting with musicdb://99/content.id/).
+     * \return The add-on pointer, or an empty shared pointer if invalid/unknown.
+     */
+    static boost::shared_ptr<ADDON::CContentAddon> GetAddon(const CStdString& strDirectory);
     bool HasAlbumInfo(const CStdString& strDirectory);
     void ClearDirectoryCache(const CStdString& strDirectory);
     static bool IsAllItem(const CStdString& strDirectory);

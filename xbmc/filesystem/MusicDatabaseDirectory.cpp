@@ -31,6 +31,7 @@
 #include "addons/ContentAddons.h"
 
 using namespace std;
+using namespace ADDON;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 
@@ -113,6 +114,15 @@ bool CMusicDatabaseDirectory::IsContentAddonDir(const CStdString& strDirectory)
 {
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strDirectory));
   return pNode.get() && pNode->GetType() >= NODE_TYPE_CONTENT_ADDON && pNode->GetType() <= NODE_TYPE_CONTENT_ADDON_PLAYLIST;
+}
+
+boost::shared_ptr<CContentAddon> CMusicDatabaseDirectory::GetAddon(const CStdString& strDirectory)
+{
+  CDirectoryNode* pNode = CDirectoryNode::ParseURL(strDirectory);
+  CContentAddonDirectoryNode* pCADNode = dynamic_cast<CContentAddonDirectoryNode*>(pNode);
+  if (pCADNode)
+    return pCADNode->GetAddon();
+  return boost::shared_ptr<CContentAddon>();
 }
 
 bool CMusicDatabaseDirectory::HasAlbumInfo(const CStdString& strDirectory)
