@@ -556,7 +556,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 
     if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
-      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
+      buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045); // Add-on settings
   }
   // noncontextual buttons
 

@@ -164,7 +164,7 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
   buttons.Add(CONTEXT_BUTTON_INFO,24003);
 
   if (addon->HasSettings())
-    buttons.Add(CONTEXT_BUTTON_SETTINGS,24020);
+    buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 24020);
 }
 
 bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
@@ -183,7 +183,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
   if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID").asString(), addon, ADDON_UNKNOWN, false)) // allow disabled addons
     return false;
 
-  if (button == CONTEXT_BUTTON_SETTINGS)
+  if (button == CONTEXT_BUTTON_PLUGIN_SETTINGS)
     return CGUIDialogAddonSettings::ShowAndGetInput(addon);
 
   if (button == CONTEXT_BUTTON_UPDATE_LIBRARY)

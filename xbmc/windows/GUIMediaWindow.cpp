@@ -24,9 +24,11 @@
 #include "Util.h"
 #include "PlayListPlayer.h"
 #include "addons/AddonManager.h"
+#include "addons/ContentAddons.h"
 #include "addons/PluginSource.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "filesystem/MusicDatabaseDirectory.h"
 #include "GUIPassword.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
@@ -1605,15 +1607,17 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
-      CFileItemPtr item = m_vecItems->Get(itemNumber);
-      // CONTEXT_BUTTON_PLUGIN_SETTINGS can be called for plugin item
-      // or script item; or for the plugin directory current listing.
-      bool isPluginOrScriptItem = (item && (item->IsPlugin() || item->IsScript()));
-      CURL plugin(isPluginOrScriptItem ? item->GetPath() : m_vecItems->GetPath());
       ADDON::AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(plugin.GetHostName(), addon))
-        if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
-          Refresh();
+
+      CFileItemPtr item = m_vecItems->Get(itemNumber);
+      CURL plugin(item ? item->GetPath() : "");
+      if (plugin.GetProtocol().Equals("musicdb"))
+        addon = XFILE::CMusicDatabaseDirectory::GetAddon(plugin.Get());
+      else if (item && item->IsPlugin() || item->IsScript())
+        CAddonMgr::Get().GetAddon(plugin.GetHostName(), addon);
+
+      if (addon && CGUIDialogAddonSettings::ShowAndGetInput(addon))
+        Refresh();
       return true;
     }
   case CONTEXT_BUTTON_USER1:
