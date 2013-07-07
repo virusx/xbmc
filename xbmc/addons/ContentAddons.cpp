@@ -172,13 +172,9 @@ bool CContentAddons::IsPlugin(const CStdString& strPath)
 {
   CURL url(strPath);
   if (url.GetProtocol().Equals("content"))
-      return true;
-  if (url.GetProtocol().Equals("musicdb"))
-  {
-    CMusicDatabaseDirectory dir;
-    if (dir.GetAddon(strPath))
-      return true;
-  }
+    return true;
+  if (url.GetProtocol().Equals("musicdb") && CMusicDatabaseDirectory::GetAddon(strPath))
+    return true;
   return false;
 }
 
