@@ -903,21 +903,25 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
       else if (item->CanQueue() && !item->IsAddonsPath() && !item->IsScript())
       {
-        buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
-
-        // allow a folder to be ad-hoc queued and played by the default player
-        if (item->m_bIsFolder || (item->IsPlayList() &&
-           !g_advancedSettings.m_playlistAsFolders))
+        if (!CMusicDatabaseDirectory::IsContentAddonRoot(item->GetPath()))
         {
-          buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
+          buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); // Queue item
+
+          // allow a folder to be ad-hoc queued and played by the default player
+          if (item->m_bIsFolder || (item->IsPlayList() &&
+             !g_advancedSettings.m_playlistAsFolders))
+          {
+            buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
+          }
+          else
+          { // check what players we have, if we have multiple display play with option
+            VECPLAYERCORES vecCores;
+            CPlayerCoreFactory::GetPlayers(*item, vecCores);
+            if (vecCores.size() >= 1)
+              buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
+          }
         }
-        else
-        { // check what players we have, if we have multiple display play with option
-          VECPLAYERCORES vecCores;
-          CPlayerCoreFactory::GetPlayers(*item, vecCores);
-          if (vecCores.size() >= 1)
-            buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
-        }
+
         if (item->IsSmartPlayList())
         {
             buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
