@@ -193,6 +193,17 @@ CONTENT_ADDON CContentAddons::GetAddonForPath(const CStdString& strPath) const
     }
   }
 
+  // If add-on wasn't in the map, try the vector of all managed add-ons
+  for (VECADDONS::const_iterator it = m_addons.begin(); it != m_addons.end(); it++)
+  {
+    CONTENT_ADDON addon = boost::dynamic_pointer_cast<CContentAddon>(*it);
+    if (addon->SupportsFile(strPath))
+    {
+      retval = addon;
+      break;
+    }
+  }
+
   return retval;
 }
 
@@ -206,6 +217,16 @@ CONTENT_ADDON CContentAddons::GetAddonByID(const CStdString& strID) const
     if (it->second->ID().Equals(strID))
     {
       retval = it->second;
+      break;
+    }
+  }
+
+  // If add-on wasn't in the map, try the vector of all managed add-ons
+  for (VECADDONS::const_iterator it = m_addons.begin(); it != m_addons.end(); it++)
+  {
+    if ((*it)->ID() == strID)
+    {
+      retval = boost::dynamic_pointer_cast<CContentAddon>(*it);
       break;
     }
   }

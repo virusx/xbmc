@@ -58,6 +58,16 @@ namespace ADDON
         return true;
       }
 
+      // If add-on wasn't in the map, try the vector of all managed add-ons
+      for (VECADDONS::const_iterator it = m_addons.begin(); it != m_addons.end(); it++)
+      {
+        if ((*it)->Profile() == strAddonProfile)
+        {
+          addon = boost::dynamic_pointer_cast<_AddonType>(*it);
+          return true;
+        }
+      }
+
       return false;
     }
 
@@ -68,7 +78,12 @@ namespace ADDON
 
       for (typename std::map<CStdString, boost::shared_ptr<_AddonType> >::const_iterator itr = m_addonMap.begin(); itr != m_addonMap.end() && strReturn.empty(); itr++)
         if (itr->second->Profile() == client->Profile())
-          strReturn = itr->first;
+          strReturn = itr->second->ID();
+
+      // If add-on wasn't in the map, try the vector of all managed add-ons
+      for (VECADDONS::const_iterator it = m_addons.begin(); it != m_addons.end(); it++)
+        if ((*it)->Profile() == client->Profile())
+          strReturn = (*it)->ID();
 
       return strReturn;
     }
