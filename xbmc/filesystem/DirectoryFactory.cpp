@@ -45,6 +45,7 @@
 #include "Application.h"
 #include "addons/Addon.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef _WIN32
@@ -162,7 +163,7 @@ IDirectory* CDirectoryFactory::Create(const CStdString& strPath)
   if (strProtocol == "playlistmusic") return new CPlaylistDirectory();
   if (strProtocol == "playlistvideo") return new CPlaylistDirectory();
   if (strProtocol == "musicdb") return new CMusicDatabaseDirectory();
-  if (strProtocol == "musicsearch") return new CMusicSearchDirectory();
+  if (URIUtils::IsMusicSearchPath(strPath)) return new CMusicSearchDirectory();
   if (strProtocol == "videodb") return new CVideoDatabaseDirectory();
   if (strProtocol == "library") return new CLibraryDirectory();
   if (strProtocol == "filereader")
