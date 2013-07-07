@@ -39,9 +39,12 @@ namespace XFILE
     static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);
     static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const CStdString& strPath);
     bool IsArtistDir(const CStdString& strDirectory);
-    bool IsContentAddonDir(const CStdString& strDirectory);
     /*!
      * \brief Returns true if strDirectory begins with musicdb://99/content.id/.
+     */
+    static bool IsContentAddonDir(const CStdString& strDirectory);
+    /*!
+     * \brief Returns true if strDirectory is musicdb://99/content.id/.
      */
     static bool IsContentAddonRoot(const CStdString& strDirectory);
     /*!
