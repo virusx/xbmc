@@ -41,6 +41,10 @@ namespace XFILE
     bool IsArtistDir(const CStdString& strDirectory);
     bool IsContentAddonDir(const CStdString& strDirectory);
     /*!
+     * \brief Returns true if strDirectory begins with musicdb://99/content.id/.
+     */
+    static bool IsContentAddonRoot(const CStdString& strDirectory);
+    /*!
      * \brief Returns an add-on ptr for the addon ID in the provided musicdb:// URL.
      * \param strDirectory The musicdb content add-on path (starting with musicdb://99/content.id/).
      * \return The add-on pointer, or an empty shared pointer if invalid/unknown.

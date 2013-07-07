@@ -116,6 +116,12 @@ bool CMusicDatabaseDirectory::IsContentAddonDir(const CStdString& strDirectory)
   return pNode.get() && pNode->GetType() >= NODE_TYPE_CONTENT_ADDON && pNode->GetType() <= NODE_TYPE_CONTENT_ADDON_PLAYLIST;
 }
 
+bool CMusicDatabaseDirectory::IsContentAddonRoot(const CStdString& strDirectory)
+{
+  auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strDirectory));
+  return pNode.get() && pNode->GetType() == NODE_TYPE_CONTENT_ADDON;
+}
+
 boost::shared_ptr<CContentAddon> CMusicDatabaseDirectory::GetAddon(const CStdString& strDirectory)
 {
   CDirectoryNode* pNode = CDirectoryNode::ParseURL(strDirectory);
