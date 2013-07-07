@@ -70,7 +70,13 @@ bool CContentAddons::MusicGetAddons(CFileItemList& items) const
     if (it->second->ProvidesMusicFiles())
     {
       AddonPtr addon = boost::dynamic_pointer_cast<IAddon>(it->second);
-      items.Add(CAddonsDirectory::FileItemFromAddon(addon, MUSIC_VIRTUAL_NODE, true));
+      CFileItemPtr pItem = CAddonsDirectory::FileItemFromAddon(it->second, MUSIC_VIRTUAL_NODE, true);
+
+      // Mark add-on as needing configuration
+      if (it->second->GetStatus() == ADDON_STATUS_NEED_SETTINGS)
+        pItem->SetProperty("need_configuration", "true");
+
+      items.Add(pItem);
     }
   }
   return true;

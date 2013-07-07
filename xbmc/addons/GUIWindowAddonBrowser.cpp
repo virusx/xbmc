@@ -164,7 +164,7 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
   buttons.Add(CONTEXT_BUTTON_INFO,24003);
 
   if (addon->HasSettings())
-    buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 24020);
+    buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 24020); // Configure add-on
 }
 
 bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
