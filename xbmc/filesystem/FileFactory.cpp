@@ -95,6 +95,7 @@
 #include "Application.h"
 #include "URL.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
 #include "ContentAddonFile.h"
 
 using namespace XFILE;
@@ -132,6 +133,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   }
   else if (strProtocol == "musicdb") return new CMusicDatabaseFile();
   else if (strProtocol == "videodb") return NULL;
+  else if (URIUtils::IsMusicSearchPath(url.Get())) return NULL;
   else if (strProtocol == "special") return new CSpecialProtocolFile();
   else if (strProtocol == "multipath") return new CMultiPathFile();
   else if (strProtocol == "image") return new CImageFile();
