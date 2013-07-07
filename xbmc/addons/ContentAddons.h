@@ -55,6 +55,10 @@ namespace ADDON
     CONTENT_ADDON GetAddonForPath(const CStdString& strPath) const;
     CONTENT_ADDON GetAddonByID(const CStdString& strID) const;
     bool IsSupported(const CStdString& strPath) const;
+    /*!
+     * \brief Returns true if the path is to a virtual content add-on item.
+     */
+    static bool IsPlugin(const CStdString& strFile);
   private:
     CContentAddons(void) :
       CBinaryAddonManager<CContentAddon>(ADDON_CONTENTDLL) {}
