@@ -107,7 +107,7 @@ NODE_TYPE CMusicDatabaseDirectory::GetDirectoryParentType(const CStdString& strP
 bool CMusicDatabaseDirectory::IsArtistDir(const CStdString& strDirectory)
 {
   NODE_TYPE node=GetDirectoryType(strDirectory);
-  return (node==NODE_TYPE_ARTIST);
+  return (node==NODE_TYPE_ARTIST) || (node == NODE_TYPE_CONTENT_ADDON_ARTIST);
 }
 
 bool CMusicDatabaseDirectory::IsContentAddonDir(const CStdString& strDirectory)
@@ -135,7 +135,9 @@ bool CMusicDatabaseDirectory::HasAlbumInfo(const CStdString& strDirectory)
 {
   NODE_TYPE node=GetDirectoryType(strDirectory);
   return (node!=NODE_TYPE_OVERVIEW && node!=NODE_TYPE_TOP100 &&
-          node!=NODE_TYPE_GENRE && node!=NODE_TYPE_ARTIST && node!=NODE_TYPE_YEAR);
+          node!=NODE_TYPE_GENRE && node!=NODE_TYPE_ARTIST && node!=NODE_TYPE_YEAR &&
+          node!=NODE_TYPE_CONTENT_ADDON_OVERVIEW && node!=NODE_TYPE_CONTENT_ADDON_TOP100 &&
+          node!=NODE_TYPE_CONTENT_ADDON_ARTIST);
 }
 
 void CMusicDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory)
