@@ -221,7 +221,6 @@ namespace ADDON
             ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
             boost::shared_ptr<_AddonType> addon;
             {
-              CSingleLock lock(m_critSection);
               if (!GetClient(clientAddon->Profile(), addon))
               {
                 CLog::Log(LOGERROR, "%s - failed to find add-on '%s', disabling it", __FUNCTION__, clientAddon->Name().c_str());
