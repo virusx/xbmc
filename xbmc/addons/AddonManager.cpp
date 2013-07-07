@@ -424,7 +424,6 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
     if (m_database.IsAddonDisabled(props->plugin->identifier) != enabled)
     {
       // get a pointer to a running pvrclient if it's already started, or we won't be able to change settings
-      // TODO do something similar for content add-ons
       if (TranslateType(props->ext_point_id) == ADDON_PVRDLL &&
           enabled &&
           g_PVRManager.IsStarted())
@@ -433,6 +432,16 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
         if (g_PVRClients->GetClient(props->plugin->identifier, pvrAddon))
         {
           addons.push_back(pvrAddon);
+          continue;
+        }
+      }
+
+      if (enabled && TranslateType(props->ext_point_id) == ADDON_CONTENTDLL)
+      {
+        CONTENT_ADDON contentAddon;
+        if ((contentAddon = CContentAddons::Get().GetAddonByID(props->plugin->identifier)))
+        {
+          addons.push_back(contentAddon);
           continue;
         }
       }
@@ -462,12 +471,17 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
       if (enabledOnly && m_database.IsAddonDisabled(addon->ID()))
         return false;
 
-      // TODO do something similar for content add-ons
       if (addon->Type() == ADDON_PVRDLL && g_PVRManager.IsStarted())
       {
         AddonPtr pvrAddon;
         if (g_PVRClients->GetClient(addon->ID(), pvrAddon))
           addon = pvrAddon;
+      }
+      else if (addon->Type() == ADDON_CONTENTDLL)
+      {
+        CONTENT_ADDON contentAddon;
+        if (CContentAddons::Get().GetClient(addon->Profile(), contentAddon))
+          addon = contentAddon;
       }
     }
     return NULL != addon.get();
