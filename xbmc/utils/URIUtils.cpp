@@ -20,6 +20,7 @@
 
 #include "network/Network.h"
 #include "URIUtils.h"
+#include "addons/ContentAddons.h"
 #include "Application.h"
 #include "FileItem.h"
 #include "filesystem/MultiPathDirectory.h"
@@ -38,6 +39,7 @@
 #define MUSICSEARCH_PROTOCOL  "musicsearch"
 
 using namespace std;
+using namespace ADDON;
 using namespace XFILE;
 
 CStdString URIUtils::GetParentFolderURI(const CStdString& uri, bool preserveFileNameInPath)
@@ -643,7 +645,11 @@ bool URIUtils::IsSpecial(const CStdString& strFile)
 bool URIUtils::IsPlugin(const CStdString& strFile)
 {
   CURL url(strFile);
-  return url.GetProtocol().Equals("plugin");
+  if (url.GetProtocol().Equals("plugin"))
+    return true;
+  else if (CContentAddons::IsPlugin(strFile))
+    return true;
+  return false;
 }
 
 bool URIUtils::IsScript(const CStdString& strFile)

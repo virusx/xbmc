@@ -21,6 +21,7 @@
 #include "ContentAddons.h"
 #include "Application.h"
 #include "filesystem/AddonsDirectory.h"
+#include "filesystem/MusicDatabaseDirectory.h"
 #include "MediaSource.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
@@ -165,6 +166,20 @@ bool CContentAddons::IsSupported(const CStdString& strPath) const
 {
   CONTENT_ADDON addon = GetAddonForPath(strPath);
   return addon.get() != NULL;
+}
+
+bool CContentAddons::IsPlugin(const CStdString& strPath)
+{
+  CURL url(strPath);
+  if (url.GetProtocol().Equals("content"))
+      return true;
+  if (url.GetProtocol().Equals("musicdb"))
+  {
+    CMusicDatabaseDirectory dir;
+    if (dir.GetAddon(strPath))
+      return true;
+  }
+  return false;
 }
 
 CONTENT_ADDON CContentAddons::GetAddonForPath(const CStdString& strPath) const
