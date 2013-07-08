@@ -1061,7 +1061,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     return true;
   }
-  else if (pItem->IsPlugin() && !pItem->GetProperty("isplayable").asBoolean())
+  else if (pItem->GetPath().Left(9) == "plugin://" && !pItem->GetProperty("isplayable").asBoolean())
   {
     return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetPath());
   }
