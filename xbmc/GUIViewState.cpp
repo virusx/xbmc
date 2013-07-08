@@ -516,16 +516,16 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
   SetSortOrder(SortOrderAscending);
-  if (items.IsPlugin())
+  if (items.GetPath().Left(9) == "plugin://")
   {
     CURL url(items.GetPath());
     AddonPtr addon;
     if (CAddonMgr::Get().GetAddon(url.GetHostName(),addon) && addon)
     {
       PluginPtr plugin = boost::static_pointer_cast<CPluginSource>(addon);
-      if (plugin->Provides(CPluginSource::AUDIO))
+      if (plugin && plugin->Provides(CPluginSource::AUDIO))
         m_playlist = PLAYLIST_MUSIC;
-      if (plugin->Provides(CPluginSource::VIDEO))
+      if (plugin && plugin->Provides(CPluginSource::VIDEO))
         m_playlist = PLAYLIST_VIDEO;
     }
   }
