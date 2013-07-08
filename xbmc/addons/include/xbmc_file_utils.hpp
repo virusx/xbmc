@@ -31,6 +31,10 @@
 #include <vector>
 #include <map>
 
+#if defined(TARGET_WINDOWS) && !defined(strdup)
+#define strdup _strdup // Silence warning C4996
+#endif
+
 /*!
  * Wrapper for CONTENT_ADDON_FILE_PROPERTY
  */
