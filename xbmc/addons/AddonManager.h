@@ -116,6 +116,12 @@ namespace ADDON
     void FindAddons();
     void RemoveAddon(const CStdString& ID);
 
+    /*! \brief Extract the add-on ID from a plugin or content add-on URI.
+     \param strPath The item URI, such as plugin://addon.id/file or musicdb://99/addon.id/file.
+     \return An AddonPtr from the ID in the URI, or an empty shared pointer.
+     */
+    AddonPtr GetAddonFromURI(const CStdString& strPath);
+
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
 

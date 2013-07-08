@@ -28,7 +28,6 @@
 #include "addons/PluginSource.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "filesystem/MusicDatabaseDirectory.h"
 #include "GUIPassword.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
@@ -1102,19 +1101,25 @@ bool CGUIMediaWindow::OnClick(int iItem)
       g_guiSettings.GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
 
-    if (m_vecItems->IsPlugin())
+    AddonPtr addon;
+    if (m_vecItems->IsPlugin() && (addon = CAddonMgr::Get().GetAddonFromURI(m_vecItems->GetPath())))
     {
-      CURL url(m_vecItems->GetPath());
-      AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(url.GetHostName(),addon))
+      bool providesAudio = false;
+      if (addon->Type() == ADDON_PLUGIN)
       {
         PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
-        if (plugin && plugin->Provides(CPluginSource::AUDIO))
-        {
-          CFileItemList items;
-          auto_ptr<CGUIViewState> state(CGUIViewState::GetViewState(GetID(), items));
-          autoplay = state.get() && state->AutoPlayNextItem();
-        }
+        providesAudio = plugin && plugin->Provides(CPluginSource::AUDIO);
+      }
+      else if (addon->Type() == ADDON_CONTENTDLL)
+      {
+        CONTENT_ADDON contentAddon = boost::dynamic_pointer_cast<CContentAddon>(addon);
+        providesAudio = contentAddon && contentAddon->ProvidesMusicFiles();
+      }
+      if (providesAudio)
+      {
+        CFileItemList items;
+        auto_ptr<CGUIViewState> state(CGUIViewState::GetViewState(GetID(), items));
+        autoplay = state.get() && state->AutoPlayNextItem();
       }
     }
 
@@ -1608,15 +1613,8 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
-      ADDON::AddonPtr addon;
-
       CFileItemPtr item = m_vecItems->Get(itemNumber);
-      CURL plugin(item ? item->GetPath() : "");
-      if (plugin.GetProtocol().Equals("musicdb"))
-        addon = XFILE::CMusicDatabaseDirectory::GetAddon(plugin.Get());
-      else if (item && item->IsPlugin() || item->IsScript())
-        CAddonMgr::Get().GetAddon(plugin.GetHostName(), addon);
-
+      AddonPtr addon = CAddonMgr::Get().GetAddonFromURI(item ? item->GetPath() : "");
       if (addon && CGUIDialogAddonSettings::ShowAndGetInput(addon))
         Refresh();
       return true;

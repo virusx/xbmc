@@ -24,6 +24,7 @@
 #include "utils/JobManager.h"
 #include "threads/SingleLock.h"
 #include "FileItem.h"
+#include "filesystem/MusicDatabaseDirectory.h"
 #include "LangInfo.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
@@ -50,10 +51,12 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "ContentAddons.h"
+#include "URL.h"
 #include "Util.h"
 
 using namespace std;
 using namespace PVR;
+using namespace XFILE;
 
 namespace ADDON
 {
@@ -764,6 +767,19 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info,
     }
   }
   return AddonPtr();
+}
+
+AddonPtr CAddonMgr::GetAddonFromURI(const CStdString& strPath)
+{
+  AddonPtr addon;
+
+  CURL url(strPath);
+  if (url.GetProtocol().Equals("musicdb"))
+    addon = CMusicDatabaseDirectory::GetAddon(strPath);
+  else if (URIUtils::IsPlugin(strPath) || URIUtils::IsScript(strPath))
+    GetAddon(url.GetHostName(), addon); // URI is plugin://addon.id/etc
+
+  return addon;
 }
 
 // FIXME: This function may not be required
