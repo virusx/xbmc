@@ -164,6 +164,9 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
 {
   strLabel = "";
 
+  if (strDirectory.Left(10) != "musicdb://")
+    return false;
+
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strDirectory));
   if (!pNode.get())
     return false;
@@ -300,6 +303,9 @@ bool CMusicDatabaseDirectory::CanCache(const CStdString& strPath)
 
 CStdString CMusicDatabaseDirectory::GetIcon(const CStdString &strDirectory)
 {
+  if (strDirectory.Left(10) != "musicdb://")
+    return "";
+
   switch (GetDirectoryChildType(strDirectory))
   {
   case NODE_TYPE_ARTIST:

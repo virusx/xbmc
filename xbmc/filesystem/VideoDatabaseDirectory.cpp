@@ -135,6 +135,9 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
 {
   strLabel = "";
 
+  if (strDirectory.Left(10) != "videodb://")
+    return false;
+
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strDirectory));
   if (!pNode.get() || strDirectory.IsEmpty())
     return false;
@@ -224,6 +227,9 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
 
 CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
 {
+  if (strDirectory.Left(10) != "videodb://")
+    return "";
+
   switch (GetDirectoryChildType(strDirectory))
   {
   case NODE_TYPE_TITLE_MOVIES:
