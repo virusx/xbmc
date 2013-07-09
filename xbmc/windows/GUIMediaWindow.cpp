@@ -28,6 +28,7 @@
 #include "addons/PluginSource.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "filesystem/MusicDatabaseDirectory.h"
 #include "GUIPassword.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
@@ -1011,6 +1012,18 @@ bool CGUIMediaWindow::OnClick(int iItem)
 #endif
       return true;
     }
+  }
+
+  // Open the add-on settings dialog for content add-ons that need to be configured
+  if (pItem->GetPath().Left(10) == "musicdb://" && XFILE::CMusicDatabaseDirectory::IsContentAddonRoot(pItem->GetPath()))
+  {
+    CONTENT_ADDON addon = XFILE::CMusicDatabaseDirectory::GetAddon(pItem->GetPath());
+    if (addon && addon->GetStatus() == ADDON_STATUS_NEED_SETTINGS)
+    {
+      CGUIDialogAddonSettings::ShowAndGetInput(addon, true);
+      Update(m_vecItems->GetPath());
+    }
+    return true;
   }
 
   if (pItem->m_bIsFolder)

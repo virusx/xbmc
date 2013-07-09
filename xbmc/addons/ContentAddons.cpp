@@ -70,7 +70,13 @@ bool CContentAddons::MusicGetAddons(CFileItemList& items) const
     if (it->second->ProvidesMusicFiles())
     {
       AddonPtr addon = boost::dynamic_pointer_cast<IAddon>(it->second);
-      items.Add(CAddonsDirectory::FileItemFromAddon(addon, MUSIC_VIRTUAL_NODE, true));
+      CFileItemPtr pItem = CAddonsDirectory::FileItemFromAddon(it->second, MUSIC_VIRTUAL_NODE, true);
+
+      // Mark add-on as needing configuration
+      if (it->second->GetStatus() == ADDON_STATUS_NEED_SETTINGS)
+        pItem->SetProperty("need_configuration", "true");
+
+      items.Add(pItem);
     }
   }
   return true;
@@ -193,6 +199,17 @@ CONTENT_ADDON CContentAddons::GetAddonForPath(const CStdString& strPath) const
     }
   }
 
+  // If add-on wasn't in the map, try the vector of all managed add-ons
+  for (VECADDONS::const_iterator it = m_addons.begin(); it != m_addons.end(); it++)
+  {
+    CONTENT_ADDON addon = boost::dynamic_pointer_cast<CContentAddon>(*it);
+    if (addon->SupportsFile(strPath))
+    {
+      retval = addon;
+      break;
+    }
+  }
+
   return retval;
 }
 
@@ -206,6 +223,16 @@ CONTENT_ADDON CContentAddons::GetAddonByID(const CStdString& strID) const
     if (it->second->ID().Equals(strID))
     {
       retval = it->second;
+      break;
+    }
+  }
+
+  // If add-on wasn't in the map, try the vector of all managed add-ons
+  for (VECADDONS::const_iterator it = m_addons.begin(); it != m_addons.end(); it++)
+  {
+    if ((*it)->ID() == strID)
+    {
+      retval = boost::dynamic_pointer_cast<CContentAddon>(*it);
       break;
     }
   }

@@ -10388,8 +10388,10 @@ msgctxt "#24019"
 msgid "PVR clients"
 msgstr ""
 
+#: xbmc/addons/ContentAddons.cpp
+#: xbmc/addons/GIUWindowAddonBrowser.cpp
 msgctxt "#24020"
-msgid "Configure"
+msgid "Configure add-on"
 msgstr ""
 
 msgctxt "#24021"
