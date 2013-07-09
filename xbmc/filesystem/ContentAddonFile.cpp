@@ -61,11 +61,12 @@ bool CContentAddonFile::Exists(const CURL& url)
 int CContentAddonFile::Stat(const CURL& url, struct __stat64* buffer)
 {
   if (buffer)
+  {
     memset(buffer, 0, sizeof(struct __stat64));
-
-  CONTENT_ADDON addon = CContentAddons::Get().GetAddonForPath(url.Get());
-  if (addon && addon->FileStat(url.Get(), buffer) == 0)
-    return 0;
+    CONTENT_ADDON addon = CContentAddons::Get().GetAddonForPath(url.Get());
+    if (addon && addon->FileStat(url.Get(), buffer) == 0)
+      return 0;
+  }
 
   errno = ENOENT;
   return -1;
