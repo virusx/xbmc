@@ -58,6 +58,20 @@ bool CContentAddonFile::Exists(const CURL& url)
   return false;
 }
 
+int CContentAddonFile::Stat(const CURL& url, struct __stat64* buffer)
+{
+  if (buffer)
+  {
+    memset(buffer, 0, sizeof(struct __stat64));
+    CONTENT_ADDON addon = CContentAddons::Get().GetAddonForPath(url.Get());
+    if (addon && addon->FileStat(url.Get(), buffer) == 0)
+      return 0;
+  }
+
+  errno = ENOENT;
+  return -1;
+}
+
 void CContentAddonFile::Close(void)
 {
   if (m_bOpen && m_addon.get())

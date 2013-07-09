@@ -41,6 +41,14 @@
 #endif
 #endif
 
+#if !defined(__stat64) && defined(TARGET_POSIX)
+  #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
+    #define __stat64 stat
+  #else
+    #define __stat64 stat64
+  #endif
+#endif
+
 #undef ATTRIBUTE_PACKED
 #undef PRAGMA_PACK_BEGIN
 #undef PRAGMA_PACK_END
@@ -288,6 +296,7 @@ extern "C" {
     void             (__cdecl* FileClose)(CONTENT_HANDLE);
     unsigned int     (__cdecl* FileRead)(CONTENT_HANDLE, void*, int64_t);
     int              (__cdecl* FileExists)(const char*);
+    int              (__cdecl* FileStat)(const char*, struct __stat64* buffer);
     int64_t          (__cdecl* FileSeek)(CONTENT_HANDLE, int64_t, int);
     int64_t          (__cdecl* FileGetPosition)(CONTENT_HANDLE);
     int64_t          (__cdecl* FileGetLength)(CONTENT_HANDLE);
