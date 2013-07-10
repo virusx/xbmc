@@ -63,6 +63,9 @@ namespace ADDON
     bool         OnDemand(void) const { return !m_bProvidesMusicFiles && ProvidesMusicCodec(); }
     bool         ProvidesMusicCodec(void) const { return m_bReadyToUse && m_bProvidesMusicCodec; }
     bool         ProvidesMusicFiles(void) const { return m_bReadyToUse && m_bProvidesMusicFiles; }
+    bool         ProvidesMusicPlaylists(void) const { return m_bReadyToUse && m_bProvidesMusicPlaylists; }
+    bool         ProvidesMusicTop100(void) const { return m_bReadyToUse && m_bProvidesMusicTop100; }
+    bool         ProvidesMusicSearch(void) const { return m_bReadyToUse && m_bProvidesMusicSearch; }
     bool         ProvidesFiles(void) const { return m_bReadyToUse && m_bProvidesFiles; }
     bool         SupportsConcurrentStreams(void) const { return m_bReadyToUse && m_bSupportsConcurrentStreams; }
 
@@ -141,6 +144,9 @@ namespace ADDON
     bool                                                    m_bOnDemand;
     bool                                                    m_bProvidesMusicCodec;
     bool                                                    m_bProvidesMusicFiles;
+    bool                                                    m_bProvidesMusicPlaylists;
+    bool                                                    m_bProvidesMusicTop100;
+    bool                                                    m_bProvidesMusicSearch;
     bool                                                    m_bSupportsConcurrentStreams;
     bool                                                    m_bProvidesFiles;
   };

@@ -48,6 +48,9 @@ CContentAddon::CContentAddon(const AddonProps& props) :
     m_playState(CONTENT_ADDON_PLAYSTATE_STOP),
     m_bProvidesMusicCodec(false),
     m_bProvidesMusicFiles(false),
+    m_bProvidesMusicPlaylists(false),
+    m_bProvidesMusicTop100(false),
+    m_bProvidesMusicSearch(false),
     m_bSupportsConcurrentStreams(false),
     m_bProvidesFiles(false)
 {
@@ -64,15 +67,21 @@ CContentAddon::CContentAddon(const cp_extension_t *ext) :
     m_bReadyToUse(false),
     m_playState(CONTENT_ADDON_PLAYSTATE_STOP)
 {
-  CStdString strProvidesMusicCodec = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_music_codec");
-  CStdString strProvidesMusicFiles = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_music_files");
-  CStdString strProvidesFiles = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_files");
+  CStdString strProvidesMusicCodec        = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_music_codec");
+  CStdString strProvidesMusicFiles        = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_music_files");
+  CStdString strProvidesMusicPlaylists    = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_music_playlists");
+  CStdString strProvidesMusicTop100       = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_music_top100");
+  CStdString strProvidesMusicSearch       = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_music_search");
+  CStdString strProvidesFiles             = CAddonMgr::Get().GetExtValue(ext->configuration, "@provides_files");
   CStdString strSupportsConcurrentStreams = CAddonMgr::Get().GetExtValue(ext->configuration, "@supports_concurrent_streams");
 
   m_fileTypes                  = StringUtils::Split(CAddonMgr::Get().GetExtValue(ext->configuration, "@filetypes"), "|");
   m_bProvidesMusicCodec        = strProvidesMusicCodec.Equals("true") || strProvidesMusicCodec.Equals("1");
   m_bProvidesMusicFiles        = strProvidesMusicFiles.Equals("true") || strProvidesMusicFiles.Equals("1");
   m_bProvidesFiles             = strProvidesFiles.Equals("true") || strProvidesFiles.Equals("1");
+  m_bProvidesMusicPlaylists    = strProvidesMusicPlaylists.Equals("true") || strProvidesMusicPlaylists.Equals("1");
+  m_bProvidesMusicTop100       = strProvidesMusicTop100.Equals("true") || strProvidesMusicTop100.Equals("1");
+  m_bProvidesMusicSearch       = strProvidesMusicSearch.Equals("true") || strProvidesMusicSearch.Equals("1");
   m_bSupportsConcurrentStreams = strSupportsConcurrentStreams.Equals("true") || strSupportsConcurrentStreams.Equals("1");
   m_strUserPath                = CSpecialProtocol::TranslatePath(Profile()).c_str();
   m_strClientPath              = CSpecialProtocol::TranslatePath(Path()).c_str();
@@ -413,7 +422,7 @@ void CContentAddon::ReadFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItemList&
 
 bool CContentAddon::MusicGetPlaylists(CFileItemList& items)
 {
-  if (!ReadyToUse() || !ProvidesMusicFiles())
+  if (!ReadyToUse() || !ProvidesMusicFiles() || !ProvidesMusicPlaylists())
     return false;
 
   CONTENT_ADDON_FILELIST* retVal = NULL;
@@ -458,7 +467,7 @@ bool CContentAddon::MusicGetArtists(CFileItemList& items)
 
 bool CContentAddon::MusicGetPlaylistContent(CFileItemList& items, const CStdString& strName)
 {
-  if (!ReadyToUse() || !ProvidesMusicFiles())
+  if (!ReadyToUse() || !ProvidesMusicFiles() || !ProvidesMusicPlaylists())
     return false;
 
   CONTENT_ADDON_FILELIST* retVal = NULL;
@@ -656,7 +665,7 @@ void CContentAddon::LogException(const exception &e, const char *strFunctionName
 CStdString CContentAddon::MusicGetPlaylistName(const CStdString& strPlaylist) const
 {
   CStdString strReturn(strPlaylist);
-  if (!ReadyToUse() || !ProvidesMusicFiles())
+  if (!ReadyToUse() || !ProvidesMusicFiles() || !ProvidesMusicPlaylists())
     return strReturn;
   CSingleLock lock(m_critSection);
   map<CStdString, CStdString>::const_iterator it = m_playlistNames.find(strPlaylist);
@@ -720,7 +729,7 @@ void CContentAddon::Announce(AnnouncementFlag flag, const char *sender, const ch
 
 bool CContentAddon::MusicGetTop100(CFileItemList& items, CONTENT_TOP100_TYPE type)
 {
-  if (!ReadyToUse() || !ProvidesMusicFiles())
+  if (!ReadyToUse() || !ProvidesMusicFiles() || !ProvidesMusicTop100())
     return false;
 
   CONTENT_ADDON_FILELIST* retVal = NULL;
@@ -770,8 +779,6 @@ bool CContentAddon::MusicGetOverview(CFileItemList& items)
   CStdString strPrepend;
   strPrepend.Format("%s%s/", MUSIC_VIRTUAL_NODE, ID().c_str());
 
-  // TODO only add items that this add-on supports
-
   CFileItemPtr pArtistItem(new CFileItem(g_localizeStrings.Get(133)));
   CStdString strDir;
   strDir.Format("%s%s/", strPrepend.c_str(), MUSIC_ARTIST);
@@ -794,33 +801,42 @@ bool CContentAddon::MusicGetOverview(CFileItemList& items)
   pSongItem->SetCanQueue(false);
   items.Add(pSongItem);
 
-  CFileItemPtr pTop100Item(new CFileItem(g_localizeStrings.Get(271)));
-  strDir.Format("%s%s/", strPrepend.c_str(), MUSIC_TOP100);
-  pTop100Item->SetPath(strDir);
-  pTop100Item->m_bIsFolder = true;
-  pTop100Item->SetCanQueue(false);
-  items.Add(pTop100Item);
+  if (ProvidesMusicTop100())
+  {
+    CFileItemPtr pTop100Item(new CFileItem(g_localizeStrings.Get(271)));
+    strDir.Format("%s%s/", strPrepend.c_str(), MUSIC_TOP100);
+    pTop100Item->SetPath(strDir);
+    pTop100Item->m_bIsFolder = true;
+    pTop100Item->SetCanQueue(false);
+    items.Add(pTop100Item);
+  }
 
-  CFileItemPtr pPlaylistItem(new CFileItem(g_localizeStrings.Get(136)));
-  strDir.Format("%s%s/", strPrepend.c_str(), MUSIC_PLAYLIST);
-  pPlaylistItem->SetPath(strDir);
-  pPlaylistItem->m_bIsFolder = true;
-  pPlaylistItem->SetCanQueue(false);
-  items.Add(pPlaylistItem);
+  if (ProvidesMusicPlaylists())
+  {
+    CFileItemPtr pPlaylistItem(new CFileItem(g_localizeStrings.Get(136)));
+    strDir.Format("%s%s/", strPrepend.c_str(), MUSIC_PLAYLIST);
+    pPlaylistItem->SetPath(strDir);
+    pPlaylistItem->m_bIsFolder = true;
+    pPlaylistItem->SetCanQueue(false);
+    items.Add(pPlaylistItem);
+  }
 
-  CFileItemPtr pSearchItem(new CFileItem(g_localizeStrings.Get(137)));
-  strDir = URIUtils::MakeMusicSearchPath(ID());
-  pSearchItem->SetPath(strDir);
-  pSearchItem->m_bIsFolder = true;
-  pSearchItem->SetCanQueue(false);
-  items.Add(pSearchItem);
+  if (ProvidesMusicSearch())
+  {
+    CFileItemPtr pSearchItem(new CFileItem(g_localizeStrings.Get(137)));
+    strDir = URIUtils::MakeMusicSearchPath(ID());
+    pSearchItem->SetPath(strDir);
+    pSearchItem->m_bIsFolder = true;
+    pSearchItem->SetCanQueue(false);
+    items.Add(pSearchItem);
+  }
 
   return true;
 }
 
 bool CContentAddon::MusicGetTop100Overview(CFileItemList& items)
 {
-  if (!ReadyToUse() || !ProvidesMusicFiles())
+  if (!ReadyToUse() || !ProvidesMusicFiles() || !ProvidesMusicTop100())
     return false;
 
   CStdString strPrepend;
@@ -855,7 +871,7 @@ bool CContentAddon::MusicGetTop100Overview(CFileItemList& items)
 
 bool CContentAddon::MusicSearch(CFileItemList& items, const CStdString& strQuery, CONTENT_ADDON_SEARCH_TYPE type /* = CONTENT_SEARCH_ALL */)
 {
-  if (!ReadyToUse() || !ProvidesMusicFiles())
+  if (!ReadyToUse() || !ProvidesMusicFiles() || !ProvidesMusicSearch())
     return false;
 
   CONTENT_ADDON_FILELIST* retVal = NULL;
