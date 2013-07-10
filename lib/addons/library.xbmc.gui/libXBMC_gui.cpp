@@ -555,5 +555,15 @@ void CAddonListItem::SetPath(const char *Path)
     ((CB_GUILib*)m_cb)->ListItem_SetPath(((AddonCB*)m_Handle)->addonData, m_ListItemHandle, Path);
 }
 
+DLLEXPORT void GUI_Dialog_OK(void *hdl, void *cb, const char* heading, const char* line1, const char* line2, const char* line3)
+{
+  ((CB_GUILib*)cb)->Dialog_OK(heading, line1, line2, line3);
+}
+
+DLLEXPORT bool GUI_Dialog_YesNo(void *hdl, void *cb, const char* heading, const char* line1, const char* line2, const char* line3)
+{
+  return ((CB_GUILib*)cb)->Dialog_YesNo(heading, line1, line2, line3);
+}
+
 
 };

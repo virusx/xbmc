@@ -106,6 +106,8 @@ public:
   static void         ListItem_SetProperty(void *addonData, GUIHANDLE handle, const char *key, const char *value);
   static const char * ListItem_GetProperty(void *addonData, GUIHANDLE handle, const char *key);
   static void         ListItem_SetPath(void *addonData, GUIHANDLE handle, const char *path);
+  static void         Dialog_OK(const char* heading, const char* line1, const char* line2, const char* line3);
+  static bool         Dialog_YesNo(const char* heading, const char* line1, const char* line2, const char* line3);
 
 private:
   CB_GUILib    *m_callbacks;

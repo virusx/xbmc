@@ -149,6 +149,8 @@ typedef void        (*GUIListItem_SetInfo)(void *addonData, GUIHANDLE handle, co
 typedef void        (*GUIListItem_SetProperty)(void *addonData, GUIHANDLE handle, const char *key, const char *value);
 typedef const char* (*GUIListItem_GetProperty)(void *addonData, GUIHANDLE handle, const char *key);
 typedef void        (*GUIListItem_SetPath)(void *addonData, GUIHANDLE handle, const char *path);
+typedef void        (*GUIDialog_OK)(const char* heading, const char* line1, const char* line2, const char* line3);
+typedef bool        (*GUIDialog_YesNo)(const char* heading, const char* line1, const char* line2, const char* line3);
 
 typedef struct CB_GUILib
 {
@@ -215,6 +217,8 @@ typedef struct CB_GUILib
   GUIListItem_SetProperty             ListItem_SetProperty;
   GUIListItem_GetProperty             ListItem_GetProperty;
   GUIListItem_SetPath                 ListItem_SetPath;
+  GUIDialog_OK                        Dialog_OK;
+  GUIDialog_YesNo                     Dialog_YesNo;
 
 } CB_GUILib;
 
