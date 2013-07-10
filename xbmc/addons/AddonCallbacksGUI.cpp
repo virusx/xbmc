@@ -22,6 +22,8 @@
 #include "ApplicationMessenger.h"
 #include "Addon.h"
 #include "AddonCallbacksGUI.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "utils/log.h"
 #include "Skin.h"
 #include "FileItem.h"
@@ -125,6 +127,8 @@ CAddonCallbacksGUI::CAddonCallbacksGUI(CAddon* addon)
   m_callbacks->ListItem_SetProperty           = CAddonCallbacksGUI::ListItem_SetProperty;
   m_callbacks->ListItem_GetProperty           = CAddonCallbacksGUI::ListItem_GetProperty;
   m_callbacks->ListItem_SetPath               = CAddonCallbacksGUI::ListItem_SetPath;
+  m_callbacks->Dialog_OK                      = CAddonCallbacksGUI::Dialog_OK;
+  m_callbacks->Dialog_YesNo                   = CAddonCallbacksGUI::Dialog_YesNo;
 }
 
 CAddonCallbacksGUI::~CAddonCallbacksGUI()
@@ -1218,7 +1222,15 @@ void CAddonCallbacksGUI::ListItem_SetPath(void *addonData, GUIHANDLE handle, con
   ((CFileItem*)handle)->SetPath(path);
 }
 
+void CAddonCallbacksGUI::Dialog_OK(const char* heading, const char* line1, const char* line2, const char* line3)
+{
+  CGUIDialogOK::ShowAndGetInput(heading, line1, line2, line3);
+}
 
+bool CAddonCallbacksGUI::Dialog_YesNo(const char* heading, const char* line1, const char* line2, const char* line3)
+{
+  return CGUIDialogYesNo::ShowAndGetInput(heading, line1, line2, line3);
+}
 
 
 

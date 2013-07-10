@@ -154,6 +154,14 @@ public:
       dlsym(m_libXBMC_gui, "GUI_ListItem_destroy");
     if (GUI_ListItem_destroy == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    GUI_Dialog_OK = (void (*)(void *HANDLE, void *CB, const char* heading, const char* line1, const char* line2, const char* line3))
+      dlsym(m_libXBMC_gui, "GUI_Dialog_OK");
+    if (GUI_Dialog_OK == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+    GUI_Dialog_YesNo = (bool (*)(void *HANDLE, void *CB, const char* heading, const char* line1, const char* line2, const char* line3))
+      dlsym(m_libXBMC_gui, "GUI_Dialog_YesNo");
+    if (GUI_Dialog_YesNo == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
 
     m_Callbacks = GUI_register_me(m_Handle);
     return m_Callbacks != NULL;
@@ -234,6 +242,16 @@ public:
     return GUI_ListItem_destroy(p);
   }
 
+  void Dialog_OK(const char* heading, const char* line1, const char* line2, const char* line3)
+  {
+    GUI_Dialog_OK(m_Handle, m_Callbacks, heading, line1, line2, line3);
+  }
+
+  bool Dialog_YesNo(const char* heading, const char* line1, const char* line2, const char* line3)
+  {
+    return GUI_Dialog_YesNo(m_Handle, m_Callbacks, heading, line1, line2, line3);
+  }
+
 protected:
   void* (*GUI_register_me)(void *HANDLE);
   void (*GUI_unregister_me)(void *HANDLE, void* CB);
@@ -252,6 +270,8 @@ protected:
   void (*GUI_control_release_progress)(CAddonGUIProgressControl* p);
   CAddonListItem* (*GUI_ListItem_create)(void *HANDLE, void* CB, const char *label, const char *label2, const char *iconImage, const char *thumbnailImage, const char *path);
   void (*GUI_ListItem_destroy)(CAddonListItem* p);
+  void (*GUI_Dialog_OK)(void *HANDLE, void *CB, const char* heading, const char* line1, const char* line2, const char* line3);
+  bool (*GUI_Dialog_YesNo)(void *HANDLE, void *CB, const char* heading, const char* line1, const char* line2, const char* line3);
 
 private:
   void *m_libXBMC_gui;
