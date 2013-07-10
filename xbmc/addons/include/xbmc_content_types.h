@@ -185,6 +185,9 @@ extern "C" {
     CONTENT_ADDON_FILEITEM* items;
   } ATTRIBUTE_PACKED CONTENT_ADDON_FILELIST;
 
+  // set the fanart_image or thumb to CONTENT_ADDON_FILEITEM_LOGO to use the add-on's logo
+  #define CONTENT_ADDON_FILEITEM_LOGO "[logo]"
+
   typedef enum CONTENT_ADDON_PLAYSTATE
   {
     CONTENT_ADDON_PLAYSTATE_PLAY,
