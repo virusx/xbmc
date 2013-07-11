@@ -311,7 +311,7 @@ void CContentAddon::ReadFileAlbum(AddonFileItem* file, CFileItemList& fileList, 
       m_albumNames.insert(make_pair(strAlbumArtist, m));
     }
   }
-  fileList.Add(pItem);
+  fileList.AddAutoJoin(pItem);
 }
 
 void CContentAddon::ReadFileArtist(AddonFileItem* file, CFileItemList& fileList)
