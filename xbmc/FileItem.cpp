@@ -1676,23 +1676,42 @@ void CFileItemList::ClearItems()
   m_map.clear();
 }
 
-void CFileItemList::Add(const CFileItemPtr &pItem, bool bAutoJoin /* = false */)
+void CFileItemList::Add(const CFileItemPtr &pItem, ADD_TYPE type /* = ADD_STANDARD */)
 {
   CSingleLock lock(m_lock);
 
-  if (bAutoJoin)
+  if (type == ADD_COMBINE || type == ADD_REPLACE || type == ADD_IGNORE)
   {
     for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); it++)
     {
       if ((*it)->GetLabel().Equals(pItem->GetLabel()) &&
           (*it)->m_bIsFolder == pItem->m_bIsFolder)
       {
-        (*it)->Combine(*pItem);
+        switch (type)
+        {
+        case ADD_COMBINE:
+          // try to combine metadata and return
+          (*it)->Combine(*pItem);
+          return;
+        case ADD_REPLACE:
+          // erase previous entry
+          m_map.erase((*it)->GetPath());
+          m_items.erase(it);
+          // break out of the loop and add the new entry
+          it = m_items.end();
+          break;
+        case ADD_IGNORE:
+          // ignore new entry and return
+          return;
+        default:
+          break;
+        }
         return;
       }
     }
   }
 
+  // standard add
   m_items.push_back(pItem);
   if (m_fastLookup)
   {

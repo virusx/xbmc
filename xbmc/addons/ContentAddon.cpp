@@ -243,7 +243,7 @@ void CContentAddon::ReadFilePlaylist(AddonFileItem* file, CFileItemList& fileLis
     CSingleLock lock(m_critSection);
     m_playlistNames.insert(make_pair(strAddonFilePath, playlist.strName));
   }
-  fileList.Add(pItem, true);
+  fileList.Add(pItem, CFileItemList::ADD_COMBINE);
 }
 
 void CContentAddon::ReadFileSong(AddonFileItem* file, CFileItemList& fileList, const string& strArtist /* = "" */, const string& strAlbum /* = "" */)
@@ -268,7 +268,7 @@ void CContentAddon::ReadFileSong(AddonFileItem* file, CFileItemList& fileList, c
   CFileItemPtr pItem(new CFileItem(song));
   AddCommonProperties(file, pItem);
 
-  fileList.Add(pItem, true);
+  fileList.Add(pItem, CFileItemList::ADD_IGNORE);
 }
 
 void CContentAddon::ReadFileAlbum(AddonFileItem* file, CFileItemList& fileList, const string& strArtist /* = "" */)
@@ -311,7 +311,7 @@ void CContentAddon::ReadFileAlbum(AddonFileItem* file, CFileItemList& fileList, 
       m_albumNames.insert(make_pair(strAlbumArtist, m));
     }
   }
-  fileList.Add(pItem, true);
+  fileList.Add(pItem, CFileItemList::ADD_IGNORE);
 }
 
 void CContentAddon::ReadFileArtist(AddonFileItem* file, CFileItemList& fileList)
@@ -347,7 +347,7 @@ void CContentAddon::ReadFileArtist(AddonFileItem* file, CFileItemList& fileList)
     CSingleLock lock(m_critSection);
     m_artistNames.insert(make_pair(strAddonFilePath, artist.strArtist));
   }
-  fileList.Add(pItem, true);
+  fileList.Add(pItem, CFileItemList::ADD_COMBINE);
 }
 
 void CContentAddon::ReadFileDirectory(AddonFileItem* file, CFileItemList& fileList)
@@ -366,7 +366,7 @@ void CContentAddon::ReadFileDirectory(AddonFileItem* file, CFileItemList& fileLi
   CFileItemPtr pItem(new CFileItem(m));
   AddCommonProperties(file, pItem);
 
-  fileList.Add(pItem, true);
+  fileList.Add(pItem, CFileItemList::ADD_COMBINE);
 }
 
 void CContentAddon::ReadFileFile(AddonFileItem* file, CFileItemList& fileList)
@@ -385,7 +385,7 @@ void CContentAddon::ReadFileFile(AddonFileItem* file, CFileItemList& fileList)
   CFileItemPtr pItem(new CFileItem(m));
   AddCommonProperties(file, pItem);
 
-  fileList.Add(pItem, true);
+  fileList.Add(pItem, CFileItemList::ADD_IGNORE);
 }
 
 void CContentAddon::ReadFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItemList& xbmcItems, const string& strArtist /* = "" */, const string& strAlbum /* = "" */)

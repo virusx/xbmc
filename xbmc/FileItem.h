@@ -481,6 +481,13 @@ class CFileItemList : public CFileItem
 {
 public:
   enum CACHE_TYPE { CACHE_NEVER = 0, CACHE_IF_SLOW, CACHE_ALWAYS };
+  enum ADD_TYPE
+  {
+    ADD_STANDARD = 0, /*!< add to this CFileItemList */
+    ADD_COMBINE,      /*!< try to combine metadata if a duplicate label is found. add otherwise */
+    ADD_REPLACE,      /*!< replace previous entry if a duplicate label is found. add otherwise */
+    ADD_IGNORE        /*!< ignore new entry if a duplicate label is found. add otherwise */
+  };
 
   CFileItemList();
   CFileItemList(const CStdString& strPath);
@@ -492,7 +499,7 @@ public:
   const CFileItemPtr operator[] (const CStdString& strPath) const;
   void Clear();
   void ClearItems();
-  void Add(const CFileItemPtr &pItem, bool bAutoJoin = false);
+  void Add(const CFileItemPtr &pItem, ADD_TYPE type = ADD_STANDARD);
   void AddFront(const CFileItemPtr &pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
