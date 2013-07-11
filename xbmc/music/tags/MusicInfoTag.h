@@ -169,6 +169,8 @@ public:
   virtual void Serialize(CVariant& ar) const;
   virtual void ToSortable(SortItem& sortable);
 
+  void Combine(const CMusicInfoTag& other);
+
   void Clear();
 protected:
   /*! \brief Trim whitespace off the given string

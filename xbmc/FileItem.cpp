@@ -1535,6 +1535,32 @@ void CFileItem::SetFromSong(const CSong &song)
     SetArt("thumb", song.strThumb);
 }
 
+void CFileItem::Combine(const CFileItem& pItem)
+{
+  // ignore this item if we already got it in
+  if (m_strPath.Find(pItem.m_strPath) >= 0)
+    return;
+
+  // combine paths
+  std::set<CStdString> pathSet;
+  pathSet.insert(m_strPath);
+  pathSet.insert(pItem.m_strPath);
+  SetPath(CMultiPathDirectory::ConstructMultiPath(pathSet));
+
+  // combine metadata
+  if (HasMusicInfoTag() && pItem.HasMusicInfoTag())
+    GetMusicInfoTag()->Combine(*pItem.GetMusicInfoTag());
+  // TODO add other types
+
+  // combine properties
+  for (PropertyMap::const_iterator it = pItem.m_mapProperties.begin(); it != pItem.m_mapProperties.end(); it++)
+  {
+    PropertyMap::const_iterator it2 = m_mapProperties.find(it->first);
+    if (it2 == m_mapProperties.end() || it2->second.empty())
+      m_mapProperties.insert(make_pair(it->first, it->second));
+  }
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 /////
 ///// CFileItemList
@@ -1650,39 +1676,28 @@ void CFileItemList::ClearItems()
   m_map.clear();
 }
 
-void CFileItemList::Add(const CFileItemPtr &pItem)
+void CFileItemList::Add(const CFileItemPtr &pItem, bool bAutoJoin /* = false */)
 {
   CSingleLock lock(m_lock);
+
+  if (bAutoJoin)
+  {
+    for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); it++)
+    {
+      if ((*it)->GetLabel().Equals(pItem->GetLabel()) &&
+          (*it)->m_bIsFolder == pItem->m_bIsFolder)
+      {
+        (*it)->Combine(*pItem);
+        return;
+      }
+    }
+  }
 
   m_items.push_back(pItem);
   if (m_fastLookup)
   {
     m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
   }
-}
-
-void CFileItemList::AddAutoJoin(const CFileItemPtr &pItem)
-{
-  CSingleLock lock(m_lock);
-
-  for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); it++)
-  {
-    if ((*it)->GetLabel().Equals(pItem->GetLabel()) &&
-        (*it)->m_bIsFolder == pItem->m_bIsFolder)
-    {
-      std::set<CStdString> pathSet;
-      pathSet.insert((*it)->GetPath());
-      pathSet.insert(pItem->GetPath());
-      (*it)->SetPath(CMultiPathDirectory::ConstructMultiPath(pathSet));
-
-      // TODO
-      if (!pItem->GetProperty("artist_description").empty() && (*it)->GetProperty("artist_description").empty())
-        (*it)->SetProperty("artist_description", pItem->GetProperty("artist_description"));
-      return;
-    }
-  }
-
-  Add(pItem);
 }
 
 void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)

@@ -393,6 +393,12 @@ public:
    */
   void SetFromSong(const CSong &song);
 
+  /*!
+   * \brief Try to combine the information in this fileitem with the provided one
+   * \param item The item to combine this one with
+   */
+  void Combine(const CFileItem& pItem);
+
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
   int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
   CDateTime m_dateTime;             ///< file creation date & time
@@ -486,8 +492,7 @@ public:
   const CFileItemPtr operator[] (const CStdString& strPath) const;
   void Clear();
   void ClearItems();
-  void Add(const CFileItemPtr &pItem);
-  void AddAutoJoin(const CFileItemPtr &pItem);
+  void Add(const CFileItemPtr &pItem, bool bAutoJoin = false);
   void AddFront(const CFileItemPtr &pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);

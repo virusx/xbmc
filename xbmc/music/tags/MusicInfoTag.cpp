@@ -744,3 +744,41 @@ CStdString CMusicInfoTag::Trim(const CStdString &value) const
   trimmedValue.TrimRight(" \n\r");
   return trimmedValue;
 }
+
+void CMusicInfoTag::Combine(const CMusicInfoTag& other)
+{
+  // we don't touch url and title or bools, and take the value from 'other' if the one from 'this' is empty
+  if (m_artist.empty())                      m_artist = other.m_artist;
+  if (m_strAlbum.empty())                    m_strAlbum = other.m_strAlbum;
+  if (m_albumArtist.empty())                 m_albumArtist = other.m_albumArtist;
+  if (m_genre.empty())                       m_genre = other.m_genre;
+  if (m_strMusicBrainzTrackID.empty())       m_strMusicBrainzTrackID = other.m_strMusicBrainzTrackID;
+  if (m_strMusicBrainzArtistID.empty())      m_strMusicBrainzArtistID = other.m_strMusicBrainzArtistID;
+  if (m_strMusicBrainzAlbumID.empty())       m_strMusicBrainzAlbumID = other.m_strMusicBrainzAlbumID;
+  if (m_strMusicBrainzAlbumArtistID.empty()) m_strMusicBrainzAlbumArtistID = other.m_strMusicBrainzAlbumArtistID;
+  if (m_strMusicBrainzTRMID.empty())         m_strMusicBrainzTRMID = other.m_strMusicBrainzTRMID;
+  if (m_strComment.empty())                  m_strComment = other.m_strComment;
+  if (m_strLyrics.empty())                   m_strLyrics = other.m_strLyrics;
+  if (!m_lastPlayed.IsValid())               m_lastPlayed = other.m_lastPlayed;
+  if (m_iDuration <= 0)                      m_iDuration = other.m_iDuration;
+  if (m_iTrack <= 0)                         m_iTrack = other.m_iTrack;
+  if (m_iDbId <= 0)                          m_iDbId = other.m_iDbId;
+  if (m_type.empty())                        m_type = other.m_type;
+  if (m_rating <= 0)                         m_rating = other.m_rating;
+  if (m_listeners <= 0)                      m_listeners = other.m_listeners;
+  if (m_iAlbumId <= 0)                       m_iAlbumId = other.m_iAlbumId;
+  if (m_dwReleaseDate.wYear <= 0)            m_dwReleaseDate = other.m_dwReleaseDate;
+  if (m_coverArt.empty())                    m_coverArt = other.m_coverArt;
+
+  if (!m_iHasGainInfo)
+  {
+    m_iTrackGain   = other.m_iTrackGain;
+    m_iAlbumGain   = other.m_iAlbumGain;
+    m_fTrackPeak   = other.m_fTrackPeak;
+    m_fAlbumPeak   = other.m_fAlbumPeak;
+    m_iHasGainInfo = other.m_iHasGainInfo;
+  }
+
+  // combine times played, as we might have played either file
+  m_iTimesPlayed += other.m_iTimesPlayed;
+}
