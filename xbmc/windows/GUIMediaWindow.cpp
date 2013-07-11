@@ -1022,8 +1022,8 @@ bool CGUIMediaWindow::OnClick(int iItem)
     {
       CGUIDialogAddonSettings::ShowAndGetInput(addon, true);
       Update(m_vecItems->GetPath());
+      return true;
     }
-    return true;
   }
 
   if (pItem->m_bIsFolder)
