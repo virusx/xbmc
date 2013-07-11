@@ -418,6 +418,7 @@ void CContentAddon::ReadFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItemList&
       break;
     }
   }
+  xbmcItems.SetCacheToDisc(CFileItemList::CACHE_NEVER);
 }
 
 bool CContentAddon::MusicGetPlaylists(CFileItemList& items)
