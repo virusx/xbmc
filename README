@@ -4,9 +4,10 @@ Content providing binary add-ons for XBMC
 WARNING: this is very much work in progress
 
 TODO:
+- split up ADDON_Create() methods per extension point, so we can split up
+  the various ext points properly and not need hacks to combine them.
 - musicdb:// hacks
 - context buttons for content add-ons
-- return running add-ons instead of new instances in CAddonManager
 - hooks to mark files as available or purchasable
 - ability to purchase something via an add-on
 - ability to "link" an add-on to a build, to secure content
