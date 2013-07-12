@@ -1696,10 +1696,10 @@ void CFileItemList::Add(const CFileItemPtr &pItem, ADD_TYPE type /* = ADD_STANDA
         case ADD_REPLACE:
           // erase previous entry
           m_map.erase((*it)->GetPath());
-          m_items.erase(it);
-          // break out of the loop and add the new entry
-          it = m_items.end();
-          break;
+          *it = pItem;
+          if (m_fastLookup)
+            m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
+          return;
         case ADD_IGNORE:
           // ignore new entry and return
           return;
