@@ -1692,12 +1692,14 @@ void CFileItemList::Add(const CFileItemPtr &pItem, ADD_TYPE type /* = ADD_STANDA
         case ADD_COMBINE:
           // try to combine metadata and return
           (*it)->Combine(*pItem);
+          break;
         case ADD_REPLACE:
           // erase previous entry
           m_map.erase((*it)->GetPath());
           *it = pItem;
           if (m_fastLookup)
             m_map.insert(MAPFILEITEMSPAIR(pItem->GetPath(), pItem));
+          break;
         case ADD_IGNORE:
           // ignore new entry and return
         default:
