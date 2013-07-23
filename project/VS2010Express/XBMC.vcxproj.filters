@@ -5929,6 +5929,12 @@
     <ClInclude Include="..\..\xbmc\filesystem\MusicDatabaseDirectory\DirectoryNodeContentAddonTop100Song.h">
       <Filter>filesystem\MusicDatabaseDirectory</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_addon_utils.hpp">
+      <Filter>addons\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_file_utils.hpp">
+      <Filter>addons\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">

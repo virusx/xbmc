@@ -1023,9 +1023,11 @@
     <ClInclude Include="..\..\xbmc\addons\include\xbmc_addon_cpp_dll.h" />
     <ClInclude Include="..\..\xbmc\addons\include\xbmc_addon_dll.h" />
     <ClInclude Include="..\..\xbmc\addons\include\xbmc_addon_types.h" />
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_addon_utils.hpp" />
     <ClInclude Include="..\..\xbmc\addons\include\xbmc_content_dll.h" />
     <ClInclude Include="..\..\xbmc\addons\include\xbmc_content_types.h" />
     <ClInclude Include="..\..\xbmc\addons\include\xbmc_epg_types.h" />
+    <ClInclude Include="..\..\xbmc\addons\include\xbmc_file_utils.hpp" />
     <ClInclude Include="..\..\xbmc\addons\include\xbmc_pvr_dll.h" />
     <ClInclude Include="..\..\xbmc\addons\include\xbmc_pvr_types.h" />
     <ClInclude Include="..\..\xbmc\addons\include\xbmc_scr_dll.h" />
