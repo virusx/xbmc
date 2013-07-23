@@ -234,10 +234,10 @@ public:
    * @param strDefault The default value to use, if the key could not be found
    * @return The value
    */
-  std::string GetPropertyString(const std::string& strKey, const std::string& strDefault = "")
+  std::string GetPropertyString(const std::string& strKey, const std::string& strDefault = "") const
   {
     std::string strReturn(strDefault);
-    std::map<std::string,AddonFileItemProperty*>::iterator it = m_properties.find(strKey);
+    std::map<std::string,AddonFileItemProperty*>::const_iterator it = m_properties.find(strKey);
     if (it != m_properties.end() && it->second->Type() == CONTENT_ADDON_PROPERTY_TYPE_STRING)
       strReturn = it->second->ValueAsString();
     return strReturn;
@@ -268,25 +268,31 @@ public:
    * @param iDefault The default value to use, if the key could not be found
    * @return The value
    */
-  int GetPropertyInt(const std::string& strKey, int iDefault = 0)
+  int GetPropertyInt(const std::string& strKey, int iDefault = 0) const
   {
     int iReturn(iDefault);
-    std::map<std::string,AddonFileItemProperty*>::iterator it = m_properties.find(strKey);
+    std::map<std::string,AddonFileItemProperty*>::const_iterator it = m_properties.find(strKey);
     if (it != m_properties.end() && it->second->Type() == CONTENT_ADDON_PROPERTY_TYPE_INT)
       iReturn = it->second->ValueAsInt();
     return iReturn;
   }
 
   std::string Path(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("path") : GetPropertyString("path"); }
+  std::string Path() const { return GetPropertyString("path"); }
+
   std::string Name(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("name") : GetPropertyString("name"); }
+  std::string Name() const { return GetPropertyString("name"); }
 
   std::string Thumb(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("thumb") : GetPropertyString("thumb"); }
+  std::string Thumb() const { return GetPropertyString("thumb"); }
   void SetThumb(const std::string& strThumb) { AddPropertyString("thumb", strThumb); }
 
   std::string Fanart(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("fanart_image") : GetPropertyString("fanart_image"); }
+  std::string Fanart() const { return GetPropertyString("fanart_image"); }
   void SetFanart(const std::string& strFanart) { AddPropertyString("fanart_image", strFanart); }
 
   std::string ProviderIcon(bool bRemove = false) { return bRemove ? GetAndRemovePropertyString("provider_icon") : GetPropertyString("provider_icon"); }
+  std::string ProviderIcon() const { return GetPropertyString("provider_icon"); }
   void SetProviderIcon(const std::string& strIcon) { AddPropertyString("provider_icon", strIcon); }
 
   std::map<std::string,AddonFileItemProperty*> m_properties;
