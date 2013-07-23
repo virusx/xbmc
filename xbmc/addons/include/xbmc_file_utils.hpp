@@ -379,7 +379,8 @@ public:
    */
   void AddFileItem(AddonFileItem* item)
   {
-    m_fileItems.push_back(item);
+    if (item)
+      m_fileItems.push_back(item);
   }
 
   std::vector<AddonFileItem*> m_fileItems;
