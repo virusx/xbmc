@@ -39,19 +39,20 @@ public:
    */
   static std::string GetLocalizedString(ADDON::CHelper_libXBMC_addon* XBMC, int dwCode, const std::string& strDefault = "")
   {
+    std::string strReturn(strDefault);
     if (XBMC)
     {
       char* strMsg = XBMC->GetLocalizedString(dwCode);
       // XBMC->GetLocalizedString() will return an empty string on invalid ID (such as 31000)
       // If the default is non-empty, we were probably expecting a non-empty message, so
       // return the default in this case
-      if (strMsg && strlen(strMsg))
+      if (strMsg)
       {
-        std::string strMsgCopy = strMsg;
+        if (strlen(strMsg))
+          strReturn = strMsg;
         XBMC->FreeString(strMsg);
-        return strMsgCopy;
       }
     }
-    return strDefault;
+    return strReturn;
   }
 };
