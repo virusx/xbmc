@@ -26,6 +26,7 @@ SRCS=GUIDialogBoxBase.cpp \
      GUIDialogTextViewer.cpp \
      GUIDialogVolumeBar.cpp \
      GUIDialogYesNo.cpp \
+     ProgressBarTester.cpp \
 
 LIB=dialogs.a
 

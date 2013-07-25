@@ -28,7 +28,7 @@
 #define CONTROL_LABELTITLE        31
 #define CONTROL_PROGRESS          32
 
-#define ITEM_SWITCH_TIME_MS       2000
+#define ITEM_SWITCH_TIME_MS       500
 
 using namespace std;
 

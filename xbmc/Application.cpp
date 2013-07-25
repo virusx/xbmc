@@ -250,6 +250,7 @@
 #include "pictures/GUIDialogPictureInfo.h"
 #include "addons/GUIDialogAddonSettings.h"
 #include "addons/GUIDialogAddonInfo.h"
+#include "dialogs/ProgressBarTester.h"
 #ifdef HAS_LINUX_NETWORK
 #include "network/GUIDialogAccessPoints.h"
 #endif
@@ -1421,6 +1422,8 @@ bool CApplication::Initialize()
   g_Joystick.SetEnabled(g_guiSettings.GetBool("input.enablejoystick") &&
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0 );
 #endif
+
+  CProgressBarTester::Get().Start();
 
   return true;
 }

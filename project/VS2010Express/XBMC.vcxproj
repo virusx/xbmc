@@ -441,6 +441,7 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogTextViewer.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogVolumeBar.cpp" />
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogYesNo.cpp" />
+    <ClCompile Include="..\..\xbmc\dialogs\ProgressBarTester.cpp" />
     <ClCompile Include="..\..\xbmc\DynamicDll.cpp" />
     <ClCompile Include="..\..\xbmc\epg\Epg.cpp" />
     <ClCompile Include="..\..\xbmc\epg\EpgContainer.cpp" />
@@ -1069,6 +1070,7 @@
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogKeyboardGeneric.h" />
     <ClInclude Include="..\..\xbmc\DbUrl.h" />
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaFilter.h" />
+    <ClInclude Include="..\..\xbmc\dialogs\ProgressBarTester.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ContentAddonDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ContentAddonFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HTTPFile.h" />
