@@ -75,11 +75,11 @@ public:
    * Parse prop into a key and value
    * @param prop The property to parse
    */
-  AddonFileItemProperty(const CONTENT_ADDON_FILE_PROPERTY* prop) :
-    m_strKey(prop->key),
-    m_type(prop->type),
-    m_strValue(prop->type == CONTENT_ADDON_PROPERTY_TYPE_STRING ? prop->strValue : ""),
-    m_iValue(prop->type == CONTENT_ADDON_PROPERTY_TYPE_INT ? prop->iValue : 0)
+  AddonFileItemProperty(const CONTENT_ADDON_FILE_PROPERTY& prop) :
+    m_strKey(prop.key),
+    m_type(prop.type),
+    m_strValue(prop.type == CONTENT_ADDON_PROPERTY_TYPE_STRING ? prop.strValue : ""),
+    m_iValue(prop.type == CONTENT_ADDON_PROPERTY_TYPE_INT ? prop.iValue : 0)
   {
   }
 
@@ -172,57 +172,59 @@ public:
    * @note Strings will _not_ be strdup'ed
    * @param fileItem The item to copy
    */
-  AddonFileItem(const CONTENT_ADDON_FILEITEM* fileItem) :
-    m_type(fileItem->type)
+  AddonFileItem(const CONTENT_ADDON_FILEITEM& fileItem) :
+    m_type(fileItem.type)
   {
-    for (unsigned int iPtr = 0; iPtr < fileItem->iSize; iPtr++)
-      m_properties.insert(std::make_pair(std::string(fileItem->properties[iPtr].key), new AddonFileItemProperty(&fileItem->properties[iPtr])));
+    for (unsigned int iPtr = 0; iPtr < fileItem.iSize; iPtr++)
+      m_properties.insert(std::make_pair(std::string(fileItem.properties[iPtr].key), AddonFileItemProperty(fileItem.properties[iPtr])));
   }
 
   virtual ~AddonFileItem(void)
   {
-    for (std::map<std::string,AddonFileItemProperty*>::iterator it = m_properties.begin(); it != m_properties.end(); it++)
-      delete it->second;
   }
 
   /*!
-   * Add a property to this item
+   * Add a property to this item. The value will be overwritten if the key exists.
    * @param strKey The key of this property
    * @param strValue The value of this property
    */
   void AddPropertyString(const std::string& strKey, const std::string& strValue)
   {
-    std::map<std::string,AddonFileItemProperty*>::iterator it = m_properties.find(strKey);
+    std::map<std::string, AddonFileItemProperty>::iterator it = m_properties.find(strKey);
     if (it != m_properties.end())
-      delete it->second;
-    m_properties.insert(std::make_pair(strKey, new AddonFileItemProperty(strKey, strValue)));
+      it->second = AddonFileItemProperty(strKey, strValue);
+    else
+      m_properties.insert(std::make_pair(strKey, AddonFileItemProperty(strKey, strValue)));
   }
 
   /*!
-   * Add a property to this item
+   * Add a property to this item. The value will be overwritten if the key exists.
    * @param strKey The key of this property
    * @param iValue The value of this property
    */
   void AddPropertyInt(const std::string& strKey, int iValue)
   {
-    std::map<std::string,AddonFileItemProperty*>::iterator it = m_properties.find(strKey);
+    std::map<std::string, AddonFileItemProperty>::iterator it = m_properties.find(strKey);
     if (it != m_properties.end())
-      delete it->second;
-    m_properties.insert(std::make_pair(strKey, new AddonFileItemProperty(strKey, iValue)));
+      it->second = AddonFileItemProperty(strKey, iValue);
+    else
+      m_properties.insert(std::make_pair(strKey, AddonFileItemProperty(strKey, iValue)));
   }
 
   /*!
    * Assign all properties to the provided file item. Must be freed by calling AddonFileItem::Free()
    * @param fileItem The file item to assign the values to
    */
-  void FileItem(CONTENT_ADDON_FILEITEM* fileItem) const
+  void FileItem(CONTENT_ADDON_FILEITEM& fileItem) const
   {
-    fileItem->type       = m_type;
-    fileItem->iSize      = m_properties.size();
-    fileItem->properties = (CONTENT_ADDON_FILE_PROPERTY*) malloc(sizeof(CONTENT_ADDON_FILE_PROPERTY) * fileItem->iSize);
-    int iPtr(0);
-    for (std::map<std::string,AddonFileItemProperty*>::const_iterator it = m_properties.begin(); it != m_properties.end(); it++)
-      fileItem->properties[iPtr++] = it->second->AsProperty();
+    fileItem.type       = m_type;
+    fileItem.iSize      = 0;
+    fileItem.properties = (CONTENT_ADDON_FILE_PROPERTY*) malloc(sizeof(CONTENT_ADDON_FILE_PROPERTY) * m_properties.size());
+    if (fileItem.properties)
+    {
+      for (std::map<std::string, AddonFileItemProperty>::const_iterator it = m_properties.begin(); it != m_properties.end(); it++)
+        fileItem.properties[fileItem.iSize++] = it->second.AsProperty();
+    }
   }
 
   /*!
@@ -245,11 +247,10 @@ public:
   std::string GetAndRemovePropertyString(const std::string& strKey, const std::string& strDefault = "")
   {
     std::string strReturn(strDefault);
-    std::map<std::string,AddonFileItemProperty*>::iterator it = m_properties.find(strKey);
-    if (it != m_properties.end() && it->second->Type() == CONTENT_ADDON_PROPERTY_TYPE_STRING)
+    std::map<std::string, AddonFileItemProperty>::iterator it = m_properties.find(strKey);
+    if (it != m_properties.end() && it->second.Type() == CONTENT_ADDON_PROPERTY_TYPE_STRING)
     {
-      strReturn = it->second->ValueAsString();
-      delete it->second;
+      strReturn = it->second.ValueAsString();
       m_properties.erase(it);
     }
     return strReturn;
@@ -264,9 +265,9 @@ public:
   std::string GetPropertyString(const std::string& strKey, const std::string& strDefault = "") const
   {
     std::string strReturn(strDefault);
-    std::map<std::string,AddonFileItemProperty*>::const_iterator it = m_properties.find(strKey);
-    if (it != m_properties.end() && it->second->Type() == CONTENT_ADDON_PROPERTY_TYPE_STRING)
-      strReturn = it->second->ValueAsString();
+    std::map<std::string, AddonFileItemProperty>::const_iterator it = m_properties.find(strKey);
+    if (it != m_properties.end() && it->second.Type() == CONTENT_ADDON_PROPERTY_TYPE_STRING)
+      strReturn = it->second.ValueAsString();
     return strReturn;
   }
 
@@ -279,11 +280,10 @@ public:
   int GetAndRemovePropertyInt(const std::string& strKey, int iDefault = 0)
   {
     int iReturn(iDefault);
-    std::map<std::string,AddonFileItemProperty*>::iterator it = m_properties.find(strKey);
-    if (it != m_properties.end() && it->second->Type() == CONTENT_ADDON_PROPERTY_TYPE_INT)
+    std::map<std::string, AddonFileItemProperty>::iterator it = m_properties.find(strKey);
+    if (it != m_properties.end() && it->second.Type() == CONTENT_ADDON_PROPERTY_TYPE_INT)
     {
-      iReturn = it->second->ValueAsInt();
-      delete it->second;
+      iReturn = it->second.ValueAsInt();
       m_properties.erase(it);
     }
     return iReturn;
@@ -298,9 +298,9 @@ public:
   int GetPropertyInt(const std::string& strKey, int iDefault = 0) const
   {
     int iReturn(iDefault);
-    std::map<std::string,AddonFileItemProperty*>::const_iterator it = m_properties.find(strKey);
-    if (it != m_properties.end() && it->second->Type() == CONTENT_ADDON_PROPERTY_TYPE_INT)
-      iReturn = it->second->ValueAsInt();
+    std::map<std::string, AddonFileItemProperty>::const_iterator it = m_properties.find(strKey);
+    if (it != m_properties.end() && it->second.Type() == CONTENT_ADDON_PROPERTY_TYPE_INT)
+      iReturn = it->second.ValueAsInt();
     return iReturn;
   }
 
@@ -322,7 +322,7 @@ public:
   std::string ProviderIcon() const { return GetPropertyString("provider_icon"); }
   void SetProviderIcon(const std::string& strIcon) { AddPropertyString("provider_icon", strIcon); }
 
-  std::map<std::string,AddonFileItemProperty*> m_properties;
+  std::map<std::string, AddonFileItemProperty> m_properties;
 
   CONTENT_ADDON_TYPE Type(void) const { return m_type; }
 
@@ -339,8 +339,7 @@ public:
   /*!
    * Create a new empty file item list
    */
-  AddonFileItemList(void) :
-    m_items(NULL)
+  AddonFileItemList(void)
   {
   }
 
@@ -348,17 +347,14 @@ public:
    * Create a new file item list, copying the data from the provided file item list.
    * @param items
    */
-  AddonFileItemList(CONTENT_ADDON_FILELIST* items) :
-    m_items(items)
+  AddonFileItemList(const CONTENT_ADDON_FILELIST& items)
   {
-    for (unsigned int iPtr = 0; iPtr < items->iSize; iPtr++)
-      m_fileItems.push_back(new AddonFileItem(&items->items[iPtr]));
+    for (unsigned int iPtr = 0; iPtr < items.iSize; iPtr++)
+      m_fileItems.push_back(items.items[iPtr]);
   }
 
   virtual ~AddonFileItemList(void)
   {
-    for (std::vector<AddonFileItem*>::iterator it = m_fileItems.begin(); it != m_fileItems.end(); it++)
-      delete (*it);
   }
 
   /*!
@@ -384,34 +380,42 @@ public:
    */
   CONTENT_ADDON_FILELIST* AsFileList(void)
   {
-    if (!m_items)
+    CONTENT_ADDON_FILELIST* items = (CONTENT_ADDON_FILELIST*)malloc(sizeof(CONTENT_ADDON_FILELIST));
+    if (items)
     {
-      m_items = (CONTENT_ADDON_FILELIST*)malloc(sizeof(CONTENT_ADDON_FILELIST));
-      memset(m_items, 0, sizeof(CONTENT_ADDON_FILELIST));
+      memset(items, 0, sizeof(CONTENT_ADDON_FILELIST));
 
-      m_items->items = (CONTENT_ADDON_FILEITEM*)malloc(sizeof(CONTENT_ADDON_FILEITEM) * m_fileItems.size());
-      memset(m_items->items, 0, sizeof(CONTENT_ADDON_FILEITEM) * m_fileItems.size());
+      items->items = (CONTENT_ADDON_FILEITEM*)malloc(sizeof(CONTENT_ADDON_FILEITEM) * m_fileItems.size());
+      if (items->items)
+      {
+        memset(items->items, 0, sizeof(CONTENT_ADDON_FILEITEM) * m_fileItems.size());
 
-      for (std::vector<AddonFileItem*>::const_iterator it = m_fileItems.begin(); it != m_fileItems.end(); it++)
-        (*it)->FileItem(&m_items->items[m_items->iSize++]);
+        for (std::vector<AddonFileItem>::const_iterator it = m_fileItems.begin(); it != m_fileItems.end(); it++)
+          it->FileItem(items->items[items->iSize++]);
+      }
     }
-    return m_items;
+    return items;
   }
 
   /*!
    * Add a file item to this list
    * @param item The item to add
    */
-  void AddFileItem(AddonFileItem* item)
+  void AddFileItem(const AddonFileItem& item)
   {
-    if (item)
-      m_fileItems.push_back(item);
+    m_fileItems.push_back(item);
   }
 
-  std::vector<AddonFileItem*> m_fileItems;
+  /*!
+   * Add multiple file items to this list
+   * @param item The item to add
+   */
+  void AddFileItems(const AddonFileItemList& list)
+  {
+    m_fileItems.insert(m_fileItems.end(), list.m_fileItems.begin(), list.m_fileItems.end());
+  }
 
-private:
-  CONTENT_ADDON_FILELIST* m_items;
+  std::vector<AddonFileItem> m_fileItems;
 };
 
 class AddonFileSong : public AddonFileItem

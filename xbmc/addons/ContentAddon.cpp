@@ -208,12 +208,12 @@ void CContentAddon::AddCommonProperties(AddonFileItem* file, CFileItemPtr& fileI
   if (!strArt.empty())
     fileItem->SetProperty("fanart_image", strArt);
 
-  for (std::map<std::string,AddonFileItemProperty*>::const_iterator it = file->m_properties.begin(); it != file->m_properties.end(); it++)
+  for (std::map<std::string, AddonFileItemProperty>::const_iterator it = file->m_properties.begin(); it != file->m_properties.end(); it++)
   {
-    if (it->second->Type() == CONTENT_ADDON_PROPERTY_TYPE_STRING)
-      fileItem->SetProperty(it->first, CVariant(it->second->ValueAsString()));
-    else if (it->second->Type() == CONTENT_ADDON_PROPERTY_TYPE_INT)
-      fileItem->SetProperty(it->first, CVariant(it->second->ValueAsInt()));
+    if (it->second.Type() == CONTENT_ADDON_PROPERTY_TYPE_STRING)
+      fileItem->SetProperty(it->first, CVariant(it->second.ValueAsString()));
+    else if (it->second.Type() == CONTENT_ADDON_PROPERTY_TYPE_INT)
+      fileItem->SetProperty(it->first, CVariant(it->second.ValueAsInt()));
   }
 
   // Make sure the provider logo is set to a valid full path
@@ -390,31 +390,32 @@ void CContentAddon::ReadFileFile(AddonFileItem* file, CFileItemList& fileList)
 
 void CContentAddon::ReadFiles(CONTENT_ADDON_FILELIST* addonItems, CFileItemList& xbmcItems, const string& strArtist /* = "" */, const string& strAlbum /* = "" */)
 {
-  AddonFileItemList list(addonItems);
-  for (vector<AddonFileItem*>::iterator it = list.m_fileItems.begin(); it != list.m_fileItems.end(); it++)
+  AddonFileItemList list(*addonItems);
+  for (vector<AddonFileItem>::iterator it = list.m_fileItems.begin(); it != list.m_fileItems.end(); it++)
   {
-    switch ((*it)->Type())
+    AddonFileItem& fileItem = *it;
+    switch (fileItem.Type())
     {
     case CONTENT_ADDON_TYPE_SONG:
-      ReadFileSong(*it, xbmcItems, strArtist, strAlbum);
+      ReadFileSong(&fileItem, xbmcItems, strArtist, strAlbum);
       break;
     case CONTENT_ADDON_TYPE_ARTIST:
-      ReadFileArtist(*it, xbmcItems);
+      ReadFileArtist(&fileItem, xbmcItems);
       break;
     case CONTENT_ADDON_TYPE_ALBUM:
-      ReadFileAlbum(*it, xbmcItems, strArtist);
+      ReadFileAlbum(&fileItem, xbmcItems, strArtist);
       break;
     case CONTENT_ADDON_TYPE_PLAYLIST:
-      ReadFilePlaylist(*it, xbmcItems);
+      ReadFilePlaylist(&fileItem, xbmcItems);
       break;
     case CONTENT_ADDON_TYPE_DIRECTORY:
-      ReadFileDirectory(*it, xbmcItems);
+      ReadFileDirectory(&fileItem, xbmcItems);
       break;
     case CONTENT_ADDON_TYPE_FILE:
-      ReadFileFile(*it, xbmcItems);
+      ReadFileFile(&fileItem, xbmcItems);
       break;
     default:
-      CLog::Log(LOGWARNING, "invalid filetype: %d", (*it)->Type());
+      CLog::Log(LOGWARNING, "invalid filetype: %d", fileItem.Type());
       break;
     }
   }
