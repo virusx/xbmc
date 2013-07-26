@@ -32,7 +32,12 @@
 #include <map>
 
 #if defined(TARGET_WINDOWS) && !defined(strdup)
-#define strdup _strdup // Silence warning C4996
+// Silence warning C4996
+#define strdup _strdup
+#endif
+
+#ifndef SAFE_FREE
+#define SAFE_FREE(p)     do { free(p); (p)=NULL; } while (0)
 #endif
 
 /*!
@@ -113,7 +118,7 @@ public:
   }
 
   /*!
-   * @return This property as CONTENT_ADDON_FILE_PROPERTY. Must be freed by calling AddonFileItemList::Free()
+   * @return This property as CONTENT_ADDON_FILE_PROPERTY. Must be freed by calling AddonFileItemProperty::Free()
    */
   CONTENT_ADDON_FILE_PROPERTY AsProperty(void) const
   {
@@ -125,6 +130,17 @@ public:
     else if (m_type == CONTENT_ADDON_PROPERTY_TYPE_INT)
       prop.iValue = m_iValue;
     return prop;
+  }
+
+  /*!
+   * Free all data in the provided property object
+   * @param prop The property to free
+   */
+  static void Free(CONTENT_ADDON_FILE_PROPERTY& prop)
+  {
+    SAFE_FREE(prop.key);
+    if (prop.type == CONTENT_ADDON_PROPERTY_TYPE_STRING)
+      SAFE_FREE(prop.strValue);
   }
 
 private:
@@ -196,7 +212,7 @@ public:
   }
 
   /*!
-   * Assign all properties to the provided file item. Must be freed by calling AddonFileItemList::Free()
+   * Assign all properties to the provided file item. Must be freed by calling AddonFileItem::Free()
    * @param fileItem The file item to assign the values to
    */
   void FileItem(CONTENT_ADDON_FILEITEM* fileItem) const
@@ -207,6 +223,17 @@ public:
     int iPtr(0);
     for (std::map<std::string,AddonFileItemProperty*>::const_iterator it = m_properties.begin(); it != m_properties.end(); it++)
       fileItem->properties[iPtr++] = it->second->AsProperty();
+  }
+
+  /*!
+   * Free all data in the provided file item
+   * @param prop The file item to free
+   */
+  static void Free(CONTENT_ADDON_FILEITEM& fileItem)
+  {
+    for (unsigned int iPtr = 0; iPtr < fileItem.iSize; iPtr++)
+      AddonFileItemProperty::Free(fileItem.properties[iPtr]);
+    SAFE_FREE(fileItem.properties);
   }
 
   /*!
@@ -344,15 +371,7 @@ public:
       return;
 
     for (unsigned int iPtr = 0; iPtr < items->iSize; iPtr++)
-    {
-      for (unsigned int iPtr2 = 0; iPtr2 < items->items[iPtr].iSize; iPtr2++)
-      {
-        free(items->items[iPtr].properties[iPtr2].key);
-        if (items->items[iPtr].properties[iPtr2].type == CONTENT_ADDON_PROPERTY_TYPE_STRING)
-          free(items->items[iPtr].properties[iPtr2].strValue);
-      }
-      free(items->items[iPtr].properties);
-    }
+      AddonFileItem::Free(items->items[iPtr]);
 
     free(items->items);
     free(items);
