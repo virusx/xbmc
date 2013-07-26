@@ -281,6 +281,10 @@ extern "C" {
     pClient->GetServerName               = GetServerName;
     pClient->SupportsFile                = SupportsFile;
 
+#if defined(CONTENT_ADDON_MUSIC_FILES) || defined(CONTENT_ADDON_FILES)
+    pClient->FreeFileList                = FreeFileList;
+#endif
+
 #ifdef CONTENT_ADDON_FILES
     pClient->FileOpen         = FileOpen;
     pClient->FileClose        = FileClose;
@@ -294,7 +298,6 @@ extern "C" {
 #endif
 
 #ifdef CONTENT_ADDON_MUSIC_FILES
-    pClient->FreeFileList                = FreeFileList;
     pClient->MusicGetPlaylists           = MusicGetPlaylists;
     pClient->MusicGetPlaylist            = MusicGetPlaylist;
     pClient->MusicGetArtists             = MusicGetArtists;
