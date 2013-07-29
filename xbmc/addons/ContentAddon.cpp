@@ -1162,7 +1162,11 @@ bool CContentAddon::FileGetDirectory(CFileItemList& items, const CStdString& str
     CONTENT_ERROR err(CONTENT_ERROR_UNKNOWN);
     CLog::Log(LOGDEBUG, "getting directory '%s' from add-on '%s'", strPath.c_str(), Name().c_str());
 
-    try { err = m_pStruct->FileGetDirectory(&retVal, strPath.c_str()); }
+    try
+    {
+      CStdString strDirPath = GetFilename(strPath);
+      err = m_pStruct->FileGetDirectory(&retVal, strDirPath.c_str());
+    }
     catch (exception &e) { LogException(e, __FUNCTION__); }
 
     if (err == CONTENT_ERROR_NO_ERROR && retVal)
