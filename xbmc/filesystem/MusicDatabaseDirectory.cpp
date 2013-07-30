@@ -49,7 +49,7 @@ bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
 
   if (!pNode.get())
   {
-    CLog::Log(LOGDEBUG, "CMusicDatabaseDirectory::%s(%s) - invalid node", __FUNCTION__, strPath.c_str());
+    CLog::Log(LOGDEBUG, "%s(%s) - invalid node", __FUNCTION__, strPath.c_str());
     return false;
   }
 
