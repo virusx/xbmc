@@ -386,7 +386,7 @@ public:
       memset(items, 0, sizeof(CONTENT_ADDON_FILELIST));
 
       items->items = (CONTENT_ADDON_FILEITEM*)malloc(sizeof(CONTENT_ADDON_FILEITEM) * m_fileItems.size());
-      if (items->items)
+      if (items->items && m_fileItems.size())
       {
         memset(items->items, 0, sizeof(CONTENT_ADDON_FILEITEM) * m_fileItems.size());
 
