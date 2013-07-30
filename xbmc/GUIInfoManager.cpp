@@ -5277,16 +5277,16 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   if (condition == LIBRARY_HAS_MUSIC)
   {
     if (m_libraryHasMusic < 0)
-    { // query add-ons
+    {
       m_libraryHasMusic = ADDON::CContentAddons::Get().HasAvailableMusicAddons() ? 1 : 0;
-    }
-    if (m_libraryHasMusic < 0)
-    { // query
-      CMusicDatabase db;
-      if (db.Open())
+      if (!m_libraryHasMusic)
       {
-        m_libraryHasMusic = (db.GetSongsCount() > 0) ? 1 : 0;
-        db.Close();
+        CMusicDatabase db;
+        if (db.Open())
+        {
+          m_libraryHasMusic = (db.GetSongsCount() > 0) ? 1 : 0;
+          db.Close();
+        }
       }
     }
     return m_libraryHasMusic > 0;
