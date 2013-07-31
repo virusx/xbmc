@@ -349,6 +349,8 @@ public:
    */
   AddonFileItemList(const CONTENT_ADDON_FILELIST& items)
   {
+    // Assume re-allocating is expensive, as all existing items are copy-constructed
+    m_fileItems.reserve(items.iSize);
     for (unsigned int iPtr = 0; iPtr < items.iSize; iPtr++)
       m_fileItems.push_back(items.items[iPtr]);
   }
