@@ -5114,6 +5114,30 @@ void CApplication::Process()
   if (m_pPlayer)
     m_pPlayer->DoAudioWork();
 
+  static bool isinit = false;
+  static CGUIDialogProgressBarHandle *handle;
+  static unsigned int percent = 0;
+  if (!isinit)
+  {
+    CGUIDialogExtendedProgressBar* pDlgProgress = dynamic_cast<CGUIDialogExtendedProgressBar*>(g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS));
+    handle = pDlgProgress->GetHandle("Main thread");
+    isinit = true;
+  }
+  else
+  {
+    for (unsigned int j = 0; j < 102; j++)
+    {
+      CStdString strText;
+      strText.Format("%d%%", percent);
+      handle->SetText(strText);
+      handle->SetPercentage((float)percent);
+
+      percent++;
+      if (percent > 100)
+        percent = 0;
+    }
+  }
+
   // do any processing that isn't needed on each run
   if( m_slowTimer.GetElapsedMilliseconds() > 500 )
   {
