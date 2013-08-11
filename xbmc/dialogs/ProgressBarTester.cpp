@@ -68,7 +68,7 @@ void CProgressBarTester::Process()
   Sleep(2000); // ms
   
   vector<boost::shared_ptr<CProgressBarTesterThread> > workers;
-  for (unsigned int i = 0; i < 10; i++)
+  for (unsigned int i = 0; i < 100; i++)
   {
     CStdString name;
     name.Format("%u", i);
@@ -101,7 +101,7 @@ void CProgressBarTesterThread::Process()
   unsigned int percent = 0;
   const unsigned int MAX_PERCENT = 100;
   const unsigned int STEPS = 100;
-  const unsigned int STEP_SIZE = m_period / STEPS;
+  const unsigned int STEP_SIZE = m_period / STEPS + 1;
   vector<unsigned int> stepsizes;
   for (unsigned i = 0; i < MAX_PERCENT + 1; i++)
     stepsizes.push_back(GetRand(2 * STEP_SIZE));
