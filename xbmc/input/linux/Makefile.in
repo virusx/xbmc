@@ -1,5 +1,6 @@
 SRCS=LIRC.cpp \
-  LinuxInputDevices.cpp
+     LinuxInputDevices.cpp \
+     LinuxJoystickSDL.cpp
 
 # xkbcommon detail
 ifeq (@USE_XKBCOMMON@,1)
