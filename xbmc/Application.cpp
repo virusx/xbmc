@@ -2496,8 +2496,6 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_PVR_UPDATE_PROGRESS);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_CHANNELS);
     g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_GUIDE);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_DIRECTOR);
-    g_windowManager.Delete(WINDOW_DIALOG_PVR_OSD_CUTTER);
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
 
     g_windowManager.Delete(WINDOW_DIALOG_TEXT_VIEWER);
@@ -3202,7 +3200,7 @@ PlayBackRet CApplication::PlayFile(const CFileItem& item, bool bRestart)
      * This should speed up player startup for files on internet filesystems (eg. webdav) and
      * increase performance on low powered systems (Atom/ARM).
      */
-    if (item.IsVideo())
+    if (item.IsVideo() || item.IsGame())
     {
       CJobManager::GetInstance().PauseJobs();
     }
@@ -4155,7 +4153,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
     }
     else
 #endif
-    if (item.IsAudio() || item.IsVideo())
+    if (item.IsAudio() || item.IsVideo() || item.IsGame())
     { // an audio or video file
       PlayFile(item);
     }
