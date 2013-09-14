@@ -18,7 +18,6 @@
  *
  */
 
-#include "network/Network.h"
 #include "system.h"
 #include "utils/AlarmClock.h"
 #include "utils/Screenshot.h"
@@ -47,6 +46,7 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "network/NetworkServices.h"
+#include "network/NetworkUtils.h"
 #include "utils/log.h"
 #include "storage/MediaManager.h"
 #include "utils/RssManager.h"
@@ -1358,7 +1358,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     ADDON::CAddonMgr::Get().StopServices(true);
 
-    g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    g_application.getNetwork().NetworkMessage(CNetworkManager::SERVICES_DOWN,1);
     CProfilesManager::Get().LoadMasterProfileForLogin();
     g_passwordManager.bMasterUser = false;
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
@@ -1605,7 +1605,7 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("wakeonlan"))
   {
-    g_application.getNetwork().WakeOnLan((char*)params[0].c_str());
+    CNetworkUtils::WakeOnLan((char*)params[0].c_str());
   }
   else if (execute.Equals("addon.default.opensettings") && params.size() == 1)
   {
