@@ -859,6 +859,10 @@ void CEpgInfoTag::Update(const EPG_TAG &tag)
   SetEpisodeName(tag.strEpisodeName);
   SetStarRating(tag.iStarRating);
   SetIcon(tag.strIconPath);
+
+  // Invalidate end time if it occurs before start time
+  if (m_endTime < m_startTime)
+    m_endTime.SetValid(false);
 }
 
 bool CEpgInfoTag::Update(const CEpgInfoTag &tag, bool bUpdateBroadcastId /* = true */)
