@@ -102,9 +102,9 @@ struct Hat
 class JoystickState
 {
 public:
-  JoystickState() : id(0), m_bWakeupChecked((false) { ResetState(); }
-                  InputState& operator-=(const InputState& rhs);
-                const InputState operator-(const InputState &other) const;
+  JoystickState() : id(0), m_bWakeupChecked(false) { ResetState(); }
+                  JoystickState& operator-=(const JoystickState& rhs);
+                const JoystickState operator-(const JoystickState &other) const;
   void ResetState(unsigned int buttonCount = GAMEPAD_BUTTON_COUNT,
                   unsigned int hatCount = GAMEPAD_HAT_COUNT,
                   unsigned int axisCount = GAMEPAD_AXIS_COUNT);
@@ -127,9 +127,9 @@ private:
                 * @param newState - the updated joystick state
                 * @param joyID - the ID of the joystick being processed
                 */
-                void ProcessButtonPresses(const InputState& rhs);
-                void ProcessHatPresses(const InputState& rhs);
-                void ProcessAxisMotion(const InputState& rhs);
+                void ProcessButtonPresses(const JoystickState& rhs);
+                void ProcessHatPresses(const JoystickState& rhs);
+                void ProcessAxisMotion(const JoystickState& rhs);
 
                 // Returns true if this wakes up from the screensaver
                 bool Wakeup();

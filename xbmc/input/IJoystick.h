@@ -25,7 +25,6 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
-extern metrics m;
 /**
  * Interface IJoystick
  *
@@ -62,5 +61,3 @@ protected:
 };
 
 typedef std::vector<boost::shared_ptr<IJoystick> > JoystickArray;
-
-extern metrics m;

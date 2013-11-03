@@ -45,6 +45,9 @@ public:
   void Update();
   unsigned int Count() const { return m_joysticks.size(); }
   void Reinitialize() { Initialize(); }
+  void Reset() { 
+    //Action tracker removed, what does this do now? 
+  }
 
   // Inherited from ISettingCallback
   virtual void OnSettingChanged(const CSetting *setting);
