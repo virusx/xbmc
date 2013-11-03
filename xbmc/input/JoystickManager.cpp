@@ -56,7 +56,7 @@ void CJoystickManager::Initialize()
   // Initialize joystick APIs
 #if defined(TARGET_WINDOWS)
   CJoystickXInput::Initialize(m_joysticks);
-  CJoystickDX::Initialize(m_joysticks);
+  CJoystickDX::Initialize();
 #endif
 
 #if defined(HAS_LINUX_JOYSTICK)
@@ -69,8 +69,8 @@ void CJoystickManager::Initialize()
   while (m_joysticks.size() > GAMEPAD_MAX_CONTROLLERS)
     m_joysticks.pop_back();
 
-  for (unsigned int i = 0; i < GAMEPAD_MAX_CONTROLLERS; i++)
-    m_joysticks[i]->ResetState();
+  for (JoystickArray::iterator it = m_joysticks.begin(); it != m_joysticks.end(); it++)
+  (*it)->ResetState();
 }
 
 void CJoystickManager::DeInitialize()
@@ -87,8 +87,8 @@ void CJoystickManager::DeInitialize()
   CLinuxJoystickSDL::DeInitialize(m_joysticks);
 #endif
 
-  for (unsigned int i = 0; i < GAMEPAD_MAX_CONTROLLERS; i++)
-    m_joysticks[i]->ResetState();
+  for (JoystickArray::iterator it = m_joysticks.begin(); it != m_joysticks.end(); it++)
+    (*it)->ResetState();
 
 }
 
