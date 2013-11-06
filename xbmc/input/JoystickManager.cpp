@@ -19,7 +19,7 @@
  */
 
 #include "system.h" // for HAS_JOYSTICK
-#if defined(HAS_JOYSTICK)
+#if 1 || defined(HAS_JOYSTICK)
 
 #include "JoystickManager.h"
 #include "peripherals/devices/PeripheralImon.h"
@@ -98,7 +98,6 @@ void CJoystickManager::Update()
     return;
 
   for (JoystickArray::iterator it = m_joysticks.begin(); it != m_joysticks.end(); it++) {
-    (*it)->Update();
     (*it)->UpdateState();
   }
 

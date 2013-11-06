@@ -72,7 +72,7 @@ void CLinuxJoystickSDL::Initialize(JoystickArray &joysticks)
 #endif
       if (joy)
       {
-        joysticks.push_back(boost::shared_ptr<IJoystick>(new CLinuxJoystickSDL(SDL_JoystickName(i),
+        joysticks.push_back(boost::shared_ptr<CJoystick>(new CLinuxJoystickSDL(SDL_JoystickName(i),
             joy, joysticks.size())));
       }
     }

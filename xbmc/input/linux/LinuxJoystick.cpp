@@ -209,7 +209,7 @@ void CLinuxJoystick::Initialize(JoystickArray &joysticks)
       }
 
       // Got enough information, time to move on to the next joystick
-      joysticks.push_back(boost::shared_ptr<IJoystick>(new CLinuxJoystick(fd, joysticks.size(),
+      joysticks.push_back(boost::shared_ptr<CJoystick>(new CLinuxJoystick(fd, joysticks.size(),
           name, filename, buttons, axes)));
     }
   }

@@ -135,7 +135,7 @@ void JoystickState::SetAxis(unsigned int axis, long value, long maxAxisAmount)
 
 
 /* Modify the current state and create the actions. */
-JoystickState& JoystickState::operator-=(const JoystickState& rhs) {
+JoystickState& JoystickState::operator=(const JoystickState& rhs) {
         ProcessButtonPresses(rhs);
         ProcessHatPresses(rhs);
         ProcessAxisMotion(rhs);
@@ -152,12 +152,6 @@ JoystickState& JoystickState::operator-=(const JoystickState& rhs) {
   ResetWakeup();
 
         return *this;
-}
-
-// Subtract this instance's value with the other, and return the new instance 
-// with the result
-const JoystickState JoystickState::operator-(const JoystickState &other) const {
-        return JoystickState(*this) -= other;
 }
 
 void JoystickState::ProcessButtonPresses(const JoystickState& newState)

@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "input/IJoystick.h"
+#include "input/Joystick.h"
 
 #include <stdint.h>
 #include <string>
@@ -29,7 +29,7 @@
 namespace JOYSTICK
 {
 
-class CLinuxJoystick : public IJoystick
+class CLinuxJoystick : public CJoystick
 {
 public:
   static void Initialize(JoystickArray &joysticks);

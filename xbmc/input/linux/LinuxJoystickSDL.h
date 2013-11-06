@@ -20,14 +20,14 @@
 
 #pragma once
 
-#include "input/IJoystick.h"
+#include "input/Joystick.h"
 
 #include <string>
 
 struct _SDL_Joystick;
 typedef struct _SDL_Joystick SDL_Joystick;
 
-class CLinuxJoystickSDL : public IJoystick
+class CLinuxJoystickSDL : public CJoystick
 {
 public:
   static void Initialize(JoystickArray &joysticks);

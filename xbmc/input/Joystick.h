@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2007-2013 Team XBMC
  *      http://www.xbmc.org
@@ -19,126 +18,46 @@
  *
  */
 
-#include "threads/SystemClock.h"
-#include <string>
+#pragma once
+
+#include "Joystick.h"
+
 #include <vector>
-
-#define JACTIVE_NONE      0x00000000
-#define JACTIVE_BUTTON    0x00000001
-#define JACTIVE_HAT       0x00000002
-#define JACTIVE_AXIS      0x00000004
-#define JACTIVE_HAT_UP    0x01
-#define JACTIVE_HAT_RIGHT 0x02
-#define JACTIVE_HAT_DOWN  0x04
-#define JACTIVE_HAT_LEFT  0x08
-
-#define GAMEPAD_BUTTON_COUNT    32
-#define GAMEPAD_HAT_COUNT       4
-#define GAMEPAD_AXIS_COUNT      6
-
-#define GAMEPAD_MAX_CONTROLLERS 4
-
-class CAction;
-
-namespace JOYSTICK
-{
-
-  /**
- * Track key presses for deferred action repeats.
- */
-struct ActionTracker
-{
-  ActionTracker() { Reset(); }
-  void Reset();
-  void Track(const CAction &action);
-
-  int                  actionID; // Action ID, or 0 if not tracking any action
-  std::string          name; // Action name
-  XbmcThreads::EndTime timeout; // Timeout until action is repeated
-};
-  
-/**
- * An arrow-based device on a gamepad. Legally, no more than two buttons can be
- * pressed, and only if they are adjacent. If no buttons are pressed (or the
- * hat is in an invalid state), the hat is considered centered.
- */
-struct Hat
-{
-  Hat() { Center(); }
-  void Center();
-
-  bool operator==(const Hat &rhs) const;
-  bool operator!=(const Hat &rhs) const { return !(*this == rhs); }
-
-  /**
-   * Iterate through cardinal directions in an ordinal fashion.
-   *   Hat[0] == up
-   *   Hat[1] == right
-   *   Hat[2] == down
-   *   Hat[3] == left
-   */
-  bool       &operator[](unsigned int i);
-  const bool &operator[](unsigned int i) const { return const_cast<Hat&>(*this)[i]; }
-  
-  /**
-   * Helper function to translate this hat into a cardinal direction
-   * ("N", "NE", "E", ...) or "CENTERED".
-   */
-  const char *GetDirection() const;
-
-  bool up;
-  bool right;
-  bool down;
-  bool left;
-};
+#include <boost/shared_ptr.hpp>
 
 /**
- * Abstract representation of a joystick. Joysticks can have buttons, hats and
- * analog axes in the range [-1, 1]. Some joystick APIs (the Linux Joystick API,
- * for example) report hats as axes with an integer value of -1, 0 or 1. No
- * effort should be made to decode these axes back to hats, as this processing
- * is done in CJoystickManager.
+ * Interface IJoystick
+ *
+ * Joysticks are abstracted as devices that repeatedly refresh and report their
+ * ineternal state. Update() is called by CJoystickManager once per FrameMove()
+ * to poll for input and should sync the SJoystick struct returned by GetState()
+ * to the joystick's current state.
  */
-class JoystickState
+class CJoystick
 {
 public:
-  JoystickState() : id(0), m_bWakeupChecked(false) { ResetState(); }
-                  JoystickState& operator-=(const JoystickState& rhs);
-                const JoystickState operator-(const JoystickState &other) const;
-  void ResetState(unsigned int buttonCount = GAMEPAD_BUTTON_COUNT,
-                  unsigned int hatCount = GAMEPAD_HAT_COUNT,
-                  unsigned int axisCount = GAMEPAD_AXIS_COUNT);
-
   /**
-   * Helper function to normalize a value to maxAxisAmount.
+   * Implementers should provide the following factories to create IJoystick objects
+   * (See CJoystickManager::Initialize()):
+   *
+   * static void Initialize(JoystickArray &joysticks);
+   * static void DeInitialize(JoystickArray &joysticks);
    */
-  void SetAxis(unsigned int axis, long value, long maxAxisAmount);
 
-  std::string        name;
-  unsigned int       id;
-  std::vector<bool>  buttons;
-  std::vector<Hat>   hats;
-  std::vector<float> axes;
+  virtual ~IJoystick() { }
+
+  void UpdateState() { Update(); m_oldstate = m_state; }
   
-private:
-                 /**
-                * After updating, look for changes in state.
-                * @param oldState - previous joystick state, set to newState as a post-condition
-                * @param newState - the updated joystick state
-                * @param joyID - the ID of the joystick being processed
-                */
-                void ProcessButtonPresses(const JoystickState& rhs);
-                void ProcessHatPresses(const JoystickState& rhs);
-                void ProcessAxisMotion(const JoystickState& rhs);
+  void ResetState() {
+    m_state.ResetState();
+    m_oldstate.ResetState();
+  }
 
-                // Returns true if this wakes up from the screensaver
-                bool Wakeup();
-                // Allows Wakeup() to perform another wakeup check
-                void ResetWakeup() { m_bWakeupChecked = false; }
-                bool          m_bWakeupChecked; // true if WakeupCheck() has been called
+protected:
+  virtual void Update() = 0;
 
-                ActionTracker m_actionTracker;
-
+  JOYSTICK::JoystickState m_state;
+  JOYSTICK::JoystickState m_oldstate;
 };
 
-} // namespace INPUT
+typedef std::vector<boost::shared_ptr<IJoystick> > JoystickArray;
