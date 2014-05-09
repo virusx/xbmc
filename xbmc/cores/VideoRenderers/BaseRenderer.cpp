@@ -445,7 +445,8 @@ void CBaseRenderer::CalcNormalDisplayRect(float offsetX, float offsetY, float sc
 
   // Centre the movie
   float posY = (screenHeight - newHeight) / 2;
-  float posX = (screenWidth - newWidth) / 2;
+  //float posX = (screenWidth - newWidth) / 2;
+  float posX = 0; // gopro
 
   // vertical shift range -1 to 1 shifts within the top and bottom black bars
   // if there are no top and bottom black bars, this range does nothing
