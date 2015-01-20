@@ -21,6 +21,8 @@
 
 #include "JoystickTypes.h"
 
+#include <vector>
+
 /*!
  * \ingroup joysticks
  * \brief Interface defining all supported joystick action events
