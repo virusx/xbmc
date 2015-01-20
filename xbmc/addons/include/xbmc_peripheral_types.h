@@ -89,11 +89,11 @@ extern "C"
 
   typedef struct PERIPHERAL_INFO
   {
-    PERIPHERAL_TYPE type;
-    char*           name;
-    uint16_t        vendor_id;
-    uint16_t        product_id;
-    unsigned int    driver_index;
+    PERIPHERAL_TYPE type;           /*!< @brief type of peripheral */
+    char*           name;           /*!< @brief name of peripheral */
+    uint16_t        vendor_id;      /*!< @brief vendor ID of peripheral, 0x0000 if unknown */
+    uint16_t        product_id;     /*!< @brief product ID of peripheral, 0x0000 if unknown */
+    unsigned int    driver_index;   /*!< @brief the order in which the add-on identified this peripheral */
   } ATTRIBUTE_PACKED PERIPHERAL_INFO;
 
   /*!
@@ -116,7 +116,8 @@ extern "C"
   } ATTRIBUTE_PACKED PERIPHERAL_CAPABILITIES;
   ///}
 
-  /// @brief Physical joystick features
+  /// @name Joystick types
+  ///{
   typedef enum JOYSTICK_FEATURE_ID
   {
     JOYSTICK_FEATURE_UNKNOWN = 0,             /*!< @brief no data exists to associate button with ID */
@@ -176,9 +177,9 @@ extern "C"
 
   typedef enum JOYSTICK_DRIVER_SEMIAXIS_DIRECTION
   {
-    JOYSTICK_DRIVER_SEMIAXIS_DIRECTION_NEGATIVE = -1, /*!< @brief negative part of the axis in the interval [-1, 0) */
-    JOYSTICK_DRIVER_SEMIAXIS_DIRECTION_UNKNOWN  =  0, /*!< @brief positive part of the axis in the interval (0, 1] */
-    JOYSTICK_DRIVER_SEMIAXIS_DIRECTION_POSITIVE =  1, /*!< @brief positive part of the axis in the interval (0, 1] */
+    JOYSTICK_DRIVER_SEMIAXIS_DIRECTION_NEGATIVE = -1, /*!< @brief negative half of the axis */
+    JOYSTICK_DRIVER_SEMIAXIS_DIRECTION_UNKNOWN  =  0, /*!< @brief unknown direction */
+    JOYSTICK_DRIVER_SEMIAXIS_DIRECTION_POSITIVE =  1, /*!< @brief positive half of the axis */
   } JOYSTICK_DRIVER_SEMIAXIS_DIRECTION;
 
   typedef struct JOYSTICK_DRIVER_SEMIAXIS
@@ -225,7 +226,7 @@ extern "C"
 
   typedef struct JOYSTICK_DRIVER_INFO
   {
-    unsigned int    index;
+    unsigned int    index;              /*!< @brief order in which joystick was identified */
     unsigned int    button_count;       /*!< @brief number of buttons reported by the driver */
     unsigned int    hat_count;          /*!< @brief number of hats reported by the driver */
     unsigned int    axis_count;         /*!< @brief number of axes reported by the driver */
@@ -236,22 +237,25 @@ extern "C"
     PERIPHERAL_INFO          peripheral_info;    /*!< @brief inherited info */
     char*                    provider;           /*!< @brief name of the interface providing the joystick */
     unsigned int             requested_port_num; /*!< @brief requested port number (such as for 360 controllers), or NO_PORT_REQUESTED */
-    JOYSTICK_DRIVER_INFO     driver;
-    unsigned int             feature_count;
-    struct JOYSTICK_FEATURE* features;
+    JOYSTICK_DRIVER_INFO     driver;             /*!< @brief joystick information provided by the driver */
+    unsigned int             feature_count;      /*!< @brief number of features associated with this joystick */
+    struct JOYSTICK_FEATURE* features;           /*!< @brief allocated features */
   } ATTRIBUTE_PACKED JOYSTICK_INFO;
+  ///}
 
+  /// @name Event types
+  ///{
   typedef enum PERIPHERAL_EVENT_TYPE
   {
     PERIPHERAL_EVENT_TYPE_NONE = 0,       /*!< @brief unknown event */
-    PERIPHERAL_EVENT_TYPE_DRIVER_BUTTON,  /*!< @brief state changed for joystick driver button, reported by its index */
-    PERIPHERAL_EVENT_TYPE_DRIVER_HAT,     /*!< @brief state changed for joystick driver hat, reported by its index */
-    PERIPHERAL_EVENT_TYPE_DRIVER_AXIS,    /*!< @brief state changed for joystick driver axis, reported by its index */
+    PERIPHERAL_EVENT_TYPE_DRIVER_BUTTON,  /*!< @brief state changed for joystick driver button */
+    PERIPHERAL_EVENT_TYPE_DRIVER_HAT,     /*!< @brief state changed for joystick driver hat */
+    PERIPHERAL_EVENT_TYPE_DRIVER_AXIS,    /*!< @brief state changed for joystick driver axis */
   } PERIPHERAL_EVENT_TYPE;
 
   typedef enum JOYSTICK_STATE_BUTTON
   {
-    JOYSTICK_STATE_BUTTON_UNPRESSED = 0x0,    /*!< @brief button is unpressed */
+    JOYSTICK_STATE_BUTTON_UNPRESSED = 0x0,    /*!< @brief button is released */
     JOYSTICK_STATE_BUTTON_PRESSED   = 0x1,    /*!< @brief button is pressed */
   } JOYSTICK_STATE_BUTTON;
 

@@ -63,15 +63,43 @@ extern "C"
 
   /*!
    * @brief Perform a scan for joysticks
-   * @return PERIPHERAL_NO_ERROR if successful; joysticks must be freed using
-   * FreeJoysticks() in this case
+   * @param peripheral_count  Assigned to the number of peripherals allocated
+   * @param scan_results      Assigned to allocated memory
+   * @return PERIPHERAL_NO_ERROR if successful; peripherals must be freed using
+   * FreeScanResults() in this case
    *
    * The frontend calls this when a hardware change is detected. If an add-on
    * detects a hardware change, it can trigger this function using the
    * TriggerScan() callback.
    */
   PERIPHERAL_ERROR PerformDeviceScan(unsigned int* peripheral_count, PERIPHERAL_INFO** scan_results);
+
+  /*!
+   * @brief Free the memory allocated in PerformDeviceScan()
+   *
+   * Must be called if PerformDeviceScan() returns PERIPHERAL_NO_ERROR.
+   *
+   * @param peripheral_count  The number of peripherals pointed to by scan_results
+   * @param scan_results      The array of allocated peripherals
+   */
   void FreeScanResults(unsigned int peripheral_count, PERIPHERAL_INFO* scan_results);
+
+  /*!
+   * @brief Get all events that have occurred since the last call to GetEvents()
+   * @return PERIPHERAL_NO_ERROR if successful; events must be freed using
+   * FreeEvents() in this case
+   */
+  PERIPHERAL_ERROR GetEvents(unsigned int* event_count, PERIPHERAL_EVENT** events);
+
+  /*!
+   * @brief Free the memory allocated in GetEvents()
+   *
+   * Must be called if GetEvents() returns PERIPHERAL_NO_ERROR.
+   *
+   * @param event_count  The number of events pointed to by events
+   * @param events       The array of allocated events
+   */
+  void FreeEvents(unsigned int event_count, PERIPHERAL_EVENT* events);
   ///}
 
   /// @name Joystick operations
@@ -82,19 +110,25 @@ extern "C"
    */
   ///{
 #ifdef PERIPHERAL_ADDON_JOYSTICKS
+  /*!
+   * @brief Get extended info about an attached joystick
+   * @param index  The joystick's driver index
+   * @param info   The container for the allocated joystick info
+   * @return PERIPHERAL_NO_ERROR if successful; structs must be freed using
+   * FreeJoystickInfo() in this case
+   */
   PERIPHERAL_ERROR GetJoystickInfo(unsigned int index, JOYSTICK_INFO* info);
+
+  /*!
+   * @brief Free the memory allocated in GetJoystickInfo()
+   */
   void FreeJoystickInfo(JOYSTICK_INFO* info);
 
   /*!
-   * @brief Get all events that have occurred since the last call to GetEvents()
-   * @return PERIPHERAL_NO_ERROR if successful; events must be freed using
-   * FreeEvents() in this case
-   */
-  PERIPHERAL_ERROR GetEvents(unsigned int* event_count, PERIPHERAL_EVENT** events);
-  void FreeEvents(unsigned int event_count, PERIPHERAL_EVENT* events);
-
-  /*!
    * @brief Update joystick feature
+   * @param index    The joystick's driver index
+   * @param feature  The updated properties of the feature
+   * @return PERIPHERAL_NO_ERROR if successful
    */
   PERIPHERAL_ERROR UpdateJoystickFeature(unsigned int index, JOYSTICK_FEATURE* feature);
 #endif

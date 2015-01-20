@@ -150,6 +150,13 @@ namespace ADDON
 
   typedef PeripheralVector<Peripheral, PERIPHERAL_INFO> Peripherals;
 
+  /*!
+   * ADDON::JoystickFeature
+   *
+   * Base class for joystick features. In xbmc_peripheral_types.h, the various
+   * driver types are stored as an union. Here, we use polymorphism to allow for
+   * extra driver information.
+   */
   class JoystickFeature
   {
   public:
@@ -223,6 +230,11 @@ namespace ADDON
 
   typedef PeripheralVector<JoystickFeature, JOYSTICK_FEATURE> JoystickFeatures;
 
+  /*!
+   * ADDON::DriverButton
+   *
+   * Joystick feature is a button that can be read from the driver.
+   */
   class DriverButton : public JoystickFeature
   {
   public:
@@ -261,6 +273,11 @@ namespace ADDON
     int m_index;
   };
 
+  /*!
+   * ADDON::DriverHat
+   *
+   * Joystick feature is a cardinal direction of the driver's hat
+   */
   class DriverHat : public JoystickFeature
   {
   public:
@@ -306,6 +323,11 @@ namespace ADDON
     JOYSTICK_DRIVER_HAT_DIRECTION m_direction;
   };
 
+  /*!
+   * ADDON::DriverSemiAxis
+   *
+   * Joystick feature is the positive or negative half of an axis in the driver.
+   */
   class DriverSemiAxis : public JoystickFeature
   {
   public:
@@ -351,6 +373,11 @@ namespace ADDON
     JOYSTICK_DRIVER_SEMIAXIS_DIRECTION m_direction;
   };
 
+  /*!
+   * ADDON::DriverAnalogStick
+   *
+   * Joystick feature is an analog stick associated with two axes in the driver.
+   */
   class DriverAnalogStick : public JoystickFeature
   {
   public:
@@ -410,6 +437,12 @@ namespace ADDON
     bool m_yInverted;
   };
 
+  /*!
+   * ADDON::DriverAnalogStick
+   *
+   * Joystick feature is an accelerometer associated with three axes in the
+   * driver.
+   */
   class DriverAccelerometer : public JoystickFeature
   {
   public:
@@ -483,6 +516,11 @@ namespace ADDON
     bool m_zInverted;
   };
 
+  /*!
+   * ADDON::JoystickFeatureFactory
+   *
+   * Utility class to create joystick features polymorphically
+   */
   class JoystickFeatureFactory
   {
   public:
@@ -516,8 +554,8 @@ namespace ADDON
    * ADDON::Joystick
    *
    * Wrapper class providing additional joystick information not provided by
-   * Peripheral. Classes can extend Joystick to inherit peripheral and joystick
-   * properties.
+   * ADDON::Peripheral. Classes can extend Joystick to inherit peripheral and
+   * joystick properties.
    */
   class Joystick : public Peripheral
   {
@@ -626,6 +664,11 @@ namespace ADDON
 
   typedef PeripheralVector<Joystick, JOYSTICK_INFO> Joysticks;
 
+  /*!
+   * ADDON::PeripheralEvent
+   *
+   * Wrapper class for peripheral events.
+   */
   class PeripheralEvent
   {
   public:
