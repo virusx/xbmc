@@ -41,6 +41,7 @@ public:
   virtual bool OnButtonHold(JoystickActionID id);
   virtual bool OnButtonDoublePress(JoystickActionID id);
   virtual bool OnMultiPress(const std::vector<JoystickActionID>& ids);
+  virtual bool OnButtonRelease(JoystickActionID id);
   virtual bool OnAnalogStickMotion(JoystickActionID id, float x, float y);
   virtual bool OnAccelerometerMotion(JoystickActionID id, float x, float y, float z);
 };

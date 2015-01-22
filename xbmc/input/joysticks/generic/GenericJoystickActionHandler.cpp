@@ -45,6 +45,11 @@ bool CGenericJoystickActionHandler::OnMultiPress(const std::vector<JoystickActio
   return false; // TODO
 }
 
+bool CGenericJoystickActionHandler::OnButtonRelease(JoystickActionID id)
+{
+  return false; // TODO
+}
+
 bool CGenericJoystickActionHandler::OnAnalogStickMotion(JoystickActionID id, float x, float y)
 {
   return false; // TODO
