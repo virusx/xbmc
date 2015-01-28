@@ -43,6 +43,8 @@ public:
   CB_PeripheralLib* GetCallbacks() const { return m_callbacks; }
 
   static void TriggerScan(void* addonData);
+  static void MediaInserted(void* addonData, const void* metadata);
+  static void MediaRemoved(void* addonData, const void* metadata);
 
 private:
   static PERIPHERALS::CPeripheralAddon* GetPeripheralAddon(void* addonData, const char* strFunction);

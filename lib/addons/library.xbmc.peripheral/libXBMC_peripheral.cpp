@@ -62,6 +62,20 @@ DLLEXPORT void PERIPHERAL_trigger_scan(AddonCB* frontend, CB_PeripheralLib* cb)
   return cb->TriggerScan(frontend->addonData);
 }
 
+DLLEXPORT void PERIPHERAL_media_inserted(AddonCB* frontend, CB_PeripheralLib* cb, const void* metadata)
+{
+  if (frontend == NULL || cb == NULL)
+    return;
+  return cb->MediaInserted(frontend->addonData, metadata);
+}
+
+DLLEXPORT void PERIPHERAL_media_removed(AddonCB* frontend, CB_PeripheralLib* cb, const void* metadata)
+{
+  if (frontend == NULL || cb == NULL)
+    return;
+  return cb->MediaRemoved(frontend->addonData, metadata);
+}
+
 #ifdef __cplusplus
 }
 #endif

@@ -85,6 +85,10 @@ namespace PERIPHERALS
     bool GetJoystickFeatures(unsigned int index, JoystickFeatureMap& features);
     //@}
 
+    /** @name Media reader methods */
+    //@{
+    //@}
+
     static const char          *ToString(PERIPHERAL_ERROR error);
 
   protected:

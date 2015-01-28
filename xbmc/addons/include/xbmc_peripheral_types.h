@@ -290,6 +290,17 @@ extern "C"
 
   // TODO: Mouse, light gun, multitouch
 
+  /// @name Media Reader types
+  ///{
+  typedef struct MEDIA_READER_INFO
+  {
+    PERIPHERAL_INFO      peripheral_info;    /*!< @brief inherited info */
+    char*                system;             /*!< @brief system type of the media reader */
+  } ATTRIBUTE_PACKED MEDIA_READER_INFO;
+  ///}
+
+  ///}
+
   /*!
    * @brief Structure to transfer the methods from xbmc_peripheral_dll.h to the frontend
    */
@@ -308,6 +319,13 @@ extern "C"
     PERIPHERAL_ERROR (__cdecl* GetEvents)(unsigned int*, PERIPHERAL_EVENT**);
     void             (__cdecl* FreeEvents)(unsigned int, PERIPHERAL_EVENT*);
     PERIPHERAL_ERROR (__cdecl* UpdateJoystickFeature)(unsigned int, JOYSTICK_FEATURE*);
+    ///}
+
+    /// @name Media reader operations
+    ///{s
+    PERIPHERAL_ERROR (__cdecl* GetMediaReaderInfo)(unsigned int, MEDIA_READER_INFO*);
+    void             (__cdecl* FreeMediaReaderInfo)(MEDIA_READER_INFO*);
+    PERIPHERAL_ERROR (__cdecl* EjectMedia)(unsigned int);
     ///}
   } PeripheralAddon;
 

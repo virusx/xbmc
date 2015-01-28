@@ -104,6 +104,8 @@ public:
     if (!PERIPHERAL_REGISTER_SYMBOL(m_libXBMC_peripheral, PERIPHERAL_register_me)) return false;
     if (!PERIPHERAL_REGISTER_SYMBOL(m_libXBMC_peripheral, PERIPHERAL_unregister_me)) return false;
     if (!PERIPHERAL_REGISTER_SYMBOL(m_libXBMC_peripheral, PERIPHERAL_trigger_scan)) return false;
+    if (!PERIPHERAL_REGISTER_SYMBOL(m_libXBMC_peripheral, PERIPHERAL_media_inserted)) return false;
+    if (!PERIPHERAL_REGISTER_SYMBOL(m_libXBMC_peripheral, PERIPHERAL_media_removed)) return false;
 
     m_callbacks = PERIPHERAL_register_me(m_handle);
     return m_callbacks != NULL;
@@ -114,10 +116,22 @@ public:
     return PERIPHERAL_trigger_scan(m_handle, m_callbacks);
   }
 
+  void MediaInserted(const void* metadata)
+  {
+    return PERIPHERAL_media_inserted(m_handle, m_callbacks, metadata);
+  }
+
+  void MediaRemoved(const void* metadata)
+  {
+    return PERIPHERAL_media_removed(m_handle, m_callbacks, metadata);
+  }
+
 protected:
     CB_PeripheralLib* (*PERIPHERAL_register_me)(void* handle);
     void (*PERIPHERAL_unregister_me)(void* handle, CB_PeripheralLib* cb);
     void (*PERIPHERAL_trigger_scan)(void* handle, CB_PeripheralLib* cb);
+    void (*PERIPHERAL_media_inserted)(void* handle, CB_PeripheralLib* cb, const void* metadata);
+    void (*PERIPHERAL_media_removed)(void* handle, CB_PeripheralLib* cb, const void* metadata);
 
 private:
   void*             m_handle;
