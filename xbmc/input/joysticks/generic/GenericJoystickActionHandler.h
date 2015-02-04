@@ -38,10 +38,16 @@ public:
   // implementation of IJoystickActionHandler
   virtual bool OnButtonPress(JoystickActionID id);
   virtual bool OnButtonMotion(JoystickActionID id, float magnitude);
-  virtual bool OnButtonHold(JoystickActionID id);
+  virtual bool OnButtonHold(JoystickActionID id, unsigned int holdTimeMs);
   virtual bool OnButtonDoublePress(JoystickActionID id);
   virtual bool OnMultiPress(const std::vector<JoystickActionID>& ids);
   virtual bool OnButtonRelease(JoystickActionID id);
   virtual bool OnAnalogStickMotion(JoystickActionID id, float x, float y);
   virtual bool OnAccelerometerMotion(JoystickActionID id, float x, float y, float z);
+
+private:
+  static void SendDigitalButton(unsigned int keyId, unsigned int holdTimeMs = 0);
+  static void SendAnalogButton(unsigned int keyId, float amount);
+
+  static unsigned int GetButtonID(JoystickActionID id, float x = 0.0f, float y = 0.0f, float z = 0.0f);
 };

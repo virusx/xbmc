@@ -59,7 +59,7 @@ public:
    *
    * \return True if the event was handled otherwise false
    */
-  virtual bool OnButtonHold(JoystickActionID id) { return false; }
+  virtual bool OnButtonHold(JoystickActionID id, unsigned int holdTimeMs) { return false; }
 
   /*!
    * \brief A button has been pressed twice within a small timeframe
