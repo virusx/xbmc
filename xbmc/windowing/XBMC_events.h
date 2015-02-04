@@ -97,9 +97,9 @@ typedef struct XBMC_MouseButtonEvent {
 /* Joystick event structure */
 typedef struct XBMC_JoystickEvent {
     unsigned char type;     /* XBMC_JOYDIGITAL or XBMC_JOYANALOG */
-    unsigned char button;   /* The joystick button ID */
-    unsigned int  holdtime; /* The hold time (ms) for digital actions */
-    float         amount;   /* The amount for analog actions */
+    unsigned int  button;   /* The joystick button's key ID */
+    unsigned int  holdtime; /* The hold time (ms) for digital buttons */
+    float         amount;   /* The amount for analog events */
 } XBMC_JoystickEvent;
 
 /* The "window resized" event
