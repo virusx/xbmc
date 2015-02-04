@@ -38,8 +38,6 @@
 #include "Util.h"
 #include <boost/shared_ptr.hpp>
 
-#define JOYSTICK_DEFAULT_MAP "_xbmc_"
-
 using namespace std;
 using namespace XFILE;
 
@@ -750,11 +748,6 @@ int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const cha
   return TranslateRemoteString((*it2).second.c_str());
 }
 
-void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
-{
-  // TODO
-}
-
 bool CButtonTranslator::TranslateTouchAction(int window, int touchAction, int touchPointers, int &action)
 {
   action = 0;
@@ -950,16 +943,6 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
       // add our map to our table
       if (!map.empty())
         m_translatorMap.insert(pair<int, buttonMap>( windowID, map));
-    }
-  }
-
-  if ((pDevice = pWindow->FirstChild("joystick")) != NULL)
-  {
-    // map joystick actions
-    while (pDevice)
-    {
-      MapJoystickActions(windowID, pDevice);
-      pDevice = pDevice->NextSibling("joystick");
     }
   }
 

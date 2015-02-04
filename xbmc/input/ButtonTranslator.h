@@ -132,8 +132,6 @@ private:
   typedef std::map<std::string, std::string> lircButtonMap;
   std::map<std::string, lircButtonMap*> lircRemotesMap;
 
-  void MapJoystickActions(int windowID, TiXmlNode *pJoystick);
-
   void MapTouchActions(int windowID, TiXmlNode *pTouch);
   static uint32_t TranslateTouchCommand(TiXmlElement *pButton, CButtonAction &action);
   int GetTouchActionCode(int window, int action);

@@ -2464,8 +2464,8 @@ bool CApplication::OnKey(const CKey& key)
     else
       action = CButtonTranslator::GetInstance().GetAction(iWin, key);
   }
-  if (!key.IsAnalogButton())
-    CLog::LogF(LOGDEBUG, "%s pressed, action is %s", g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
+
+  CLog::LogF(LOGDEBUG, "%s pressed, action is %s", g_Keyboard.GetKeyName((int) key.GetButtonCode()).c_str(), action.GetName().c_str());
 
   return ExecuteInputAction(action);
 }
