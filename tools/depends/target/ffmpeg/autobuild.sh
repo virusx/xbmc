@@ -140,7 +140,6 @@ CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" \
 	--enable-vaapi \
 	--enable-vdpau \
 	--enable-bzlib \
-	--enable-gnutls \
 	--enable-muxer=spdif \
 	--enable-muxer=adts \
 	--enable-muxer=asf \

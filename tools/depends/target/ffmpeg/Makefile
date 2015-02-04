@@ -23,7 +23,7 @@ ifeq ($(CROSS_COMPILING), yes)
 endif
 ifeq ($(OS), linux)
   ffmpg_config += --target-os=$(OS) --cpu=$(CPU)
-  ffmpg_config += --enable-vdpau --enable-vaapi --enable-gnutls
+  ffmpg_config += --enable-vdpau --enable-vaapi
   ffmpg_config += --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis
 endif
 ifeq ($(OS), android)
