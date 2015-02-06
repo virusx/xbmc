@@ -50,7 +50,7 @@ public:
    * \return The ID, or UNKNOWN if input primitive isn't associated with an
    *         action ID
    */
-  virtual JoystickActionID GetAction(const CInputPrimitive& button) = 0;
+  virtual JoystickFeatureID GetAction(const CInputPrimitive& button) = 0;
 
   /*!
    * \brief Get the raw button, raw hat direction or raw semi-axis associated
@@ -63,7 +63,7 @@ public:
    * \return true if the ID resolved to an input primitive, false if the ID was
    *         invalid or resolved to an analog stick/accelerometer
    */
-  virtual bool GetInputPrimitive(JoystickActionID id, CInputPrimitive& button) = 0;
+  virtual bool GetInputPrimitive(JoystickFeatureID id, CInputPrimitive& button) = 0;
 
   /*!
    * \brief Get the raw axis indices and polarity for the given analog stick ID
@@ -77,7 +77,7 @@ public:
    *
    * \return true if the ID resolved to at least one axis (remaining axis may be -1)
    */
-  virtual bool GetAnalogStick(JoystickActionID id, int& horizIndex, bool& horizInverted,
+  virtual bool GetAnalogStick(JoystickFeatureID id, int& horizIndex, bool& horizInverted,
                                                    int& vertIndex,  bool& vertInverted) = 0;
 
   /*!
@@ -95,7 +95,7 @@ public:
    *
    * \return true if the ID resolved to at least one axis (remaining axes may be -1)
    */
-  virtual bool GetAccelerometer(JoystickActionID id, int& xIndex, bool& xInverted,
+  virtual bool GetAccelerometer(JoystickFeatureID id, int& xIndex, bool& xInverted,
                                                      int& yIndex, bool& yInverted,
                                                      int& zIndex, bool& zInverted) = 0;
 };
