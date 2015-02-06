@@ -43,6 +43,7 @@ namespace PERIPHERALS
     virtual void OnButtonMotion(unsigned int index, bool bPressed);
     virtual void OnHatMotion(unsigned int index, HatDirection direction);
     virtual void OnAxisMotion(unsigned int index, float position);
+    virtual void ProcessAxisMotions();
 
   protected:
     IJoystickInputHandler*  m_inputHandler;

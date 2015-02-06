@@ -385,6 +385,8 @@ bool CPeripheralAddon::ProcessEvents(void)
 
   if (retVal == PERIPHERAL_NO_ERROR && pEvents != NULL)
   {
+    std::set<CPeripheralJoystick*> joysticksWithAxisMotion;
+
     for (unsigned int i = 0; i < eventCount; i++)
     {
       ADDON::PeripheralEvent event(pEvents[i]);
@@ -414,6 +416,7 @@ bool CPeripheralAddon::ProcessEvents(void)
           case PERIPHERAL_EVENT_TYPE_DRIVER_AXIS:
           {
             joystickDevice->OnAxisMotion(event.DriverIndex(), event.AxisState());
+            joysticksWithAxisMotion.insert(joystickDevice);
             break;
           }
           default:
@@ -425,6 +428,9 @@ bool CPeripheralAddon::ProcessEvents(void)
         break;
       }
     }
+
+    for (std::set<CPeripheralJoystick*>::iterator it = joysticksWithAxisMotion.begin(); it != joysticksWithAxisMotion.end(); ++it)
+      (*it)->ProcessAxisMotions();
 
     try { m_pStruct->FreeEvents(eventCount, pEvents); }
     catch (std::exception &e) { LogException(e, "FreeJoysticks()"); }

@@ -21,6 +21,7 @@
 
 #include "input/joysticks/IJoystickInputHandler.h"
 
+#include <set>
 #include <vector>
 
 class IJoystickActionHandler;
@@ -42,6 +43,7 @@ public:
   virtual void OnButtonMotion(unsigned int index, bool bPressed);
   virtual void OnHatMotion(unsigned int index, HatDirection direction);
   virtual void OnAxisMotion(unsigned int index, float position);
+  virtual void ProcessAxisMotions();
 
 private:
   float GetAxisState(int axisIndex) const;
@@ -51,4 +53,5 @@ private:
   std::vector<char>         m_buttonStates; // std::vector is specialized for <bool>
   std::vector<HatDirection> m_hatStates;
   std::vector<float>        m_axisStates;
+  std::set<JoystickActionID> m_featuresWithMotion;
 };

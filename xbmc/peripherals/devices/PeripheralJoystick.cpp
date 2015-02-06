@@ -90,3 +90,9 @@ void CPeripheralJoystick::OnAxisMotion(unsigned int index, float position)
   if (m_inputHandler)
     m_inputHandler->OnAxisMotion(index, position);
 }
+
+void CPeripheralJoystick::ProcessAxisMotions()
+{
+  if (m_inputHandler)
+    m_inputHandler->ProcessAxisMotions();
+}

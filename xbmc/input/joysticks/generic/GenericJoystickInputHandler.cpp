@@ -154,55 +154,8 @@ void CGenericJoystickInputHandler::OnAxisMotion(unsigned int index, float positi
   }
   else if (positiveAction == negativeAction)
   {
-    // Check features that require an entire axis
-    switch (positiveAction)
-    {
-    case JOY_ID_ANALOG_STICK_L:
-    case JOY_ID_ANALOG_STICK_R:
-    {
-      // Analog sticks require two axes
-      int  horizIndex;
-      bool horizInverted;
-      int  vertIndex;
-      bool vertInverted;
-
-      if (m_buttonMap->GetAnalogStick(positiveAction,
-                                      horizIndex, horizInverted,
-                                      vertIndex,  vertInverted))
-      {
-        const float horizPos = GetAxisState(horizIndex) * (horizInverted ? -1.0f : 1.0f);
-        const float vertPos  = GetAxisState(vertIndex)  * (vertInverted  ? -1.0f : 1.0f);
-        m_handler->OnAnalogStickMotion(positiveAction, horizPos, vertPos);
-      }
-      break;
-    }
-
-    case JOY_ID_ACCELEROMETER:
-    {
-      // Accelerometers require three axes
-      int  xIndex;
-      bool xInverted;
-      int  yIndex;
-      bool yInverted;
-      int  zIndex;
-      bool zInverted;
-
-      if (m_buttonMap->GetAccelerometer(positiveAction,
-                                        xIndex, xInverted,
-                                        yIndex, yInverted,
-                                        zIndex, zInverted))
-      {
-        const float xPos = GetAxisState(xIndex) * (xInverted ? -1.0f : 1.0f);
-        const float yPos = GetAxisState(yIndex) * (yInverted ? -1.0f : 1.0f);
-        const float zPos = GetAxisState(zIndex) * (zInverted ? -1.0f : 1.0f);
-        m_handler->OnAccelerometerMotion(positiveAction, xPos, yPos, zPos);
-      }
-      break;
-    }
-
-    default:
-      break;
-    }
+    // Feature uses multiple axes, add to OnAxisMotions() batch process
+    m_featuresWithMotion.insert(positiveAction);
   }
   else // positiveAction != negativeAction
   {
@@ -227,6 +180,60 @@ void CGenericJoystickInputHandler::OnAxisMotion(unsigned int index, float positi
         m_handler->OnButtonMotion(negativeAction, -1.0f * position); // magnitude is >= 0
       else if (oldPosition < 0)
         m_handler->OnButtonMotion(negativeAction, 0.0f);
+    }
+  }
+}
+
+void CGenericJoystickInputHandler::ProcessAxisMotions()
+{
+  for (std::set<JoystickActionID>::const_iterator it = m_featuresWithMotion.begin(); it != m_featuresWithMotion.end(); ++it)
+  {
+    const JoystickActionID action = *it;
+    switch (action)
+    {
+    case JOY_ID_ANALOG_STICK_L:
+    case JOY_ID_ANALOG_STICK_R:
+    {
+      int  horizIndex;
+      bool horizInverted;
+      int  vertIndex;
+      bool vertInverted;
+
+      if (m_buttonMap->GetAnalogStick(action,
+                                      horizIndex, horizInverted,
+                                      vertIndex,  vertInverted))
+      {
+        const float horizPos = GetAxisState(horizIndex) * (horizInverted ? -1.0f : 1.0f);
+        const float vertPos  = GetAxisState(vertIndex)  * (vertInverted  ? -1.0f : 1.0f);
+        m_handler->OnAnalogStickMotion(action, horizPos, vertPos);
+      }
+      break;
+    }
+
+    case JOY_ID_ACCELEROMETER:
+    {
+      int  xIndex;
+      bool xInverted;
+      int  yIndex;
+      bool yInverted;
+      int  zIndex;
+      bool zInverted;
+
+      if (m_buttonMap->GetAccelerometer(action,
+                                        xIndex, xInverted,
+                                        yIndex, yInverted,
+                                        zIndex, zInverted))
+      {
+        const float xPos = GetAxisState(xIndex) * (xInverted ? -1.0f : 1.0f);
+        const float yPos = GetAxisState(yIndex) * (yInverted ? -1.0f : 1.0f);
+        const float zPos = GetAxisState(zIndex) * (zInverted ? -1.0f : 1.0f);
+        m_handler->OnAccelerometerMotion(action, xPos, yPos, zPos);
+      }
+      break;
+    }
+
+    default:
+      break;
     }
   }
 }
