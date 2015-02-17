@@ -24,15 +24,20 @@ endmacro()
 
 # Build, link and optionally package an add-on
 macro (build_addon target prefix libs)
-  ADD_LIBRARY(${target} ${${prefix}_SOURCES})
-  TARGET_LINK_LIBRARIES(${target} ${${libs}})
   addon_version(${target} ${prefix})
-  SET_TARGET_PROPERTIES(${target} PROPERTIES VERSION ${${prefix}_VERSION}
-                                             SOVERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
-                                             PREFIX "")
-  IF(OS STREQUAL "android")
-    SET_TARGET_PROPERTIES(${target} PROPERTIES PREFIX "lib")
-  ENDIF(OS STREQUAL "android")
+  IF(${prefix}_SOURCES)
+    ADD_LIBRARY(${target} ${${prefix}_SOURCES})
+    TARGET_LINK_LIBRARIES(${target} ${${libs}})
+    SET_TARGET_PROPERTIES(${target} PROPERTIES VERSION ${${prefix}_VERSION}
+                                               SOVERSION 13.0
+                                                PREFIX "")
+    IF(OS STREQUAL "android")
+      SET_TARGET_PROPERTIES(${target} PROPERTIES PREFIX "lib")
+    ENDIF(OS STREQUAL "android")
+  ELSE()
+    add_custom_target(${target})
+    SET(BUILD_SHARED_LIBS) # Avoid warnings
+  ENDIF()
 
   # set zip as default if addon-package is called without PACKAGE_XXX
   SET(CPACK_GENERATOR "ZIP")
@@ -53,16 +58,27 @@ macro (build_addon target prefix libs)
     # Pack files together to create an archive
     INSTALL(DIRECTORY ${target} DESTINATION ./ COMPONENT ${target}-${${prefix}_VERSION})
     IF(WIN32)
-      INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/${target}.dll
-              DESTINATION ${target}
-              COMPONENT ${target}-${${prefix}_VERSION})
+      IF(${${prefix}_SOURCES})
+        INSTALL(PROGRAMS ${CMAKE_BINARY_DIR}/${target}.dll
+                DESTINATION ${target}
+                COMPONENT ${target}-${${prefix}_VERSION})
+      ENDIF()
     ELSE(WIN32)
-      INSTALL(TARGETS ${target} DESTINATION ${target}
-              COMPONENT ${target}-${${prefix}_VERSION})
+      IF(${prefix}_SOURCES)
+        INSTALL(TARGETS ${target} DESTINATION ${target}
+                COMPONENT ${target}-${${prefix}_VERSION})
+      ENDIF()
     ENDIF(WIN32)
     add_cpack_workaround(${target} ${${prefix}_VERSION} ${ext})
   ELSE(PACKAGE_ZIP OR PACKAGE_TGZ)
-    INSTALL(TARGETS ${target} DESTINATION lib/kodi/addons/${target})
+    if(${prefix}_SOURCES)
+      install(TARGETS ${target} DESTINATION lib/kodi/addons/${target})
+    endif()
+    if (${prefix}_CUSTOM_BINARY)
+      list(GET ${${prefix}_CUSTOM_BINARY} 0 FROM_BINARY)
+      list(GET ${${prefix}_CUSTOM_BINARY} 1 TO_BINARY)
+      install(FILES ${FROM_BINARY} DESTINATION lib/kodi/addons/${target}/${TO_BINARY})
+    endif()
     INSTALL(DIRECTORY ${target} DESTINATION share/kodi/addons)
   ENDIF(PACKAGE_ZIP OR PACKAGE_TGZ)
 endmacro()
