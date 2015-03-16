@@ -852,7 +852,6 @@ bool CFileItem::IsGame() const
   if (!GetProperty("gameclient").empty())
     return true;
 
-
   if (HasVideoInfoTag())
     return false;
 
@@ -862,7 +861,7 @@ bool CFileItem::IsGame() const
   if (HasPictureInfoTag())
     return false;
 
-  return false;
+  return CGameManager::Get().IsGame(m_strPath);
 }
 
 bool CFileItem::IsKaraoke() const
