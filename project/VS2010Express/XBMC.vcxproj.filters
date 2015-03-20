@@ -3194,7 +3194,7 @@
     <ClCompile Include="..\..\xbmc\input\joysticks\InputPrimitive.cpp">
       <Filter>input\joysticks</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\joysticks\generic\GenericJoystickFeatureHandler.cpp">
+    <ClCompile Include="..\..\xbmc\input\joysticks\generic\GenericJoystickDriverHandler.cpp">
       <Filter>input\joysticks\generic</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\input\joysticks\generic\GenericJoystickInputHandler.cpp">
@@ -6249,7 +6249,7 @@
     <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickButtonMap.h">
       <Filter>input\joysticks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickFeatureHandler.h">
+    <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickDriverHandler.h">
       <Filter>input\joysticks</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickInputHandler.h">
@@ -6261,7 +6261,7 @@
     <ClInclude Include="..\..\xbmc\input\joysticks\JoystickTypes.h">
       <Filter>input\joysticks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\joysticks\generic\GenericJoystickFeatureHandler.h">
+    <ClInclude Include="..\..\xbmc\input\joysticks\generic\GenericJoystickDriverHandler.h">
       <Filter>input\joysticks\generic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\joysticks\generic\GenericJoystickInputHandler.h">
