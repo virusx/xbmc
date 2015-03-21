@@ -3862,7 +3862,6 @@
 		68A4F44F1ABC5B9200EA8E8C /* GenericJoystickDriverHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GenericJoystickDriverHandler.cpp; path = joysticks/generic/GenericJoystickDriverHandler.cpp; sourceTree = "<group>"; };
 		68A4F4501ABC5B9200EA8E8C /* GenericJoystickDriverHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GenericJoystickDriverHandler.h; path = joysticks/generic/GenericJoystickDriverHandler.h; sourceTree = "<group>"; };
 		68A4F4541ABC5BA500EA8E8C /* IJoystickDriverHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IJoystickDriverHandler.h; path = joysticks/IJoystickDriverHandler.h; sourceTree = "<group>"; };
-		68A4F4551ABC5BA500EA8E8C /* IJoystickInputHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IJoystickInputHandler.h; path = joysticks/IJoystickInputHandler.h; sourceTree = "<group>"; };
 		68B61C1E1A39667200965EAC /* PeripheralBusAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBusAddon.cpp; sourceTree = "<group>"; };
 		68B61C1F1A39667200965EAC /* PeripheralBusAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusAddon.h; sourceTree = "<group>"; };
 		68B61C231A3974E000965EAC /* PeripheralJoystick.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralJoystick.cpp; sourceTree = "<group>"; };
@@ -7204,7 +7203,6 @@
 				682FAF241AA1230000E058BA /* generic */,
 				682FAF2F1AA1231600E058BA /* IJoystickButtonMap.h */,
 				68A4F4541ABC5BA500EA8E8C /* IJoystickDriverHandler.h */,
-				68A4F4551ABC5BA500EA8E8C /* IJoystickInputHandler.h */,
 				682FAF311AA1231600E058BA /* IJoystickInputHandler.h */,
 				682FAF321AA1231600E058BA /* JoystickDriverPrimitive.cpp */,
 				682FAF331AA1231600E058BA /* JoystickDriverPrimitive.h */,
