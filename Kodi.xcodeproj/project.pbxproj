@@ -367,6 +367,9 @@
 		6838402B1ABBFA480011BFE9 /* PortManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 683840291ABBFA480011BFE9 /* PortManager.cpp */; };
 		6838402C1ABBFA480011BFE9 /* PortManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 683840291ABBFA480011BFE9 /* PortManager.cpp */; };
 		6838402D1ABBFA480011BFE9 /* PortManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 683840291ABBFA480011BFE9 /* PortManager.cpp */; };
+		689345D31ABD4E1D004421A9 /* JoystickTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 689345D21ABD4E1D004421A9 /* JoystickTranslator.cpp */; };
+		689345D41ABD4E1D004421A9 /* JoystickTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 689345D21ABD4E1D004421A9 /* JoystickTranslator.cpp */; };
+		689345D51ABD4E1D004421A9 /* JoystickTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 689345D21ABD4E1D004421A9 /* JoystickTranslator.cpp */; };
 		68A172861ABD3A8C00454C8B /* GUIDialogControllerInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68A172841ABD3A8C00454C8B /* GUIDialogControllerInput.cpp */; };
 		68A172871ABD3A8C00454C8B /* GUIDialogControllerInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68A172841ABD3A8C00454C8B /* GUIDialogControllerInput.cpp */; };
 		68A172881ABD3A8C00454C8B /* GUIDialogControllerInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68A172841ABD3A8C00454C8B /* GUIDialogControllerInput.cpp */; };
@@ -3857,6 +3860,8 @@
 		682FAF9D1AA1253800E058BA /* AddonCallbacksGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacksGame.h; sourceTree = "<group>"; };
 		683840291ABBFA480011BFE9 /* PortManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PortManager.cpp; sourceTree = "<group>"; };
 		6838402A1ABBFA480011BFE9 /* PortManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PortManager.h; sourceTree = "<group>"; };
+		689345D11ABD4DD9004421A9 /* JoystickTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JoystickTranslator.h; path = joysticks/JoystickTranslator.h; sourceTree = "<group>"; };
+		689345D21ABD4E1D004421A9 /* JoystickTranslator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JoystickTranslator.cpp; path = joysticks/JoystickTranslator.cpp; sourceTree = "<group>"; };
 		68A172841ABD3A8C00454C8B /* GUIDialogControllerInput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogControllerInput.cpp; path = games/windows/GUIDialogControllerInput.cpp; sourceTree = "<group>"; };
 		68A172851ABD3A8C00454C8B /* GUIDialogControllerInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogControllerInput.h; path = games/windows/GUIDialogControllerInput.h; sourceTree = "<group>"; };
 		68A4F44F1ABC5B9200EA8E8C /* GenericJoystickDriverHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GenericJoystickDriverHandler.cpp; path = joysticks/generic/GenericJoystickDriverHandler.cpp; sourceTree = "<group>"; };
@@ -7206,6 +7211,8 @@
 				682FAF311AA1231600E058BA /* IJoystickInputHandler.h */,
 				682FAF321AA1231600E058BA /* JoystickDriverPrimitive.cpp */,
 				682FAF331AA1231600E058BA /* JoystickDriverPrimitive.h */,
+				689345D21ABD4E1D004421A9 /* JoystickTranslator.cpp */,
+				689345D11ABD4DD9004421A9 /* JoystickTranslator.h */,
 				682FAF341AA1231600E058BA /* JoystickTypes.h */,
 			);
 			name = joysticks;
@@ -11177,6 +11184,7 @@
 				F57A1D1E1329B15300498CC7 /* AutoPool.mm in Sources */,
 				F5B13C8D1334056B0045076D /* DarwinUtils.mm in Sources */,
 				7C99B6A4133D342100FC2B16 /* CircularCache.cpp in Sources */,
+				689345D31ABD4E1D004421A9 /* JoystickTranslator.cpp in Sources */,
 				7C99B7951340723F00FC2B16 /* GUIDialogPlayEject.cpp in Sources */,
 				F5AE409C13415D9E0004BD79 /* AudioLibrary.cpp in Sources */,
 				F5AE409F13415D9E0004BD79 /* FileItemHandler.cpp in Sources */,
@@ -11878,6 +11886,7 @@
 				DFF0F1DA17528350002DA3A4 /* GUIDialogPlayEject.cpp in Sources */,
 				DFF0F1DB17528350002DA3A4 /* GUIDialogPlayerControls.cpp in Sources */,
 				DFF0F1DC17528350002DA3A4 /* GUIDialogProgress.cpp in Sources */,
+				689345D51ABD4E1D004421A9 /* JoystickTranslator.cpp in Sources */,
 				DFF0F1DD17528350002DA3A4 /* GUIDialogSeekBar.cpp in Sources */,
 				DFF0F1DE17528350002DA3A4 /* GUIDialogSelect.cpp in Sources */,
 				DFF0F1DF17528350002DA3A4 /* GUIDialogSlider.cpp in Sources */,
@@ -13506,6 +13515,7 @@
 				E4991477174E605900741B6D /* StringUtils.cpp in Sources */,
 				E4991478174E605900741B6D /* SystemInfo.cpp in Sources */,
 				E4991479174E605900741B6D /* TextSearch.cpp in Sources */,
+				689345D41ABD4E1D004421A9 /* JoystickTranslator.cpp in Sources */,
 				E499147A174E605900741B6D /* TimeSmoother.cpp in Sources */,
 				E499147B174E605900741B6D /* TimeUtils.cpp in Sources */,
 				E499147D174E605900741B6D /* URIUtils.cpp in Sources */,
