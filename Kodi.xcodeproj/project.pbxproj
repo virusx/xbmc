@@ -3871,6 +3871,7 @@
 		68B61C241A3974E000965EAC /* PeripheralJoystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralJoystick.h; sourceTree = "<group>"; };
 		68D055A41ABE4F2A00A10C1A /* GamePeripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GamePeripheral.cpp; path = games/addons/GamePeripheral.cpp; sourceTree = "<group>"; };
 		68D055A51ABE4F2A00A10C1A /* GamePeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GamePeripheral.h; path = games/addons/GamePeripheral.h; sourceTree = "<group>"; };
+		68E438821ABEA8D50080B4E2 /* IKeyboardHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IKeyboardHandler.h; sourceTree = "<group>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
@@ -6499,6 +6500,7 @@
 				E4991332174E5E5C00741B6D /* touch */,
 				18B7C8CB12942546009E7A26 /* ButtonTranslator.cpp */,
 				18B7C8CC12942546009E7A26 /* ButtonTranslator.h */,
+				68E438821ABEA8D50080B4E2 /* IKeyboardHandler.h */,
 				DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */,
 				DFAB049713F8376700B70BFB /* InertialScrollingHandler.h */,
 				DF14CF7C1A77782E00396CC9 /* InputManager.cpp */,
