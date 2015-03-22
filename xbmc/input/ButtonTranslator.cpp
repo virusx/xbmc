@@ -269,7 +269,6 @@ static const ActionMapping actions[] =
         { "noop"             , ACTION_NOOP}
 };
 
-/* static */
 bool CButtonTranslator::IsAnalog(int actionID)
 {
   switch (actionID)
@@ -281,6 +280,8 @@ bool CButtonTranslator::IsAnalog(int actionID)
   case ACTION_ANALOG_FORWARD:
   case ACTION_ANALOG_REWIND:
   case ACTION_ANALOG_MOVE:
+  case ACTION_ANALOG_MOVE_X:
+  case ACTION_ANALOG_MOVE_Y:
   case ACTION_CURSOR_LEFT:
   case ACTION_CURSOR_RIGHT:
   case ACTION_VOLUME_UP:
