@@ -409,7 +409,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\ZipDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ZipFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ZipManager.cpp" />
-    <ClCompile Include="..\..\xbmc\games\ControllerLayout.cpp" />
+    <ClCompile Include="..\..\xbmc\games\addons\GamePeripheral.cpp" />
     <ClCompile Include="..\..\xbmc\games\addons\GameClient.cpp" />
     <ClCompile Include="..\..\xbmc\games\addons\GameClientProperties.cpp" />
     <ClCompile Include="..\..\xbmc\games\GameFileAutoLauncher.cpp" />
@@ -424,7 +424,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\games\windows\GUIDialogControllerFeatures.cpp" />
+    <ClCompile Include="..\..\xbmc\games\windows\GUIDialogControllerInput.cpp" />
     <ClCompile Include="..\..\xbmc\games\windows\GUIViewStateWindowGames.cpp" />
     <ClCompile Include="..\..\xbmc\games\windows\GUIWindowGamePeripherals.cpp" />
     <ClCompile Include="..\..\xbmc\games\windows\GUIWindowGames.cpp" />
@@ -449,7 +449,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIControlFactory.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIControlGroup.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIControlGroupList.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\GUIControllerLayout.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIControlProfiler.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIDialog.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIEditControl.cpp" />
@@ -461,6 +460,7 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIFontManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIFontTTF.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIFontTTFDX.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\GUIGamePeripheral.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIImage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIIncludes.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIInfoTypes.cpp" />
@@ -521,7 +521,8 @@
     <ClCompile Include="..\..\xbmc\input\InputManager.cpp" />
     <ClCompile Include="..\..\xbmc\input\joysticks\generic\GenericJoystickDriverHandler.cpp" />
     <ClCompile Include="..\..\xbmc\input\joysticks\generic\GenericJoystickInputHandler.cpp" />
-    <ClCompile Include="..\..\xbmc\input\joysticks\InputPrimitive.cpp" />
+    <ClCompile Include="..\..\xbmc\input\joysticks\JoystickDriverPrimitive.cpp" />
+    <ClCompile Include="..\..\xbmc\input\joysticks\JoystickTranslator.cpp" />
     <ClCompile Include="..\..\xbmc\input\Key.cpp" />
     <ClCompile Include="..\..\xbmc\input\KeyboardLayout.cpp" />
     <ClCompile Include="..\..\xbmc\input\KeyboardLayoutManager.cpp" />
@@ -732,6 +733,7 @@
     <ClCompile Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralManager.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralSettings.cpp" />
     <ClCompile Include="..\..\xbmc\peripherals\Peripherals.cpp" />
+    <ClCompile Include="..\..\xbmc\peripherals\PortMapper.cpp" />
     <ClCompile Include="..\..\xbmc\pictures\GUIDialogPictureInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pictures\GUIViewStatePictures.cpp" />
     <ClCompile Include="..\..\xbmc\pictures\GUIWindowPictures.cpp" />
@@ -931,7 +933,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32File.h" />
     <ClInclude Include="..\..\xbmc\filesystem\win32\Win32SMBFile.h" />
-    <ClInclude Include="..\..\xbmc\games\ControllerLayout.h" />
+    <ClInclude Include="..\..\xbmc\games\addons\GamePeripheral.h" />
     <ClInclude Include="..\..\xbmc\games\addons\GameClient.h" />
     <ClInclude Include="..\..\xbmc\games\addons\GameClientProperties.h" />
     <ClInclude Include="..\..\xbmc\games\GameFileAutoLauncher.h" />
@@ -941,26 +943,28 @@
     <ClInclude Include="..\..\xbmc\games\SerialState.h" />
     <ClInclude Include="..\..\xbmc\games\tags\GameInfoTag.h" />
     <ClInclude Include="..\..\xbmc\games\tags\GameInfoTagLoader.h" />
-    <ClInclude Include="..\..\xbmc\games\windows\GUIDialogControllerFeatures.h" />
+    <ClInclude Include="..\..\xbmc\games\windows\GUIDialogControllerInput.h" />
     <ClInclude Include="..\..\xbmc\games\windows\GUIViewStateWindowGames.h" />
     <ClInclude Include="..\..\xbmc\games\windows\GUIWindowGamePeripherals.h" />
     <ClInclude Include="..\..\xbmc\games\windows\GUIWindowGames.h" />
     <ClInclude Include="..\..\xbmc\guilib\cximage.h" />
-    <ClInclude Include="..\..\xbmc\guilib\GUIControllerLayout.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIFocusPlane.h" />
+    <ClInclude Include="..\..\xbmc\guilib\GUIGamePeripheral.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboard.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIKeyboardFactory.h" />
     <ClInclude Include="..\..\xbmc\guilib\iimage.h" />
     <ClInclude Include="..\..\xbmc\guilib\imagefactory.h" />
     <ClInclude Include="..\..\xbmc\guilib\ISliderCallback.h" />
     <ClInclude Include="..\..\xbmc\IFileItemListModifier.h" />
+    <ClInclude Include="..\..\xbmc\input\IKeyboardHandler.h" />
     <ClInclude Include="..\..\xbmc\input\InputManager.h" />
     <ClInclude Include="..\..\xbmc\input\joysticks\generic\GenericJoystickDriverHandler.h" />
     <ClInclude Include="..\..\xbmc\input\joysticks\generic\GenericJoystickInputHandler.h" />
     <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickButtonMap.h" />
     <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickDriverHandler.h" />
     <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickInputHandler.h" />
-    <ClInclude Include="..\..\xbmc\input\joysticks\InputPrimitive.h" />
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickDriverPrimitive.h" />
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickTranslator.h" />
     <ClInclude Include="..\..\xbmc\input\joysticks\JoystickTypes.h" />
     <ClInclude Include="..\..\xbmc\input\Key.h" />
     <ClInclude Include="..\..\xbmc\input\KeyboardLayoutManager.h" />
@@ -1045,6 +1049,7 @@
     <ClInclude Include="..\..\xbmc\peripherals\bus\virtual\PeripheralBusCEC.h" />
     <ClInclude Include="..\..\xbmc\network\upnp\UPnPSettings.h" />
     <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralJoystick.h" />
+    <ClInclude Include="..\..\xbmc\peripherals\PortMapper.h" />
     <ClInclude Include="..\..\xbmc\playlists\SmartPlaylistFileItemListModifier.h" />
     <ClInclude Include="..\..\xbmc\profiles\dialogs\GUIDialogLockSettings.h" />
     <ClInclude Include="..\..\xbmc\profiles\dialogs\GUIDialogProfileSettings.h" />

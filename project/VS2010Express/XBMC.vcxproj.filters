@@ -3191,9 +3191,6 @@
     <ClCompile Include="..\..\xbmc\music\CueInfoLoader.cpp">
       <Filter>music</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\joysticks\InputPrimitive.cpp">
-      <Filter>input\joysticks</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\input\joysticks\generic\GenericJoystickDriverHandler.cpp">
       <Filter>input\joysticks\generic</Filter>
     </ClCompile>
@@ -3254,17 +3251,26 @@
     <ClCompile Include="..\..\xbmc\games\windows\GUIWindowGamePeripherals.cpp">
       <Filter>games\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\games\ControllerLayout.cpp">
-      <Filter>games</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\games\windows\GUIDialogControllerFeatures.cpp">
-      <Filter>games\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIControllerLayout.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\input\PortManager.cpp">
       <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\addons\GamePeripheral.cpp">
+      <Filter>games\addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\JoystickDriverPrimitive.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\joysticks\JoystickTranslator.cpp">
+      <Filter>input\joysticks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\PortMapper.cpp">
+      <Filter>peripherals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\windows\GUIDialogControllerInput.cpp">
+      <Filter>games\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\GUIGamePeripheral.cpp">
+      <Filter>guilib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6255,9 +6261,6 @@
     <ClInclude Include="..\..\xbmc\input\joysticks\IJoystickInputHandler.h">
       <Filter>input\joysticks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\joysticks\InputPrimitive.h">
-      <Filter>input\joysticks</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\input\joysticks\JoystickTypes.h">
       <Filter>input\joysticks</Filter>
     </ClInclude>
@@ -6324,20 +6327,32 @@
     <ClInclude Include="..\..\xbmc\games\windows\GUIWindowGamePeripherals.h">
       <Filter>games\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\games\ControllerLayout.h">
-      <Filter>games</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\games\GameTypes.h">
       <Filter>games</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\games\windows\GUIDialogControllerFeatures.h">
-      <Filter>games\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIControllerLayout.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\input\PortManager.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\addons\GamePeripheral.h">
+      <Filter>games\addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\IKeyboardHandler.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickDriverPrimitive.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\joysticks\JoystickTranslator.h">
+      <Filter>input\joysticks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\PortMapper.h">
+      <Filter>peripherals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\windows\GUIDialogControllerInput.h">
+      <Filter>games\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUIGamePeripheral.h">
+      <Filter>guilib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
